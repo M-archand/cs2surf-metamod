@@ -32,11 +32,11 @@
 	}
 	"Command Help Response Category Hint (Console)"
 	{
-		"en"		"You can use \"kz_help <category>\" to get a list of commands related to a specific category (eg. kz_help checkpoint misc).\nList of available categories: checkpoint, record, jumpstats, measure, modestyle, preference, racing, replay, saveloc, spec, status, timer, player, global, misc, map"
-		"chi"		"您可以使用 \"kz_help <类别>\" 获取特定类别的命令列表 (例如：kz_help checkpoint misc).\n可用类别列表: checkpoint(存点), record(记录), jumpstats(跳跃统计), measure(测量), modestyle(模式风格), preference(偏好设置), racing(竞速), replay(重播), saveloc(保存位置), spec(观察), status(状态), timer(计时器), player(玩家), global(全球), misc(杂项), map(地图)"
-		"sv"		"Du kan använda \"kz_help <kategori>\" för att lista kommandon relaterade till en specifik kategori (t.ex. kz_help checkpoint misc).\nLista över tillgängliga kategorier: checkpoint, record, jumpstats, measure, modestyle, preference, racing, replay, saveloc, spec, status, timer, player, global, misc, map"
-		"ua"		"Ви можете використати \"kz_help <категорія>\", щоб отримати список команд, пов'язаних з певною категорією (наприклад, kz_help checkpoint misc).\nСписок доступних категорій: checkpoint, record, jumpstats, measure, modestyle, preference, racing, replay, saveloc, spec, status, timer, player, global, misc, map"
-		"lv"		"Tu vari pielietot \"kz_help <kategorija>\", lai iegūtu komandu sarakstu, kas saistītas ar konkrētu kategoriju (piem. kz_help checkpoint misc).\nPieejamo kategoriju saraksts: checkpoint, record, jumpstats, measure, modestyle, preference, racing, replay, saveloc, spec, status, timer, player, global, misc, map"
+		"en"		"You can use \"surf_help <category>\" to get a list of commands related to a specific category (eg. surf_help saveloc misc).\nList of available categories: record, modestyle, preference, replay, saveloc, spec, status, timer, player, global, misc, map"
+		"chi"		"您可以使用 \"surf_help <类别>\" 获取特定类别的命令列表 (例如：surf_help saveloc misc).\n可用类别列表: record(记录), modestyle(模式风格), preference(偏好设置), replay(重播), saveloc(保存位置), spec(观察), status(状态), timer(计时器), player(玩家), global(全球), misc(杂项), map(地图)"
+		"sv"		"Du kan använda \"surf_help <kategori>\" för att lista kommandon relaterade till en specifik kategori (t.ex. surf_help saveloc misc).\nLista över tillgängliga kategorier: record, modestyle, preference, replay, saveloc, spec, status, timer, player, global, misc, map"
+		"ua"		"Ви можете використати \"surf_help <категорія>\", щоб отримати список команд, пов'язаних з певною категорією (наприклад, surf_help saveloc misc).\nСписок доступних категорій: record, modestyle, preference, replay, saveloc, spec, status, timer, player, global, misc, map"
+		"lv"		"Tu vari pielietot \"surf_help <kategorija>\", lai iegūtu komandu sarakstu, kas saistītas ar konkrētu kategoriju (piem. surf_help saveloc misc).\nPieejamo kategoriju saraksts: record, modestyle, preference, replay, saveloc, spec, status, timer, player, global, misc, map"
 	}
 	
 	// Categories
@@ -56,14 +56,6 @@
 		"ua"		"Опис"
 		"lv"		"Apraksts"
 	}
-	"Command List - Checkpoint"
-	{
-		"en"		"Checkpoint Commands:"
-		"chi"		"存点 命令:"
-		"sv"		"Checkpointkommandon:"
-		"ua"		"Команди Чекпоінтів:"
-		"lv"		"Checkpoint Komandas:"
-	}
 	"Command List - Record"
 	{
 		"en"		"Record Commands:"
@@ -71,22 +63,6 @@
 		"sv"		"Rekordkommandon:"
 		"ua"		"Команди Рекордів:"
 		"lv"		"Record Komandas:"
-	}
-	"Command List - Jumpstats"
-	{
-		"en"		"Jumpstats Commands:"
-		"chi"		"起跳数据 命令:"
-		"sv"		"Jumpstatkommandon:"
-		"ua"		"Команди Статистики стрибків:"
-		"lv"		"Jumpstats Komandas:"
-	}
-	"Command List - Measure"
-	{
-		"en"		"Measure Commands:"
-		"chi"		"测量 命令:"
-		"sv"		"Mätningskommandon:"
-		"ua"		"Команди Вимірювання:"
-		"lv"		"Measure Komandas:"
 	}
 	"Command List - ModeStyle"
 	{
@@ -103,14 +79,6 @@
 		"sv"		"Preferenskommandon:"
 		"ua"		"Команди Налаштувань:"
 		"lv"		"Preferenču Komandas:"
-	}
-	"Command List - Racing"
-	{
-		"en"		"Racing Commands:"
-		"chi"		"竞速 命令:"
-		"sv"		"Racingkommandon:"
-		"ua"		"Команди Гонки:"
-		"lv"		"Racing Komandas:"
 	}
 	"Command List - Replay"
 	{
@@ -193,22 +161,7 @@
 		"lv"		"HUD Komandas:"
 	}
 	// Commands
-	"Command Description - kz_undo"
-	{
-		"en"		"Undo teleport."
-		"chi"		"撤销传送."
-		"pl"		"Cofnij teleport."
-		"fi"		"Kumoa teleportti."
-		"sv"		"Ångra teleport."
-		"ua"		"Скасувати телепорт."
-		"tr"		"Geri al."
-		"it"		"Annulla teleport."
-		"es"		"Deshacer teleporte."
-		"de"		"Teleport rückgängig machen."
-		"ko"		"텔레포트를 취소합니다."
-		"lv"		"Atcelt teleportēšanu."
-	}
-	"Command Description - kz_checkpoint"
+	"Command Description - surf_saveloc"
 	{
 		"en"		"Set a checkpoint on ground or on a ladder."
 		"chi"		"在地上或梯子上设置一个存点."
@@ -223,7 +176,7 @@
 		"ko"		"지면이나 사다리 위에서 체크포인트를 설정합니다."
 		"lv"		"Iestatīt kontrolpunktu uz zemes vai uz kāpnēm."
 	}
-	"Command Description - kz_cp"
+	"Command Description - surf_checkpoint"
 	{
 		"en"		"Set a checkpoint on ground or on a ladder."
 		"chi"		"在地上或梯子上设置一个存点."
@@ -238,7 +191,22 @@
 		"ko"		"지면이나 사다리 위에서 체크포인트를 설정합니다."
 		"lv"		"Iestatīt kontrolpunktu uz zemes vai uz kāpnēm."
 	}
-	"Command Description - kz_teleport"
+	"Command Description - surf_cp"
+	{
+		"en"		"Set a checkpoint on ground or on a ladder."
+		"chi"		"在地上或梯子上设置一个存点."
+		"pl"		"Ustaw checkpoint na ziemi bądź drabinie."
+		"fi"		"Asettaa tallennuspisteen maahan tai tikkaille."
+		"sv"		"Skapa en checkpoint på mark eller stege."
+		"ua"		"Поставити чекпоінт на землі або на драбині."
+		"tr"		"Yerde veya merdivende kontrol noktası oluştur."
+		"it"		"Crea un checkpoint da terra o su una scala."
+		"es"		"Crear un checkpoint en el suelo o en una escalera."
+		"de"		"Setze ein Checkpoint auf dem Boden oder Leiter."
+		"ko"		"지면이나 사다리 위에서 체크포인트를 설정합니다."
+		"lv"		"Iestatīt kontrolpunktu uz zemes vai uz kāpnēm."
+	}
+	"Command Description - surf_loadloc"
 	{
 		"en"		"Teleport to the current checkpoint."
 		"chi"		"传送到当前存点."
@@ -253,7 +221,7 @@
 		"ko"		"현재 체크포인트로 텔레포트합니다."
 		"lv"		"Teleportēt uz pašreizējo kontrolpunktu."
 	}
-	"Command Description - kz_tp"
+	"Command Description - surf_teleport"
 	{
 		"en"		"Teleport to the current checkpoint."
 		"chi"		"传送到当前存点."
@@ -268,7 +236,22 @@
 		"ko"		"현재 체크포인트로 텔레포트합니다."
 		"lv"		"Teleportēt uz pašreizējo kontrolpunktu."
 	}
-	"Command Description - kz_prevcp"
+	"Command Description - surf_tp"
+	{
+		"en"		"Teleport to the current checkpoint."
+		"chi"		"传送到当前存点."
+		"pl"		"Teleportuj się do aktualnego checkpointu."
+		"fi"		"Teleporttaa tämänhetkiseen tallennuspisteeseen."
+		"sv"		"Teleportera till nuvarande checkpoint."
+		"ua"		"Телепортуватися до поточного чекпоінту."
+		"tr"		"Kontrol noktasına ışınlan."
+		"it"		"Teleportati all'ultimo checkpoint."
+		"es"		"Teleportar al checkpoint actual."
+		"de"		"Zum aktuellen Checkpoint teleportieren."
+		"ko"		"현재 체크포인트로 텔레포트합니다."
+		"lv"		"Teleportēt uz pašreizējo kontrolpunktu."
+	}
+	"Command Description - surf_prevloc"
 	{
 		"en"		"Teleport to the last checkpoint."
 		"chi"		"传送到上一个存点."
@@ -283,7 +266,7 @@
 		"ko"		"마지막 체크포인트로 텔레포트합니다."
 		"lv"		"Teleportēt uz pēdējo kontrolpunktu."
 	}
-	"Command Description - kz_pcp"
+	"Command Description - surf_prevcp"
 	{
 		"en"		"Teleport to the last checkpoint."
 		"chi"		"传送到上一个存点."
@@ -298,7 +281,22 @@
 		"ko"		"마지막 체크포인트로 텔레포트합니다."
 		"lv"		"Teleportēt uz pēdējo kontrolpunktu."
 	}
-	"Command Description - kz_nextcp"
+	"Command Description - surf_pcp"
+	{
+		"en"		"Teleport to the last checkpoint."
+		"chi"		"传送到上一个存点."
+		"pl"		"Teleportuj się do poprzedniego checkpointu."
+		"fi"		"Teleporttaa edelliseen tallennuspisteeseen."
+		"sv"		"Teleportera till föregående checkpoint."
+		"ua"		"Телепортуватися до попереднього чекпоінту."
+		"tr"		"Önceki kontrol noktasına dön."
+		"it"		"Teleportati al penultimo checkpoint."
+		"es"		"Teleportar al checkpoint anterior."
+		"de"		"Zum letzten Checkpoint teleportieren."
+		"ko"		"마지막 체크포인트로 텔레포트합니다."
+		"lv"		"Teleportēt uz pēdējo kontrolpunktu."
+	}
+	"Command Description - surf_nextloc"
 	{
 		"en"		"Teleport to the next checkpoint."
 		"chi"		"传送到下一个存点."
@@ -312,7 +310,21 @@
 		"de"		"Zum nächsten Checkpoint teleportieren."
 		"lv"		"Teleportēt uz nākamo kontrolpunktu."
 	}
-	"Command Description - kz_ncp"
+	"Command Description - surf_nextcp"
+	{
+		"en"		"Teleport to the next checkpoint."
+		"chi"		"传送到下一个存点."
+		"pl"		"Teleportuj się do następnego checkpointu."
+		"fi"		"Teleporttaa seuraavaan tallennuspisteeseen."
+		"sv"		"Teleportera till nästa checkpoint."
+		"ua"		"Телепортуватися до наступного чекпоінту."
+		"tr"		"Sonraki kontrol noktasına ilerle."
+		"it"		"Teleportati al prossimo checkpoint."
+		"es"		"Teleportar al próximo checkpoint."
+		"de"		"Zum nächsten Checkpoint teleportieren."
+		"lv"		"Teleportēt uz nākamo kontrolpunktu."
+	}
+	"Command Description - surf_ncp"
 	{
 		"en"		"Teleport to the next checkpoint."
 		"chi"		"传送到下一个存点."
@@ -327,7 +339,7 @@
 		"ko"		"다음 체크포인트로 텔레포트합니다."
 		"lv"		"Teleportēt uz nākamo kontrolpunktu."
 	}
-	"Command Description - kz_setstartpos"
+	"Command Description - surf_setstartpos"
 	{
 		"en"		"Set your custom start position to your current position."
 		"chi"		"设置你的自定义起点为当前位置."
@@ -342,7 +354,7 @@
 		"ko"		"다음 체크포인트로 텔레포트합니다."
 		"lv"		"Iestatīt savu pielāgoto starta pozīciju uz pašreizējo pozīciju."
 	}
-	"Command Description - kz_ssp"
+	"Command Description - surf_ssp"
 	{
 		"en"		"Set your custom start position to your current position."
 		"chi"		"设置你的自定义起点为当前位置."
@@ -357,7 +369,7 @@
 		"ko"		"현재 위치를 사용자 지정 시작 위치로 설정합니다."
 		"lv"		"Iestatīt savu pielāgoto starta pozīciju uz pašreizējo pozīciju."
 	}
-	"Command Description - kz_clearstartpos"
+	"Command Description - surf_clearstartpos"
 	{
 		"en"		"Clear your custom start position."
 		"chi"		"清除你的自定义起点."
@@ -372,7 +384,7 @@
 		"ko"		"사용자 지정 시작 위치를 초기화합니다."
 		"lv"		"Notīrīt savu pielāgoto starta pozīciju."
 	}
-	"Command Description - kz_csp"
+	"Command Description - surf_csp"
 	{
 		"en"		"Clear your custom start position."
 		"chi"		"清除你的自定义起点."
@@ -387,7 +399,7 @@
 		"ko"		"사용자 지정 시작 위치를 초기화합니다."
 		"lv"		"Notīrīt savu pielāgoto starta pozīciju."
 	}
-	"Command Description - kz_panel"
+	"Command Description - surf_panel"
 	{
 		"en"		"Toggle centre panel display."
 		"chi"		"切换中心面板的显示."
@@ -402,82 +414,7 @@
 		"ko"		"중앙 패널 표시를 전환합니다."
 		"lv"		"Ieslēgt/izslēgt centrālā paneļa attēlošanu."
 	}
-	"Command Description - kz_jsbroadcast"
-	{
-		"en"		"Change jumpstats minimum threshold for broadcasting."
-		"chi"		"更改广播跳跃提示的最小阈值."
-		"pl"		"Ustaw minimalny próg dla wyświetlania jumpstatów."	
-		"fi"		"Muuta muiden pelaajien chatissä näkyvien jumpstattien minimi kynnysarvoa."
-		"sv"		"Ändra minimigräns för sändning av andra spelares jumpstat."
-		"ua"		"Змінити мінімальний поріг стрибків інших гравців для відображення в чаті."
-		"tr"		"Sohbet için zıplama istatistiklerinin minimum değerini değiştir."
-		"it"		"Cambia la soglia minima per mostrare le statistiche dei salti."
-		"es"		"Cambiar valor mínimo de estadísticas de salto para difusión."
-		"de"		"Ändern des Mindestwert für die Übertragung von Jumpstats."
-		"ko"		"점프 통계 알림의 최소 임계값을 변경합니다."
-		"lv"		"Mainīt jumpstats minimālo slieksni izziņošanai."
-	}
-	"Command Description - kz_jssound"
-	{
-		"en"		"Change jumpstats minimum threshold for sound effects."
-		"chi"		"更改播放跳跃提示音的最小阈值."
-		"pl"		"Ustaw minimalny próg dla efektów dźwiękowych podczas jumpstatów."	
-		"fi"		"Muuta jumpstattien äänitehosteiden minimi kynnysarvoa."
-		"sv"		"Ändra minimigräns för ljudeffekter av jumpstats."
-		"ua"		"Змінити мінімальний поріг для звукових ефектів під час стрибків."
-		"tr"		"Zıplama istatistiklerinin minimum ses efekti değerini değiştir."
-		"it"		"Cambia la soglia minima per gli effetti sonori dei salti."
-		"es"		"Cambiar valor mínimo de estadísticas de salto para efectos de sonido."
-		"de"		"Ändern des Mindestwert für die Jumpstats Sounds."
-		"ko"		"점프 통계 사운드 효과의 최소 임계값을 변경합니다."
-		"lv"		"Mainīt jumpstats minimālo slieksni skaņas efektiem."
-	}
-	"Command Description - kz_togglestats"
-	{
-		"en"		"Toggle jumpstats reporting."
-		"chi"		"切换起跳提示报告的开关"
-		"pl"		"Przełącz wykaz jumpstatów."	
-		"fi"		"Vaihda jumpstattien reportoinnin asetusta."
-		"sv"		"Toggla chatmeddelanden för jumpstats."
-		"ua"		"Перемикання відображення статистики стрибків."
-		"tr"		"Zıplama istatistiklerinin sohbette gözükmesini aç."
-		"it"		"Cambia la visibilità delle statistiche dei salti."
-		"es"		"Alternar reportes de estadísticas de salto."
-		"de"		"Jumpstats-Berichte umschalten."
-		"ko"		"점프 통계 보고를 전환합니다."
-		"lv"		"Ieslēgt/izslēgt jumpstats ziņošanu."
-	}
-	"Command Description - kz_togglejs"
-	{
-		"en"		"Toggle jumpstats reporting."
-		"chi"		"切换起跳提示报告的开关"
-		"pl"		"Przełącz wykaz jumpstatów."	
-		"fi"		"Vaihda jumpstattien reportoinnin asetusta."
-		"sv"		"Toggla chatmeddelanden för jumpstats."
-		"ua"		"Перемикання відображення статистики стрибків."
-		"tr"		"Zıplama istatistiklerinin sohbette gözükmesini aç."
-		"it"		"Cambia la visibilità delle statistiche dei salti."
-		"es"		"Alternar reportes de estadísticas de salto."
-		"de"		"Jumpstats-Berichte umschalten."
-		"ko"		"점프 통계 보고를 전환합니다."
-		"lv"		"Ieslēgt/izslēgt jumpstats ziņošanu."
-	}
-	"Command Description - kz_jsalways"
-	{
-		"en"		"Toggle the always-on jumpstats."
-		"chi"		"切换 总是显示跳跃数据 的开关"
-		"pl"		"Zawsze pokazuj jumpstaty."	
-		"fi"		"Vaihda \"aina-päällä\" jumpstattien reportoinnin asetusta."
-		"sv"		"Toggla alla (egna) jumpstats i chatten."
-		"ua"		"Перемикання відображення статистики для будь-яких стрибків."
-		"tr"		"Zıplama istatistiklerinin devamlı sohbette gözükmesini aç."
-		"it"		"Mostra sempre le statistiche dei salti."
-		"es"		"Alternar estadísticas de salto siempre activas."
-		"de"		"Jumpstats immer ein umschalten."
-		"ko"		"점프 통계를 전환합니다."
-		"lv"		"Ieslēgt/Izslēgt always-on jumpstats."
-	}
-	"Command Description - kz_mode"
+	"Command Description - surf_mode"
 	{
 		"en"		"List or change mode."
 		"chi"		"列出或更改模式."
@@ -492,7 +429,7 @@
 		"ko"		"모드를 표시하거나 변경합니다."
 		"lv"		"Uzskaitīt vai mainīt režīmu."
 	}
-	"Command Description - kz_noclip"
+	"Command Description - surf_noclip"
 	{
 		"en"		"Toggle noclip."
 		"chi"		"切换飞行状态."
@@ -507,7 +444,7 @@
 		"ko"		"노클립 모드를 전환합니다."
 		"lv"		"Ieslēgt/izslēgt noclip režīmu."
 	}
-	"Command Description - kz_nc"
+	"Command Description - surf_nc"
 	{
 		"en"		"Toggle noclip."
 		"chi"		"切换飞行状态."
@@ -537,7 +474,7 @@
 		"ko"		"노클립 모드를 전환합니다."
 		"lv"		"Ieslēgt/izslēgt noclip režīmu."
 	}
-	"Command Description - kz_spec"
+	"Command Description - surf_spec"
 	{
 		"en"		"Spectate a player."
 		"chi"		"观看一个玩家."
@@ -552,13 +489,13 @@
 		"ko"		"플레이어를 관전합니다."
 		"lv"		"Specot spēlētāju."
 	}
-	"Command Description - kz_specs"
+	"Command Description - surf_specs"
 	{
 		"en"		"List currently spectating players in chat."
 		"ua"		"Показати в чаті список спостерігачів."
 		"sv"		"Lista närvarande åskådare i chatten."
 	}
-	"Command Description - kz_goto"
+	"Command Description - surf_goto"
 	{
 		"en"		"Go to a player."
 		"chi"		"传送到一个玩家身边."
@@ -574,7 +511,7 @@
 		"ko"		"플레이어에게 이동합니다."
 		"lv"		"Doties pie spēlētāja."
 	}
-	"Command Description - kz_style"
+	"Command Description - surf_style"
 	{
 		"en"		"List, add, remove or toggle style."
 		"chi"		"列出, 添加, 移除或切换风格."
@@ -590,7 +527,7 @@
 		"ko"		"스타일을 표시, 추가, 제거하거나 전환합니다."
 		"lv"		"Uzskaitīt, pievienot, noņemt vai ieslēgt/izslēgt stilu."
 	}
-	"Command Description - kz_addstyle"
+	"Command Description - surf_addstyle"
 	{
 		"en"		"List or add style."
 		"chi"		"列出或添加风格."
@@ -606,7 +543,7 @@
 		"ko"		"스타일을 표시하거나 추가합니다."
 		"lv"		"Uzskaitīt vai pievienot stilu."
 	}
-	"Command Description - kz_removestyle"
+	"Command Description - surf_removestyle"
 	{
 		"en"		"List active styles or remove style."
 		"chi"		"列出已激活风格或移除风格."
@@ -622,7 +559,7 @@
 		"ko"		"활성화 된 스타일을 표시하거나 스타일을 제거합니다."
 		"lv"		"Uzskaitīt aktīvos stilus vai noņemt stilu."
 	}
-	"Command Description - kz_togglestyle"
+	"Command Description - surf_togglestyle"
 	{
 		"en"		"List or toggle style."
 		"chi"		"列出或切换风格."
@@ -638,7 +575,7 @@
 		"ko"		"스타일을 표시하거나 전환합니다."
 		"lv"		"Uzskaitīt vai ieslēgt/izslēgt stilu."
 	}
-	"Command Description - kz_clearstyles"
+	"Command Description - surf_clearstyles"
 	{
 		"en"		"Clear all styles."
 		"chi"		"清除所有风格."
@@ -654,7 +591,7 @@
 		"ko"		"모든 스타일을 초기화합니다."
 		"lv"		"Notīrīt visus stilus."
 	}
-	"Command Description - kz_stop"
+	"Command Description - surf_stop"
 	{
 		"en"		"Stop timer."
 		"chi"		"停止计时."
@@ -669,7 +606,7 @@
 		"ko"		"타이머를 중지합니다."
 		"lv"		"Apturēt taimeri."
 	}
-	"Command Description - kz_pause"
+	"Command Description - surf_pause"
 	{
 		"en"		"Toggle timer pause."
 		"chi"		"暂停计时."
@@ -684,7 +621,7 @@
 		"ko"		"타이머 일시 정지를 전환합니다."
 		"lv"		"Ieslēgt/izslēgt taimera pauzēšanu."
 	}
-	"Command Description - kz_tips"
+	"Command Description - surf_tips"
 	{
 		"en"		"Toggle tips."
 		"chi"		"切换提示的开关."
@@ -699,7 +636,7 @@
 		"ko"		"도움말 표시를 전환합니다."
 		"lv"		"Ieslēgt/izslēgt padomus."
 	}
-	"Command Description - kz_hidelegs"
+	"Command Description - surf_hidelegs"
 	{
 		"en"		"Hide your legs in first person."
 		"chi"		"在第一人称中隐藏腿部."
@@ -714,7 +651,7 @@
 		"ko"		"1인칭 시점에서 다리를 숨깁니다."
 		"lv"		"Slēpt savas kājas pirmajā personā."
 	}
-	"Command Description - kz_hide"
+	"Command Description - surf_hide"
 	{
 		"en"		"Hide other players."
 		"chi"		"隐藏其他的玩家."
@@ -729,7 +666,7 @@
 		"ko"		"다른 플레이어를 숨깁니다."
 		"lv"		"Paslēpt citus spēlētājus."
 	}
-	"Command Description - kz_restart"
+	"Command Description - surf_restart"
 	{
 		"en"		"Restart."
 		"chi"		"重新开始."
@@ -744,7 +681,7 @@
 		"ko"		"재시작합니다."
 		"lv"		"Restartēt."
 	}
-	"Command Description - kz_r"
+	"Command Description - surf_r"
 	{
 		"en"		"Restart."
 		"chi"		"重新开始."
@@ -759,37 +696,7 @@
 		"ko"		"재시작합니다."
 		"lv"		"Restartēt."
 	}
-	"Command Description - kz_lj"
-	{
-		"en"		"Teleport to the jumpstat area."
-		"chi"		"传送到LJ房间."
-		"sv"		"Teleportera till jumpstat-området"
-		"ua"		"Телепортуватися до зони тренування стрибків."
-		"ko"		"롱 점프 구역으로 텔레포트합니다."
-		"es"		"Teleportar a la zona de saltos."
-		"lv"		"Teleportēt uz jumpstat zonu."
-	}
-	"Command Description - kz_ljarea"
-	{
-		"en"		"Teleport to the jumpstat area."
-		"chi"		"传送到LJ房间."
-		"sv"		"Teleportera till jumpstat-området"
-		"ua"		"Телепортуватися до зони тренування стрибків."
-		"ko"		"롱 점프 구역으로 텔레포트합니다."
-		"es"		"Teleportar a la zona de saltos."
-		"lv"		"Teleportēt uz jumpstat zonu."
-	}
-	"Command Description - kz_jsarea"
-	{
-		"en"		"Teleport to the jumpstat area."
-		"chi"		"传送到LJ房间."
-		"sv"		"Teleportera till jumpstat-området"
-		"ua"		"Телепортуватися до зони тренування стрибків."
-		"ko"		"롱 점프 구역으로 텔레포트합니다."
-		"es"		"Teleportar a la zona de saltos."
-		"lv"		"Teleportēt uz jumpstat zonu."
-	}
-	"Command Description - kz_end"
+	"Command Description - surf_end"
 	{
 		"en"		"Teleport to the end."
 		"chi"		"传送到了终点."
@@ -799,7 +706,7 @@
 		"es"		"Teleportar al final."
 		"lv"		"Teleportēt līdz beigām."
 	}
-	"Command Description - kz_hideweapon"
+	"Command Description - surf_hideweapon"
 	{
 		"en"		"Hide weapon viewmodel."
 		"chi"		"隐藏武器模型显示."
@@ -814,7 +721,7 @@
 		"ko"		"무기 모델을 숨깁니다."
 		"lv"		"Slēpt ieroča modeļa skatu."
 	}
-	"Command Description - kz_help"
+	"Command Description - surf_help"
 	{
 		"en"		"Show this help message."
 		"chi"		"显示帮助信息."
@@ -829,7 +736,7 @@
 		"ko"		"도움말 메시지를 표시합니다."
 		"lv"		"Parādīt šo palīdzības ziņojumu."
 	}
-	"Command Description - kz_language"
+	"Command Description - surf_language"
 	{
 		"en"		"Switch current language."
 		"chi"		"切换当前语言."
@@ -844,37 +751,11 @@
 		"ko"		"현재 언어를 변경합니다."
 		"lv"		"Mainīt pašreizējo valodu."
 	}
-	"Command Description - kz_vnl"
+	"Command Description - surf_64t"
 	{
-		"en"		"Switch to Vanilla mode."
-		"chi"		"切换为官匹模式."
-		"pl"		"Zmień tryb na Vanilla"
-		"fi"		"Vaihda Vanilla moodiin."
-		"sv"		"Byt till Vanilla mode."
-		"ua"		"Переключитися на режим Vanilla."
-		"tr"		"Vanilla moduna geç."
-		"it"		"Cambia a modalità Vanilla."
-		"es"		"Cambiar a modo Vanilla."
-		"de"		"Zum Vanilla Modus wechseln."
-		"ko"		"바닐라 모드로 전환합니다."
-		"lv"		"Pāriet uz Vanilla režīmu."
+		"en"		"Switch to 64tick mode."
 	}
-	"Command Description - kz_ckz"
-	{
-		"en"		"Switch to Classic mode."
-		"chi"		"切换为经典模式."
-		"pl"		"Zmień tryb na Classic."
-		"fi"		"Vaihda Classic moodiin."
-		"sv"		"Byt till Classic mode."
-		"ua"		"Переключитися на режим Classic."
-		"tr"		"Classic moduna geç."
-		"it"		"Cambia a modalità Classic."
-		"es"		"Cambiar a modo Clásico."
-		"de"		"Zum Classic Modus wechseln."
-		"ko"		"클래식 모드로 전환합니다."
-		"lv"		"Pāriet uz klasisko režīmu."
-	}
-	"Command Description - kz_pb"
+	"Command Description - surf_pb"
 	{
 		"en"		"Retrieve personal best statistics."
 		"chi"		"查询个人最佳数据."
@@ -890,7 +771,7 @@
 		"ko"		"개인 최고 기록 통계를 확인합니다."
 		"lv"		"Saņemt personīgos labākos rezultātus."
 	}
-	"Command Description - kz_wr"
+	"Command Description - surf_wr"
 	{
 		"en"		"Retrieve server and world records."
 		"chi"		"查询服务器记录和世界记录."
@@ -906,7 +787,7 @@
 		"ko"		"서버 및 세계 기록을 확인합니다."
 		"lv"		"Saņemt servera un pasaules rekordus."
 	}
-	"Command Description - kz_sr"
+	"Command Description - surf_sr"
 	{
 		"en"		"Retrieve server records."
 		"chi"		"查询服务器记录."
@@ -922,7 +803,7 @@
 		"ko"		"서버 기록을 확인합니다."
 		"lv"		"Saņemt servera rekordus."
 	}
-	"Command Description - kz_ctop"
+	"Command Description - surf_maptop"
 	{
 		"en"		"Retrieve top course times of a map."
 		"chi"		"查询地图的排行榜前列."
@@ -936,35 +817,7 @@
 		"ko"		"맵의 상위 코스 기록을 확인합니다."
 		"lv"		"Saņemt labākos trases laikus kartē."
 	}
-	"Command Description - kz_coursetop"
-	{
-		"en"		"Retrieve top course times of a map."
-		"chi"		"查询地图的排行榜前列."
-		"pl"		"Uzyskaj najlepsze czasy kursów mapy."
-		"sv"		"Hämta topptider av en karta."
-		"tr"		"Haritadaki en iyi süreyi göster."
-		"ua"		"Показати топ проходжень курсу на мапі."
-		"it"		"Mostra la classifica di una mappa."
-   		"es"		"Mostrar mejores tiempos del curso de un mapa."
-		"de"		"Top-Zeiten der Strecken einer Map abrufen."
-		"ko"		"맵의 상위 코스 기록을 확인합니다."
-		"lv"		"Saņemt labākos trases laikus kartē."
-	}
-	"Command Description - kz_maptop"
-	{
-		"en"		"Retrieve top course times of a map."
-		"chi"		"查询地图的排行榜前列."
-		"pl"		"Uzyskaj najlepsze czasy kursów mapy."
-		"sv"		"Hämta topptider av en karta."
-		"tr"		"Haritadaki en iyi süreyi göster."
-		"ua"		"Показати топ проходжень курсу на мапі."
-		"it"		"Mostra la classifica di una mappa."
-   		"es"		"Mostrar mejores tiempos del curso de un mapa."
-		"de"		"Top-Zeiten der Strecken einer Map abrufen."
-		"ko"		"맵의 상위 코스 기록을 확인합니다."
-		"lv"		"Saņemt labākos trases laikus kartē."
-	}
-	"Command Description - kz_gctop"
+	"Command Description - surf_gmaptop"
 	{
 		"en"		"Retrieve global top course times of a map."
 		"chi"		"查询地图的全球排行榜前列."
@@ -978,36 +831,7 @@
 		"ko"		"맵의 글로벌 상위 코스 기록을 확인합니다."
 		"lv"		"Saņemt globālos labākos trases laikus kartē."
 	}
-	"Command Description - kz_gcoursetop"
-	{
-		"en"		"Retrieve global top course times of a map."
-		"chi"		"查询地图的全球排行榜前列."
-		"pl"		"Uzyskaj globalne najlepsze czasy kursów mapy."
-		"sv"		"Hämta globala topptider av en karta."
-		"tr"		"Haritadaki en iyi global süreyi göster."
-		"ua"		"Показати світовий топ проходжень курсу на мапі."
-		"it"		"Mostra la classifica globale di una mappa."
-		"es"		"Mostrar mejores tiempos globales del curso de un mapa."
-		"de"		"Globale Top-Zeiten der Strecken einer Map abrufen."
-		"ko"		"맵의 글로벌 상위 코스 기록을 확인합니다."
-		"lv"		"Saņemt globālos labākos trases laikus kartē."
-
-	}
-	"Command Description - kz_gmaptop"
-	{
-		"en"		"Retrieve global top course times of a map."
-		"chi"		"查询地图的全球排行榜前列."
-		"pl"		"Uzyskaj globalne najlepsze czasy kursów mapy."
-		"sv"		"Hämta globala topptider av en karta."
-		"tr"		"Haritadaki en iyi global süreyi göster."
-		"ua"		"Показати світовий топ проходжень курсу на мапі."
-		"it"		"Mostra la classifica globale di una mappa."
-		"es"		"Mostrar mejores tiempos globales del curso de un mapa."
-		"de"		"Globale Top-Zeiten der Strecken einer Map abrufen."
-		"ko"		"맵의 글로벌 상위 코스 기록을 확인합니다."
-		"lv"		"Saņemt globālos labākos trases laikus kartē."
-	}
-	"Command Description - kz_sctop"
+	"Command Description - surf_smaptop"
 	{
 		"en"		"Retrieve server top course times of a map."
 		"chi"		"查询地图的服务器排行榜前列."
@@ -1021,45 +845,7 @@
 		"ko"		"맵의 서버 상위 코스 기록을 확인합니다."
 		"lv"		"Saņemt servera labākos trases laikus kartē."
 	}
-	"Command Description - kz_scoursetop"
-	{
-		"en"		"Retrieve server top course times of a map."
-		"chi"		"查询地图的服务器排行榜前列."
-		"pl"		"Uzyskaj najlepsze czasy kursów serwera mapy."
-		"sv"		"Hämta server topptider av en karta."
-		"tr"		"Haritadaki en iyi sunucu süresini göster."
-		"ua"		"Показати топ сервера проходжень курсу на мапі."
-		"it"		"Mostra la classifica del server di una mappa."
-		"es"		"Mostrar mejores tiempos del servidor del curso de un mapa."
-		"de"		"Top-Zeiten der Strecken eines Servers für eine Map abrufen."
-		"ko"		"맵의 서버 상위 코스 기록을 확인합니다."
-		"lv"		"Saņemt servera labākos trases laikus kartē."
-	}
-	"Command Description - kz_smaptop"
-	{
-		"en"		"Retrieve server top course times of a map."
-		"chi"		"查询地图的服务器排行榜前列."
-		"pl"		"Uzyskaj najlepsze czasy kursów serwera mapy."
-		"sv"		"Hämta server topptider av en karta."
-		"tr"		"Haritadaki en iyi sunucu süresini göster."
-		"ua"		"Показати топ сервера проходжень курсу на мапі."
-		"it"		"Mostra la classifica del server di una mappa."
-		"es"		"Mostrar mejores tiempos del servidor del curso de un mapa."
-		"de"		"Top-Zeiten der Strecken eines Servers für eine Map abrufen."
-		"ko"		"맵의 서버 상위 코스 기록을 확인합니다."
-		"lv"		"Saņemt servera labākos trases laikus kartē."
-	}
-	"Command Description - kz_comparelevel"
-	{
-		"en"		"Set the maximum preferred level of run comparison."
-		"chi"		"设置比较记录时的最大首选级别."
-		"sv"		"Ställ in den högsta önskade nivån för run jämförelse."
-		"ua"		"Встановіть максимальний бажаний рівень порівняння проходжень."
-		"ko"		"기록 비교 시 선호하는 최대 비교 수준을 설정하는 기능입니다."
-		"es"		"Establecer el nivel máximo preferido de comparación de carreras."
-		"lv"		"iestatīt maksimālo vēlamo līmeni skrējienu salīdzināšanai."
-	}
-	"Command Description - kz_playercheck"
+	"Command Description - surf_playercheck"
 	{
 		"en"		"Check the status of the specified player (default to self)."
 		"chi"		"检查指定玩家的状态 (默认为自己)."
@@ -1070,7 +856,7 @@
 		"es"		"Comprobar el estado del jugador especificado (por defecto es uno mismo)."
 		"lv"		"Pārbaudīt norādītā spēlētāja statusu (pēc noklusējuma – sevi)."
 	}
-	"Command Description - kz_pc"
+	"Command Description - surf_pc"
 	{
 		"en"		"Check the status of the specified player (default to self)."
 		"chi"		"检查指定玩家的状态 (默认为自己)."
@@ -1081,7 +867,7 @@
 		"es"		"Comprobar el estado del jugador especificado (por defecto es uno mismo)."
 		"lv"		"Pārbaudīt norādītā spēlētāja statusu (pēc noklusējuma – sevi)."
 	}
-	"Command Description - kz_course"
+	"Command Description - surf_course"
 	{
 		"en"		"Display the current course and the list of all courses in the map."
 		"chi"		"显示当前关卡与当前地图的关卡列表."
@@ -1092,7 +878,7 @@
 		"es"		"Mostrar el recorrido actual y la lista de todos los recorridos en el mapa."
 		"lv"		"Parādīt pašreizējo trasi un visu karšu trašu sarakstu."
 	}
-	"Command Description - kz_spb"
+	"Command Description - surf_spb"
 	{
 		"en"		"Retrieve server personal best statistics."
 		"chi"		"获取服务器个人最佳数据."
@@ -1100,7 +886,7 @@
 		"sv"		"Hämta personlig bästa statistik på servern."
 		"lv"		"Saņemt servera personīgos labākos rezultātus."
 	}
-	"Command Description - kz_gpb"
+	"Command Description - surf_gpb"
 	{
 		"en"		"Retrieve global personal best statistics."
 		"chi"		"获取全球个人最佳数据."
@@ -1108,7 +894,7 @@
 		"sv"		"Hämta personlig bästa statistik globalt."
 		"lv"		"Saņemt globālos personīgos labākos rezultātus."
 	}
-	"Command Description - kz_globalcheck"
+	"Command Description - surf_globalcheck"
 	{
 		"en"		"Display the status of the GlobalAPI."
 		"chi"		"显示 全球API 的状态."
@@ -1116,7 +902,7 @@
 		"sv"		"Visa statusen av GlobalAPI."
 		"lv"		"Parādīt GlobalAPI statusu."
 	}
-	"Command Description - kz_gc"
+	"Command Description - surf_gc"
 	{
 		"en"		"Display the status of the GlobalAPI."
 		"chi"		"显示 全球API 的状态."
@@ -1124,64 +910,16 @@
 		"sv"		"Visa statusen av GlobalAPI."
 		"lv"		"Parādīt GlobalAPI statusu."
 	}
-	"Command Description - kz_beam"
-	{
-		"en"		"Set or toggle player beam type (off/ground/feet)."
-		"chi"		"设置或切换玩家的光束类型 (关闭/地面/脚下)."
-		"sv"		"Ställ in eller växla spelarens stråltyp (av/mark/fötter)."
-		"ua"		"Встановити або перемикнути тип променя руху (вимкнути/по землі/від ніг)."
-	}
-	"Command Description - kz_beamoffset"
-	{
-		"en"		"Set or get player beam offset."
-		"chi"		"设置或获取玩家光束的偏移值."
-		"sv"		"Ställ in eller hämta spelarens stråloffset."
-		"ua"		"Встановити або отримати значення зміщення променя руху."
-	}
-	"Command Description - kz_measure"
-	{
-		"en"		"Measure the distance between two points, or measure the block distance if two points are at the same place."
-		"chi"		"测量两个点之间的距离, 或当两个点相同时测量方块距离."
-		"sv"		"Mät avståndet mellan två punkter, eller mät blockavståndet om två punkter är på samma plats."
-		"ua"		"Виміряти відстань між двома точками або відстань між блоками, якщо дві точки знаходяться на одному рівні."
-	}
-	"Command Description - kz_measurestart"
-	{
-		"en"		"Set the start position of the measurement."
-		"chi"		"设置测量的起始位置."
-		"sv"		"Ställ in startpositionen för mätningen."
-		"ua"		"Встановити початкову позицію для вимірювання."
-	}
-	"Command Description - kz_measureend"
-	{
-		"en"		"Set the end position of the measurement and calculate the distance."
-		"chi"		"设置测量的结束位置并计算距离."
-		"sv"		"Ställ in mätningens slutposition och beräkna avståndet."
-		"ua"		"Встановити кінцеве положення для вимірювання та обчислити відстань."
-	}
-	"Command Description - kz_measureblock"
-	{
-		"en"		"Measure the block distance."
-		"chi"		"测量方块之间的距离."
-		"sv"		"Mät blockavståndet."
-		"ua"		"Виміряти відстань між блоками."
-	}
-	"Command Description - kz_timerstopsound"
+	"Command Description - surf_timerstopsound"
 	{
 		"en"		"Toggle the timer stop sound."
 		"chi"		"切换计时器停止音效."
 		"ua"		"Увімк./вимк. звук зупинки таймера."
 	}
-	"Command Description - kz_autohideweapon"
+	"Command Description - surf_autohideweapon"
 	{
 		"en"		"Toggle the automatic hiding of weapon viewmodel."
 		"chi"		"切换武器视图模型的自动隐藏."
 		"ua"		"Увімк./вимк. автоматичне приховування зброї."
-	}
-	"Command Description - kz_pistol"
-	{
-		"en"		"Change or remove the current pistol."
-		"chi"		"更改或移除当前手枪."
-		"ua"		"Змінити або видалити поточний пістолет."
 	}
 }

@@ -2,11 +2,11 @@
 {
 	"Spec Command Usage"
 	{
-		"en"		"{grey}Usage: {default}kz_spec <@me/name>{grey}."
-		"chi"		"{grey}用法: {default}kz_spec <@me/name>{grey}."
-		"ua"		"{grey}Використання: {default}kz_spec <@me/нікнейм>{grey}."
-		"sv"		"{grey}Användning: {default}kz_spec <@me/name>{grey}."
-		"ko"		"{grey}사용법: {default}kz_spec <@me/name>{grey}."
+		"en"		"{grey}Usage: {default}surf_spec <@me/name>{grey}."
+		"chi"		"{grey}用法: {default}surf_spec <@me/name>{grey}."
+		"ua"		"{grey}Використання: {default}surf_spec <@me/нікнейм>{grey}."
+		"sv"		"{grey}Användning: {default}surf_spec <@me/name>{grey}."
+		"ko"		"{grey}사용법: {default}surf_spec <@me/name>{grey}."
 	}
 	"Spectator List (None)"
 	{

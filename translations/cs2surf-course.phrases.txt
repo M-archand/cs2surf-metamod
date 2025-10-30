@@ -27,14 +27,14 @@
 	}
 	"Course List Header"
 	{
-		"en"		"List of available courses (use kz_r <course name> to teleport to course):"
-		"chi"		"关卡列表 (使用 kz_r <关卡名称> 传送到该关卡):"
-		"sv"		"Lista av möjliga banor (använd kz_r <banans namn> för att teleportera till banan):"
-		"ua"		"Список доступних курсів (використовуйте kz_r <назва курсу> для телепортації до курсу):"
-		"tr"		"Mevcut rotaların listesi için ( kz_r <course name> yazarak rotaya ışınlanabilirsin):"
-		"ko"		"사용 가능한 코스 목록 (코스로 텔레포트하려면 kz_r <코스 이름>을 사용하세요):"
-		"es"		"Lista de recorridos disponibles (usa kz_r <nombre del recorrido> para teleportarte a un recorrido):"
-		"fi"		"Valittavien ratojen lista (käytä kz_r <course name> teleporttaaksesi radalle): "
-		"lv"		"Pieejamo trašu saraksts (izmanto kz_r <trases nosaukums>, lai teleportētos uz trasi):"
+		"en"		"List of available courses (use surf_r <course name> to teleport to course):"
+		"chi"		"关卡列表 (使用 surf_r <关卡名称> 传送到该关卡):"
+		"sv"		"Lista av möjliga banor (använd surf_r <banans namn> för att teleportera till banan):"
+		"ua"		"Список доступних курсів (використовуйте surf_r <назва курсу> для телепортації до курсу):"
+		"tr"		"Mevcut rotaların listesi için ( surf_r <course name> yazarak rotaya ışınlanabilirsin):"
+		"ko"		"사용 가능한 코스 목록 (코스로 텔레포트하려면 surf_r <코스 이름>을 사용하세요):"
+		"es"		"Lista de recorridos disponibles (usa surf_r <nombre del recorrido> para teleportarte a un recorrido):"
+		"fi"		"Valittavien ratojen lista (käytä surf_r <course name> teleporttaaksesi radalle): "
+		"lv"		"Pieejamo trašu saraksts (izmanto surf_r <trases nosaukums>, lai teleportētos uz trasi):"
 	}
 }

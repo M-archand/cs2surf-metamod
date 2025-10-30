@@ -1,6 +1,6 @@
 "Tips"
 {
-	"Tip - kz_panel"
+	"Tip - surf_panel"
 	{
 		"en"	"{grey}Use {default}/panel {grey}to toggle the panel in the middle of your screen."
 		"chi"	"{grey}使用 {default}/panel {grey}可以切换屏幕中心面板的显示."
@@ -15,7 +15,7 @@
 		"ko"	"{grey}스크린 중앙의 패널을 전환하려면 {default}/panel{grey}을 사용하세요."
 		"lv"	"{grey}Izmanto {default}/panel {grey}, lai ieslēgtu/izslēgtu paneli ekrāna vidū."
 	}
-	"Tip - kz_hidelegs"
+	"Tip - surf_hidelegs"
 	{
 		"en"	"{grey}You can toggle your leg visibility by typing{default} /hidelegs{grey}."
 		"chi"	"{grey}你需要隐藏腿部吗？ 输入 {default}/hidelegs{grey} 切换显示或隐藏."
@@ -30,7 +30,7 @@
 		"ko"	"{grey}다리 표시 여부를 전환하려면 {default}/hidelegs{grey}를 입력하세요."
 		"lv"	"{grey}Tu vari izslēgt kāju redzamību, rakstot{default} /hidelegs{grey}."
 	}
-	"Tip - kz_hide"
+	"Tip - surf_hide"
 	{
 		"en"	"{grey}Don't want to see other players? Use {default}/hide{grey}."
 		"chi"	"{grey}不想看到其他玩家？ 输入 {default}/hide{grey} 切换显示或隐藏."
@@ -45,7 +45,7 @@
 		"ko"	"{grey}다른 플레이어를 보고 싶지 않으면 {default}/hide{grey}를 사용하세요."
 		"lv"	"{grey}Nevēlies redzēt citus spēlētājus? Izmanto {default}/hide{grey}."
 	}
-	"Tip - kz_hideweapon"
+	"Tip - surf_hideweapon"
 	{
 		"en"	"{grey}Type {default}/hideweapon {grey}to toggle your weapon visibility."
 		"chi"	"{grey}输入 {default}/hideweapon {grey}可以关掉枪械模型显示."

@@ -31,7 +31,6 @@
 		"ko"		"{yellow}{tp_count}{grey} TPs"
 		"lv"		"{yellow}{tp_count}{grey} TPs"
 	}
-	
 	"Personal Best Difference"
 	{
 		// Must have a space here!
@@ -50,26 +49,24 @@
 		"ko"		" ({color}{diff_text}{grey})"
 		"lv"		" ({color}{diff_text}{grey})"
 	}
-
 	"Beat Course Info - Basic"
 	{
 		// GameChaos finished "blocks2006" in 10:06.84 | VNL | PRO
-		"#format"	"player_name:s,course_name:s,time:s,mode_style_text:s,tp_count_text:s"
-		"en"		"{lime}{player_name} {grey}finished {default}{course_name}{grey} in {default}{time}{grey} | {mode_style_text} | {tp_count_text}"
-		"chi"		"{lime}{player_name} {grey}完成 {default}{course_name}{grey} 用时 {default}{time}{grey} | {mode_style_text} | {tp_count_text}"
-		"ru"		"{lime}{player_name} {grey}завершил {default}{course_name}{grey} за {default}{time}{grey} | {mode_style_text} | {tp_count_text}"
-		"fi"		"{lime}{player_name} {grey}läpäisi {default}{course_name}{grey} ajassa {default}{time}{grey} | {mode_style_text} | {tp_count_text}"
-		"sv"		"{lime}{player_name} {grey}klarade {default}{course_name}{grey} på {default}{time}{grey} | {mode_style_text} | {tp_count_text}"
-		"ua"		"{lime}{player_name} {grey}завершив {default}{course_name}{grey} за {default}{time}{grey} | {mode_style_text} | {tp_count_text}"
-		"tr"		"{lime}{player_name} {grey}bitirdi {default}{course_name}{grey} süre {default}{time}{grey} | {mode_style_text} | {tp_count_text}"
-		"it"		"{lime}{player_name} {grey}ha completato {default}{course_name}{grey} in {default}{time}{grey} | {mode_style_text} | {tp_count_text}"
-		"es"		"{lime}{player_name} {grey}finalizó {default}{course_name}{grey} en {default}{time}{grey} | {mode_style_text} | {tp_count_text}"
-		"de"		"{lime}{player_name} {grey}hat {default}{course_name}{grey} in {default}{time}{grey} beendet | {mode_style_text} | {tp_count_text}"
-		"ko"		"{lime}{player_name} {grey}님이 {default}{course_name}{grey} 코스를 {default}{time}{grey} 동안 완료했습니다 | {mode_style_text} | {tp_count_text}"
-		"lv"		"{lime}{player_name} {grey}pabeidza {default}{course_name}{grey} {default}{time}{grey} laikā | {mode_style_text} | {tp_count_text}"
+		"#format"	"player_name:s,course_name:s,time:s,mode_style_text:s"
+		"en"		"{lime}{player_name} {grey}finished {default}{course_name}{grey} in {default}{time}{grey} | {mode_style_text}"
+		"chi"		"{lime}{player_name} {grey}完成 {default}{course_name}{grey} 用时 {default}{time}{grey} | {mode_style_text}"
+		"ru"		"{lime}{player_name} {grey}завершил {default}{course_name}{grey} за {default}{time}{grey} | {mode_style_text}"
+		"fi"		"{lime}{player_name} {grey}läpäisi {default}{course_name}{grey} ajassa {default}{time}{grey} | {mode_style_text}"
+		"sv"		"{lime}{player_name} {grey}klarade {default}{course_name}{grey} på {default}{time}{grey} | {mode_style_text}"
+		"ua"		"{lime}{player_name} {grey}завершив {default}{course_name}{grey} за {default}{time}{grey} | {mode_style_text}"
+		"tr"		"{lime}{player_name} {grey}bitirdi {default}{course_name}{grey} süre {default}{time}{grey} | {mode_style_text}"
+		"it"		"{lime}{player_name} {grey}ha completato {default}{course_name}{grey} in {default}{time}{grey} | {mode_style_text}"
+		"es"		"{lime}{player_name} {grey}finalizó {default}{course_name}{grey} en {default}{time}{grey} | {mode_style_text}"
+		"de"		"{lime}{player_name} {grey}hat {default}{course_name}{grey} in {default}{time}{grey} beendet | {mode_style_text}"
+		"ko"		"{lime}{player_name} {grey}님이 {default}{course_name}{grey} 코스를 {default}{time}{grey} 동안 완료했습니다 | {mode_style_text}"
+		"lv"		"{lime}{player_name} {grey}pabeidza {default}{course_name}{grey} {default}{time}{grey} laikā | {mode_style_text}"
 	}
-	
-	"Beat Course Info - Local (TP)"
+	"Beat Course Info - Local"
 	{
 		// Server: #1/24 Overall (-1:00.00)
 		"#format"	"rank:d,max_rank:d,pb_diff_text:s"
@@ -86,25 +83,7 @@
 		"ko"		"{grey}서버 순위: #{default}{rank}{grey}/{default}{max_rank}{grey} {yellow}전체{grey}{pb_diff_text}"
 		"lv"		"{grey}Serveris: #{default}{rank}{grey}/{default}{max_rank}{grey} {yellow}Kopvērtējums{grey}{pb_diff_text}"
 	}
-	"Beat Course Info - Local (PRO)"
-	{
-		// Server: #1/24 Overall (-1:00.00) | #1/10 PRO (-2:00.00)
-		"#format"	"rank:d,max_rank:d,pb_diff_text:s,rank_pro:d,max_rank_pro:d,pb_diff_text_pro:s"
-		"en"		"{grey}Server: #{default}{rank}{grey}/{default}{max_rank}{grey} {yellow}Overall{grey}{pb_diff_text} | #{rank_pro}/{max_rank_pro} {blue}PRO{grey}{pb_diff_text_pro}"
-		"chi"		"{grey}服务器: #{default}{rank}{grey}/{default}{max_rank}{grey} {yellow}总体{grey}{pb_diff_text} | #{rank_pro}/{max_rank_pro} {blue}裸跳{grey}{pb_diff_text_pro}"
-		"ru"		"{grey}Сервер: #{default}{rank}{grey}/{default}{max_rank}{grey} {yellow}Среди всех{grey}{pb_diff_text} | #{rank_pro}/{max_rank_pro} {blue}PRO{grey}{pb_diff_text_pro}"
-		"fi"		"{grey}Palvelin: #{default}{rank}{grey}/{default}{max_rank}{grey} {yellow}Kokonaisuus{grey}{pb_diff_text} | #{rank_pro}/{max_rank_pro} {blue}PRO{grey}{pb_diff_text_pro}"
-		"sv"		"{grey}Server: #{default}{rank}{grey}/{default}{max_rank}{grey} {yellow}Total{grey}{pb_diff_text} | #{rank_pro}/{max_rank_pro} {blue}PRO{grey}{pb_diff_text_pro}"
-		"ua"		"{grey}Сервер: #{default}{rank}{grey}/{default}{max_rank}{grey} {yellow}Загальний{grey}{pb_diff_text} | #{rank_pro}/{max_rank_pro} {blue}PRO{grey}{pb_diff_text_pro}"
-		"tr"		"{grey}Sunucu: #{default}{rank}{grey}/{default}{max_rank}{grey} {yellow}Tümünde{grey}{pb_diff_text} | #{rank_pro}/{max_rank_pro} {blue}PRO{grey}{pb_diff_text_pro}"
-		"it"		"{grey}Server: #{default}{rank}{grey}/{default}{max_rank}{grey} {yellow}Complessivamente{grey}{pb_diff_text} | #{rank_pro}/{max_rank_pro} {blue}PRO{grey}{pb_diff_text_pro}"
-		"es"		"{grey}Servidor: #{default}{rank}{grey}/{default}{max_rank}{grey} {yellow}General{grey}{pb_diff_text} | #{rank_pro}/{max_rank_pro} {blue}PRO{grey}{pb_diff_text_pro}"
-		"de"		"{grey}Server: #{default}{rank}{grey}/{default}{max_rank}{grey} {yellow}Insgesamt{grey}{pb_diff_text} | #{rank_pro}/{max_rank_pro} {blue}PRO{grey}{pb_diff_text_pro}"
-		"ko"		"{grey}서버 순위: #{default}{rank}{grey}/{default}{max_rank}{grey} {yellow}전체{grey}{pb_diff_text} | #{rank_pro}/{max_rank_pro} {blue}PRO{grey}{pb_diff_text_pro}"
-		"lv"		"{grey}Serveris: #{default}{rank}{grey}/{default}{max_rank}{grey} {yellow}Kopvērtējums{grey}{pb_diff_text} | #{rank_pro}/{max_rank_pro} {blue}PRO{grey}{pb_diff_text_pro}"
-	}
-	
-	"Beat Course Info - Global (TP)"
+	"Beat Course Info - Global"
 	{
 		// Global: #1/24 Overall (-1:00.00)
 		"#format"	"rank:d,max_rank:d,pb_diff_text:s,rank_pro:d,max_rank_pro:d,pb_diff_text_pro:s"
@@ -120,24 +99,7 @@
 		"ko"		"{grey}글로벌 순위: #{default}{rank}{grey}/{default}{max_rank}{grey} {yellow}전체{grey}{pb_diff_text}"
 		"lv"		"{grey}Globāli: #{default}{rank}{grey}/{default}{max_rank}{grey} {yellow}Kopvērtējums{grey}{pb_diff_text}"
 	}
-	"Beat Course Info - Global (PRO)"
-	{
-		// Global: #1/24 Overall (-1:00.00) | #1/10 PRO (-2:00.00)
-		"#format"	"rank:d,max_rank:d,pb_diff_text:s,rank_pro:d,max_rank_pro:d,pb_diff_text_pro:s"
-		"en"		"{grey}Global: #{default}{rank}{grey}/{default}{max_rank}{grey} {yellow}Overall{grey}{pb_diff_text} | #{rank_pro}/{max_rank_pro} {blue}PRO{grey}{pb_diff_text_pro}"
-		"chi"		"{grey}全球: #{default}{rank}{grey}/{default}{max_rank}{grey} {yellow}总体{grey}{pb_diff_text} | #{rank_pro}/{max_rank_pro} {blue}裸跳{grey}{pb_diff_text_pro}"
-		"fi"		"{grey}Maailmassa: #{default}{rank}{grey}/{default}{max_rank}{grey} {yellow}Kokonaisuus{grey}{pb_diff_text} | #{rank_pro}/{max_rank_pro} {blue}PRO{grey}{pb_diff_text_pro}"
-		"sv"		"{grey}Global: #{default}{rank}{grey}/{default}{max_rank}{grey} {yellow}Total{grey}{pb_diff_text} | #{rank_pro}/{max_rank_pro} {blue}PRO{grey}{pb_diff_text_pro}"
-		"ua"		"{grey}Глобальний: #{default}{rank}{grey}/{default}{max_rank}{grey} {yellow}Загальний{grey}{pb_diff_text} | #{rank_pro}/{max_rank_pro} {blue}PRO{grey}{pb_diff_text_pro}"
-		"tr"		"{grey}Global: #{default}{rank}{grey}/{default}{max_rank}{grey} {yellow}Tümünde{grey}{pb_diff_text} | #{rank_pro}/{max_rank_pro} {blue}PRO{grey}{pb_diff_text_pro}"
-		"it"		"{grey}Global: #{default}{rank}{grey}/{default}{max_rank}{grey} {yellow}Complessivamente{grey}{pb_diff_text} | #{rank_pro}/{max_rank_pro} {blue}PRO{grey}{pb_diff_text_pro}"
-		"es"		"{grey}Global: #{default}{rank}{grey}/{default}{max_rank}{grey} {yellow}General{grey}{pb_diff_text} | #{rank_pro}/{max_rank_pro} {blue}PRO{grey}{pb_diff_text_pro}"
-		"de"		"{grey}Global: #{default}{rank}{grey}/{default}{max_rank}{grey} {yellow}Insgesamt{grey}{pb_diff_text} | #{rank_pro}/{max_rank_pro} {blue}PRO{grey}{pb_diff_text_pro}"
-		"ko"		"{grey}글로벌 순위: #{default}{rank}{grey}/{default}{max_rank}{grey} {yellow}전체{grey}{pb_diff_text} | #{rank_pro}/{max_rank_pro} {blue}PRO{grey}{pb_diff_text_pro}"
-		"lv"		"{grey}Globāli: #{default}{rank}{grey}/{default}{max_rank}{grey} {yellow}Kopvērtējums{grey}{pb_diff_text} | #{rank_pro}/{max_rank_pro} {blue}PRO{grey}{pb_diff_text_pro}"
-	}
-	
-	"Beat Course Info - Global Points (TP)"
+	"Beat Course Info - Global Points"
 	{
 		// Course Points: 2345 Overall (+512) | Player Rating: 34475
 		"#format"	"points:.0f,points_gained:.0f,player_rating:.0f"
@@ -146,16 +108,6 @@
 		"ua"		"{grey}Очки за курс: {purple}{points}{grey} {yellow}Загалом{grey} (+{purple}{points_gained}{grey}) | Рейтинг гравця: {purple}{player_rating}{grey}"
 		"sv"		"{grey}Ban Poäng: {purple}{points}{grey} {yellow}Allmän{grey} (+{purple}{points_gained}{grey}) | Spelar Gradering: {purple}{player_rating}{grey}"
 		"lv"		"{grey}Trases punkti: {purple}{points}{grey} {yellow}Kopvērtējums{grey} (+{purple}{points_gained}{grey}) | Spēlētāja reitings: {purple}{player_rating}{grey}"
-	}
-	"Beat Course Info - Global Points (PRO)"
-	{
-		// Course Points: 2345 Overall (+512) / 3345 PRO (+123) | Player Rating: 34475
-		"#format"	"points:.0f,points_gained:.0f,points_pro:.0f,points_gained_pro:.0f,player_rating:.0f"
-		"en"		"{grey}Course Points: {purple}{points}{grey} {yellow}Overall{grey} (+{purple}{points_gained}{grey}) / {purple}{points}{grey} {blue}PRO{grey} (+{purple}{points_gained}{grey}) | Player Rating: {purple}{player_rating}{grey}"
-		"chi"		"{grey}关卡得分: {purple}{points}{grey} {yellow}总体{grey} (+{purple}{points_gained}{grey}) / {purple}{points}{grey} {blue}裸跳{grey} (+{purple}{points_gained}{grey}) | 玩家 Rating: {purple}{player_rating}{grey}"
-		"ua"		"{grey}Очки за курс: {purple}{points}{grey} {yellow}Загалом{grey} (+{purple}{points_gained}{grey}) / {purple}{points}{grey} {blue}PRO{grey} (+{purple}{points_gained}{grey}) | Рейтинг гравця: {purple}{player_rating}{grey}"
-		"sv"		"{grey}Ban Poäng: {purple}{points}{grey} {yellow}Allmän{grey} (+{purple}{points_gained}{grey}) / {purple}{points}{grey} {blue}PRO{grey} (+{purple}{points_gained}{grey}) | Spelar Gradering: {purple}{player_rating}{grey}"
-		"lv"		"{grey}Trases punkti: {purple}{points}{grey} {yellow}Kopvērtējums{grey} (+{purple}{points_gained}{grey}) / {purple}{points_pro}{grey} {blue}PRO{grey} (+{purple}{points_gained_pro}{grey}) | Spēlētāja reitings: {purple}{player_rating}{grey}"
 	}
 	
 	"Can't Pause (Generic)"
@@ -326,63 +278,42 @@
 		"es"		"{darkred}No se encuentra una posición de inicio para el recorrido {default}{course_name}{darkred}!"
 		"lv"		"{darkred}Starta pozīcija netika atrasta trasei {default}{course_name}{darkred}!"
 	}
-	"No Jumpstat Area Found"
-	{
-		"en"		"{darkred}Jumpstat area not found on this map!"
-		"chi"		"{darkred}该地图没有LJ房间!"
-		"tr"		"{darkred}Bu haritada zıplama alanı bulunamadı!"
-		"sv"		"{darkred}Jumpstat-området hittades inte på kartan!"
-		"ua"		"{darkred}Не знайдено зону тренування стрибків на даній мапі!"
-		"ko"		"{darkred}이 맵에서 롱 점프 구역을 찾을 수 없습니다!"
-		"es"		"{darkred}¡No se encontró zona de saltos en este mapa!"
-		"lv"		"{darkred}Jumpstatu zona šajā kartē netika atrasta!"
-	}
-	"Turnbinds Disabled"
-	{
-		"en"		"{darkred}Turnbinds are disabled."
-		"ua"		"{darkred}Turnbinds команди вимкнено."
-		"chi"		"{darkred}旋转绑定已禁用."
-		"sv"		"{darkred}Turnbinds är inaktiverade."
-		"ko"		"{darkred}턴 바인딩이 비활성화되었습니다."
-		"es"		"{darkred}Binds de giros desactivados."
-		"lv"		"{darkred}Pagrieziena taustiņi ir atspējoti."
-	}
 	
 	// Split #1: 12:34.56 (+12.34) | SPB +12.12 | PRO SPB +23.45
 	"Course Split Reached"
 	{
-		"#format"	"number:d,time_text:s,diff_text:s,diff_text_pro:s"
-		"en"		"{grey}Split {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}{diff_text_pro}"
-		"chi"		"{grey}分割 {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}{diff_text_pro}"
-		"sv"		"{grey}Del {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}{diff_text_pro}"
-		"ua"		"{grey}Спліт {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}{diff_text_pro}"
-		"tr"		"{grey}Aralık {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}{diff_text_pro}"
-		"ko"		"{grey}분할 {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}{diff_text_pro}"
-		"es"		"{grey}Parte {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}{diff_text_pro}"
-		"lv"		"{grey}Sadalījums {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}{diff_text_pro}"
+		"#format"	"number:d,time_text:s,diff_text:s"
+		"en"		"{grey}Split {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}"
+		"chi"		"{grey}分割 {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}"
+		"sv"		"{grey}Del {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}"
+		"ua"		"{grey}Спліт {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}"
+		"tr"		"{grey}Aralık {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}"
+		"ko"		"{grey}분할 {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}"
+		"es"		"{grey}Parte {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}"
+		"lv"		"{grey}Sadalījums {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}"
 	}
 	"Course Checkpoint Reached"
 	{
-		"#format"	"number:d,time_text:s,diff_text:s,diff_text_pro:s"
-		"en"		"{grey}CP {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}{diff_text_pro}"
-		"chi"		"{grey}检查点 {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}{diff_text_pro}"
-		"sv"		"{grey}CP {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}{diff_text_pro}"
-		"ua"		"{grey}CP {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}{diff_text_pro}"
-		"ko"		"{grey}체크포인트 {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}{diff_text_pro}"
-		"es"		"{grey}CP {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}{diff_text_pro}"
-		"lv"		"{grey}KP {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}{diff_text_pro}"
+		"#format"	"number:d,time_text:s,diff_text:s"
+		"en"		"{grey}CP {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}"
+		"chi"		"{grey}检查点 {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}"
+		"sv"		"{grey}CP {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}"
+		"ua"		"{grey}CP {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}"
+		"ko"		"{grey}체크포인트 {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}"
+		"es"		"{grey}CP {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}"
+		"lv"		"{grey}KP {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}"
 	}
 	"Course Stage Reached"
 	{
-		"#format"	"number:d,time_text:s,diff_text:s,diff_text_pro:s"
-		"en"		"{grey}Stage {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}{diff_text_pro}"
-		"chi"		"{grey}阶段 {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}{diff_text_pro}"
-		"sv"		"{grey}Fas {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}{diff_text_pro}"
-		"ua"		"{grey}Стадія {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}{diff_text_pro}"
-		"tr"		"{grey}Aşama {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}{diff_text_pro}"
-		"ko"		"{grey}스테이지 {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}{diff_text_pro}"
-		"es"		"{grey}Etapa {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}{diff_text_pro}"
-		"lv"		"{grey}Posms {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}{diff_text_pro}"
+		"#format"	"number:d,time_text:s,diff_text:s"
+		"en"		"{grey}Stage {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}"
+		"chi"		"{grey}阶段 {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}"
+		"sv"		"{grey}Fas {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}"
+		"ua"		"{grey}Стадія {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}"
+		"tr"		"{grey}Aşama {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}"
+		"ko"		"{grey}스테이지 {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}"
+		"es"		"{grey}Etapa {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}"
+		"lv"		"{grey}Posms {default}#{number}{grey}: {lime}{time_text}{grey}{diff_text}"
 	}
 	
 	// The spaces are intentional.
@@ -425,46 +356,6 @@
 		"ua"		" | WR {diff_time}"
 		"es"		" | WR {diff_time}"
 		"lv"		" | WR {diff_time}"
-	}
-	"Server PB Diff (Pro)"
-	{
-		"#format"	"diff_time:s"
-		"en"		" | PRO SPB {diff_time}"
-		"chi"		" | 裸跳 SPB {diff_time}"
-		"sv"		" | PRO SPB {diff_time}"
-		"ua"		" | PRO SPB {diff_time}"
-		"es"		" | PRO SPB {diff_time}"
-		"lv"		" | PRO SPB {diff_time}"
-	}
-	"Global PB Diff (Pro)"
-	{
-		"#format"	"diff_time:s"
-		"en"		" | PRO GPB {diff_time}"
-		"chi"		" | 裸跳 GPB {diff_time}"
-		"sv"		" | PRO GPB {diff_time}"
-		"ua"		" | PRO GPB {diff_time}"
-		"es"		" | PRO GPB {diff_time}"
-		"lv"		" | PRO GPB {diff_time}"
-	}
-	"SR Diff (Pro)"
-	{
-		"#format"	"diff_time:s"
-		"en"		" | PRO SR {diff_time}"
-		"chi"		" | 裸跳 SR {diff_time}"
-		"sv"		" | PRO SR {diff_time}"
-		"ua"		" | PRO SR {diff_time}"
-		"es"		" | PRO SR {diff_time}"
-		"lv"		" | PRO SR {diff_time}"
-	}
-	"WR Diff (Pro)"
-	{
-		"#format"	"diff_time:s"
-		"en"		" | PRO WR {diff_time}"
-		"chi"		" | 裸跳 WR {diff_time}"
-		"sv"		" | PRO VR {diff_time}"
-		"ua"		" | PRO WR {diff_time}"
-		"es"		" | PRO WR {diff_time}"
-		"lv"		" | PRO WR {diff_time}"
 	}
 	
 	// You missed your best Overall time (01:23.45)
@@ -516,113 +407,17 @@
 		"es"		"{grey}Has fallado el tiempo récord global {yellow}General{grey} ({lightred}{time}{grey})."
 		"lv"		"{grey}Tu nepārspēji {yellow}Kopvērtējuma{grey} globālo rekorda laiku ({lightred}{time}{grey})."
 	}
-	"Missed Server PB (Pro)"
-	{
-		"#format"	"time:s"
-		"en"		"{grey}You missed your best server {blue}PRO{grey} time ({lightred}{time}{grey})."
-		"chi"		"{grey}你错过了你的最佳 {blue}裸跳{grey} 时长 ({lightred}{time}{grey})."
-		"sv"		"{grey}Du missade din bästa {blue}PRO{grey} tid ({lightred}{time}{grey})."
-		"ua"		"{grey}Ви пропустили свій найкращий {blue}PRO{grey} час ({lightred}{time}{grey})."
-		"tr"		"{grey}En iyi süreni kaçırdın {blue}PRO{grey}  ({lightred}{time}{grey})."
-		"ko"		"{grey}최고 기록인 {blue}PRO{grey} 시간을 놓쳤습니다 ({lightred}{time}{grey})."
-		"es"		"{grey}Has fallado tu mejor tiempo {blue}PRO{grey} ({lightred}{time}{grey})."
-		"lv"		"{grey}Tu nepārspēji savu labāko servera {blue}PRO{grey} laiku ({lightred}{time}{grey})."
-	}
-	"Missed Global PB (Pro)"
-	{
-		"#format"	"time:s"
-		"en"		"{grey}You missed your best global {blue}PRO{grey} time ({lightred}{time}{grey})."
-		"chi"		"{grey}你错过了你的全球最佳 {blue}裸跳{grey} 时长 ({lightred}{time}{grey})."
-		"sv"		"{grey}Du missade din globala bästa {blue}PRO{grey} tiden ({lightred}{time}{grey})."
-		"ua"		"{grey}Ви пропустили свій найкращий глобальний {blue}PRO{grey} час ({lightred}{time}{grey})."
-		"tr"		"{grey}En iyi küresel süreni kaçırdın {blue}PRO{grey} ({lightred}{time}{grey})."
-		"ko"		"{grey}글로벌 최고 기록인 {blue}PRO{grey} 시간을 놓쳤습니다 ({lightred}{time}{grey})."
-		"es"		"{grey}Has fallado tu mejor tiempo {blue}PRO{grey} ({lightred}{time}{grey})."
-		"lv"	        "{grey}Tu nepārspēji savu labāko globālo {blue}PRO{grey} laiku ({lightred}{time}{grey})."
-	}
-	"Missed SR (Pro)"
-	{
-		"#format"	"time:s"
-		"en"		"{grey}You missed the {blue}PRO{grey} server record time ({lightred}{time}{grey})."
-		"chi"		"{grey}你错过了 {blue}裸跳{grey} 服务器记录时长 ({lightred}{time}{grey})."
-		"sv"		"{grey}Du missade {blue}PRO{grey} server rekordtiden({lightred}{time}{grey})."
-		"ua"		"{grey}Ви пропустили {blue}PRO{grey} час рекорду сервера({lightred}{time}{grey})."
-		"tr"		"{grey}Sunucu rekorunu kaçırdın {blue}PRO{grey} ({lightred}{time}{grey})."
-		"ko"		"{grey}서버 최고 기록인 {blue}PRO{grey} 시간을 놓쳤습니다 ({lightred}{time}{grey})."
-		"es"		"{grey}Has fallado el tiempo récord {blue}PRO{grey} del servidor ({lightred}{time}{grey})."
-		"lv"		"{grey}Tu nepārspēji {blue}PRO{grey} servera rekorda laiku ({lightred}{time}{grey})."
-	}
-	"Missed WR (Pro)"
-	{
-		"#format"	"time:s"
-		"en"		"{grey}You missed the {blue}PRO{grey} global record time ({lightred}{time}{grey})."
-		"chi"		"{grey}你错过了 {blue}裸跳{grey} 全球记录时长 ({lightred}{time}{grey})."
-		"sv"		"{grey}Du missade {blue}PRO{grey} globala rekordtiden ({lightred}{time}{grey})."
-		"ua"		"{grey}Ви пропустили {blue}PRO{grey} час світового рекорду ({lightred}{time}{grey})."
-		"tr"		"{grey}Dünya rekorunu kaçırdın {blue}PRO{grey} ({lightred}{time}{grey})."
-		"ko"		"{grey}글로벌 최고 기록인 {blue}PRO{grey} 시간을 놓쳤습니다 ({lightred}{time}{grey})."
-		"es"		"{grey}Has fallado el tiempo récord {blue}PRO{grey} global ({lightred}{time}{grey})."
-	 	"lv"		"{grey}Tu nepārspēji {blue}PRO{grey} globālo rekorda laiku ({lightred}{time}{grey})."
-	}
-	"Missed Server PB (Overall+Pro)"
-	{
-		"#format"	"time:s"
-		"en"		"{grey}You missed your best server {yellow}Overall{grey}/{blue}PRO{grey} time ({lightred}{time}{grey})."
-		"chi"		"{grey}你错过了你的最佳 {yellow}总体{grey}/{blue}裸跳{grey} 时长 ({lightred}{time}{grey})."
-		"sv"		"{grey}Du missade din bästa {yellow}Allmänna{grey}/{blue}PRO{grey} tid ({lightred}{time}{grey})."
-		"ua"		"{grey}Ви пропустили свій найкращий {yellow}Загальний{grey}/{blue}PRO{grey} час ({lightred}{time}{grey})."
-		"tr"		"{grey}En iyi süreni kaçırdın {yellow}Overall{grey}/{blue}PRO{grey} ({lightred}{time}{grey})."
-		"ko"		"{grey}최고 기록인 {yellow}전체{grey}/{blue}PRO{grey} 시간을 놓쳤습니다 ({lightred}{time}{grey})."
-		"es"		"{grey}Has fallado tu mejor tiempo {yellow}General{grey}/{blue}PRO{grey} ({lightred}{time}{grey})."
-		"lv"		"{grey}Tu nepārspēji savu labāko servera {yellow}Kopvērtējuma{grey}/{blue}PRO{grey} laiku ({lightred}{time}{grey})."
-	}
-	"Missed Global PB (Overall+Pro)"
-	{
-		"#format"	"time:s"
-		"en"		"{grey}You missed your best global {yellow}Overall{grey}/{blue}PRO{grey} time ({lightred}{time}{grey})."
-		"chi"		"{grey}你错过了你的全球最佳 {yellow}总体{grey}/{blue}裸跳{grey} 时长 ({lightred}{time}{grey})."
-		"sv"		"{grey}Du missade din bästa globala {yellow}Allmänna{grey}/{blue}PRO{grey} tid ({lightred}{time}{grey})."
-		"ua"		"{grey}Ви пропустили свій найкращий глобальний {yellow}Загальний{grey}/{blue}PRO{grey} час ({lightred}{time}{grey})."
-		"tr"		"{grey}Küresel en iyi süreni kaçırdın {yellow}Overall{grey}/{blue}PRO{grey} ({lightred}{time}{grey})."
-		"ko"		"{grey}글로벌 최고 기록인 {yellow}전체{grey}/{blue}PRO{grey} 시간을 놓쳤습니다 ({lightred}{time}{grey})."
-		"es"		"{grey}Has fallado tu mejor tiempo global {yellow}General{grey}/{blue}PRO{grey} ({lightred}{time}{grey})."
-		"lv"		"{grey}Tu nepārspēji savu labāko globālo {yellow}Kopvērtējuma{grey}/{blue}PRO{grey} laiku ({lightred}{time}{grey})."
-	}
-	"Missed SR (Overall+Pro)"
-	{
-		"#format"	"time:s"
-		"en"		"{grey}You missed the {yellow}Overall{grey}/{blue}PRO{grey} server record time ({lightred}{time}{grey})."
-		"chi"		"{grey}你错过了 {yellow}总体{grey}/{blue}裸跳{grey} 服务器记录时长 ({lightred}{time}{grey})."
-		"sv"		"{grey}Du missade {yellow}Allmänna{grey}/{blue}PRO{grey} server rekordtid ({lightred}{time}{grey})."
-		"ua"		"{grey}Ви пропустили {yellow}Загальний{grey}/{blue}PRO{grey} час рекорду сервера ({lightred}{time}{grey})."
-		"tr"		"{grey}Sunucu rekor süresini kaçırdın {yellow}Overall{grey}/{blue}PRO{grey} ({lightred}{time}{grey})."
-		"ko"		"{grey}서버 최고 기록인 {yellow}전체{grey}/{blue}PRO{grey} 시간을 놓쳤습니다 ({lightred}{time}{grey})."
-		"es"		"{grey}Has fallado el tiempo récord {yellow}General{grey}/{blue}PRO{grey} del servidor ({lightred}{time}{grey})."
-		"lv"		"{grey}Tu nepārspēji {yellow}Kopvērtējuma{grey}/{blue}PRO{grey} servera rekorda laiku ({lightred}{time}{grey})."
-	}
-	"Missed WR (Overall+Pro)"
-	{
-		"#format"	"time:s"
-		"en"		"{grey}You missed the {yellow}Overall{grey}/{blue}PRO{grey} global record time ({lightred}{time}{grey})."
-		"chi"		"{grey}你错过了 {yellow}总体{grey}/{blue}裸跳{grey} 全球记录时长 ({lightred}{time}{grey})."
-		"sv"		"{grey}Du missade {yellow}Allmänna{grey}/{blue}PRO{grey} globala rekordtiden ({lightred}{time}{grey})."
-		"ua"		"{grey}Ви пропустили {yellow}Загальний{grey}/{blue}PRO{grey} час світового рекорду ({lightred}{time}{grey})."
-		"tr"		"{grey}Küresel rekoru kaçırdın {yellow}Overall{grey}/{blue}PRO{grey} ({lightred}{time}{grey})."
-		"ko"		"{grey}글로벌 최고 기록인 {yellow}전체{grey}/{blue}PRO{grey} 시간을 놓쳤습니다 ({lightred}{time}{grey})."
-		"es"		"{grey}Has fallado el tiempo récord {yellow}General{grey}/{blue}PRO{grey} global ({lightred}{time}{grey})."
-		"lv"		"{grey}Tu nepārspēji {yellow}Kopvērtējuma{grey}/{blue}PRO{grey} globālo rekorda laiku ({lightred}{time}{grey})."
-	}
 	
 	"Compare Command Usage"
 	{
-		"en"		"{grey}Usage: {default}kz_comparelevel <none/off/spb/pb/gpb/sr/wr>{grey}."
-		"chi"		"{grey}用法: {default}kz_comparelevel <none/off/spb/pb/gpb/sr/wr>{grey}."
-		"sv"		"{grey}Användning: {default}kz_comparelevel <none/off/spb/pb/gpb/sr/wr>{grey}."
-		"ua"		"{grey}Використання: {default}kz_comparelevel <none/off/spb/pb/gpb/sr/wr>{grey}."
-		"tr"		"{grey}Kullanım: {default}kz_comparelevel <none/off/spb/pb/gpb/sr/wr>{grey}."
-		"ko"		"{grey}사용법: {default}kz_comparelevel <none/off/spb/pb/gpb/sr/wr>{grey}."
-		"es"		"{grey}Usa: {default}kz_comparelevel <none/off/spb/pb/gpb/sr/wr>{grey}."
-		"lv"		"{grey}Pielietojums: {default}kz_comparelevel <none/off/spb/pb/gpb/sr/wr>{grey}."
+		"en"		"{grey}Usage: {default}surf_comparelevel <none/off/spb/pb/gpb/sr/wr>{grey}."
+		"chi"		"{grey}用法: {default}surf_comparelevel <none/off/spb/pb/gpb/sr/wr>{grey}."
+		"sv"		"{grey}Användning: {default}surf_comparelevel <none/off/spb/pb/gpb/sr/wr>{grey}."
+		"ua"		"{grey}Використання: {default}surf_comparelevel <none/off/spb/pb/gpb/sr/wr>{grey}."
+		"tr"		"{grey}Kullanım: {default}surf_comparelevel <none/off/spb/pb/gpb/sr/wr>{grey}."
+		"ko"		"{grey}사용법: {default}surf_comparelevel <none/off/spb/pb/gpb/sr/wr>{grey}."
+		"es"		"{grey}Usa: {default}surf_comparelevel <none/off/spb/pb/gpb/sr/wr>{grey}."
+		"lv"		"{grey}Pielietojums: {default}surf_comparelevel <none/off/spb/pb/gpb/sr/wr>{grey}."
 	}
 	"Compare Disabled"
 	{
