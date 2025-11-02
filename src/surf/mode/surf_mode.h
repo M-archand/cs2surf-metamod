@@ -3,8 +3,27 @@
 #include "surf/mappingapi/surf_mappingapi.h"
 #include "surf/global/api.h"
 #include "UtlStringMap.h"
+#include "cs_usercmd.pb.h"
+#include "utils/addresses.h"
+#include "utils/interfaces.h"
+#include "utils/gameconfig.h"
+#include "sdk/usercmd.h"
+#include "sdk/tracefilter.h"
+#include "sdk/entity/cbasetrigger.h"
 
 #define SURF_MODE_MANAGER_INTERFACE "SurfModeManagerInterface"
+
+// Rampbug fix related
+#define MAX_BUMPS                   4
+#define RAMP_PIERCE_DISTANCE        0.0625f
+#define RAMP_BUG_THRESHOLD          0.98f
+#define RAMP_BUG_VELOCITY_THRESHOLD 0.95f
+#define NEW_RAMP_THRESHOLD          0.95f
+
+#define DUCK_SPEED_NORMAL  8.0f
+#define DUCK_SPEED_MINIMUM 6.0234375f // Equal to if you just ducked/unducked for the first time in a while
+
+#define SPEED_NORMAL 260.0f
 
 enum SurfModeCvars
 {
@@ -49,150 +68,202 @@ class SurfModeService : public SurfBaseService
 {
 	using SurfBaseService::SurfBaseService;
 
+protected:
+	bool hasValidDesiredViewAngle {};
+	QAngle lastValidDesiredViewAngle;
+	f32 lastJumpReleaseTime {};
+	bool oldDuckPressed {};
+	bool oldJumpPressed {};
+	bool forcedUnduck {};
+	f32 postProcessMovementZSpeed {};
+
+	struct AngleHistory
+	{
+		f32 rate;
+		f32 when;
+		f32 duration;
+	};
+
+	CUtlVector<AngleHistory> angleHistory;
+	f32 leftPreRatio {};
+	f32 rightPreRatio {};
+	f32 bonusSpeed {};
+	f32 maxPre {};
+	f32 originalMaxSpeed {};
+	f32 tweakedMaxSpeed {};
+
+	bool didTPM {};
+	bool overrideTPM {};
+	Vector tpmVelocity = vec3_invalid;
+	Vector tpmOrigin = vec3_invalid;
+	Vector lastValidPlane = vec3_origin;
+
+	// Keep track of TryPlayerMove path for triggerfixing.
+	bool airMoving {};
+	CUtlVector<Vector> tpmTriggerFixOrigins;
+
 public:
 	virtual const char *GetModeName() = 0;
 	virtual const char *GetModeShortName() = 0;
 	virtual void Init() {};
 	virtual void Cleanup() {};
-
-	// Fixes
-	virtual bool EnableWaterFix()
-	{
-		return false;
-	}
-
 	virtual const CVValue_t *GetModeConVarValues() = 0;
 
+	// Fixes
+	bool EnableWaterFix()
+	{
+		return true;
+	}
+
 	// Movement hooks
-	virtual void OnPhysicsSimulate() {}
+	void OnPhysicsSimulate() {}
 
-	virtual void OnPhysicsSimulatePost() {}
+	void OnPhysicsSimulatePost() {}
 
-	virtual void OnProcessUsercmds(void *, int) {}
+	void OnProcessUsercmds(void *, int) {}
 
-	virtual void OnProcessUsercmdsPost(void *, int) {}
+	void OnProcessUsercmdsPost(void *, int) {}
 
-	virtual void OnSetupMove(PlayerCommand *) {}
+	void OnSetupMove(PlayerCommand *);
 
-	virtual void OnSetupMovePost(PlayerCommand *) {}
+	void OnSetupMovePost(PlayerCommand *) {}
 
-	virtual void OnProcessMovement() {}
+	void OnProcessMovement();
 
-	virtual void OnProcessMovementPost() {}
+	void OnProcessMovementPost();
 
-	virtual void OnPlayerMove() {}
+	void OnPlayerMove();
 
-	virtual void OnPlayerMovePost() {}
+	void OnPlayerMovePost() {}
 
-	virtual void OnCheckParameters() {}
+	void OnCheckParameters() {}
 
-	virtual void OnCheckParametersPost() {}
+	void OnCheckParametersPost() {}
 
-	virtual void OnCanMove() {}
+	void OnCanMove() {}
 
-	virtual void OnCanMovePost() {}
+	void OnCanMovePost() {}
 
-	virtual void OnFullWalkMove(bool &) {}
+	void OnFullWalkMove(bool &) {}
 
-	virtual void OnFullWalkMovePost(bool) {}
+	void OnFullWalkMovePost(bool) {}
 
-	virtual void OnMoveInit() {}
+	void OnMoveInit() {}
 
-	virtual void OnMoveInitPost() {}
+	void OnMoveInitPost() {}
 
-	virtual void OnCheckWater() {}
+	void OnCheckWater() {}
 
-	virtual void OnCheckWaterPost() {}
+	void OnCheckWaterPost() {}
 
-	virtual void OnWaterMove() {}
+	void OnWaterMove();
 
-	virtual void OnWaterMovePost() {}
+	void OnWaterMovePost();
 
-	virtual void OnCheckVelocity(const char *) {}
+	void OnCheckVelocity(const char *) {}
 
-	virtual void OnCheckVelocityPost(const char *) {}
+	void OnCheckVelocityPost(const char *) {}
 
-	virtual void OnDuck() {}
+	void OnDuck() {}
 
-	virtual void OnDuckPost() {}
+	void OnDuckPost();
 
 	// Make an exception for this as it is the only time where we need to change the return value.
-	virtual void OnCanUnduck() {}
+	void OnCanUnduck() {}
 
-	virtual void OnCanUnduckPost(bool &) {}
+	void OnCanUnduckPost(bool &) {}
 
-	virtual void OnLadderMove() {}
+	void OnLadderMove() {}
 
-	virtual void OnLadderMovePost() {}
+	void OnLadderMovePost() {}
 
-	virtual void OnCheckJumpButton() {}
+	void OnCheckJumpButton() {}
 
-	virtual void OnCheckJumpButtonPost() {}
+	void OnCheckJumpButtonPost() {}
 
-	virtual void OnJump() {}
+	void OnJump() {}
 
-	virtual void OnJumpPost() {}
+	void OnJumpPost() {}
 
-	virtual void OnAirMove() {}
+	void OnAirMove();
 
-	virtual void OnAirMovePost() {}
+	void OnAirMovePost();
 
-	virtual void OnFriction() {}
+	void OnFriction() {}
 
-	virtual void OnFrictionPost() {}
+	void OnFrictionPost() {}
 
-	virtual void OnWalkMove() {}
+	void OnWalkMove() {}
 
-	virtual void OnWalkMovePost() {}
+	void OnWalkMovePost() {}
 
-	virtual void OnTryPlayerMove(Vector *, trace_t *, bool *) {}
+	void OnTryPlayerMove(Vector *, trace_t *, bool *);
 
-	virtual void OnTryPlayerMovePost(Vector *, trace_t *, bool *) {}
+	void OnTryPlayerMovePost(Vector *, trace_t *, bool *);
 
-	virtual void OnCategorizePosition(bool) {}
+	void OnCategorizePosition(bool);
 
-	virtual void OnCategorizePositionPost(bool) {}
+	void OnCategorizePositionPost(bool) {}
 
-	virtual void OnFinishGravity() {}
+	void OnFinishGravity() {}
 
-	virtual void OnFinishGravityPost() {}
+	void OnFinishGravityPost() {}
 
-	virtual void OnCheckFalling() {}
+	void OnCheckFalling() {}
 
-	virtual void OnCheckFallingPost() {}
+	void OnCheckFallingPost() {}
 
-	virtual void OnPostPlayerMove() {}
+	void OnPostPlayerMove() {}
 
-	virtual void OnPostPlayerMovePost() {}
+	void OnPostPlayerMovePost() {}
 
-	virtual void OnPostThink() {}
+	void OnPostThink() {}
 
-	virtual void OnPostThinkPost() {}
+	void OnPostThinkPost() {}
 
 	// Movement events
-	virtual void OnStartTouchGround() {}
+	void OnStartTouchGround();
 
-	virtual void OnStopTouchGround() {}
+	void OnStopTouchGround();
 
-	virtual void OnChangeMoveType(MoveType_t oldMoveType) {}
+	void OnChangeMoveType(MoveType_t oldMoveType) {}
 
-	virtual bool OnTriggerStartTouch(CBaseTrigger *trigger)
-	{
-		return true;
-	}
+	bool OnTriggerStartTouch(CBaseTrigger *trigger);
 
-	virtual bool OnTriggerTouch(CBaseTrigger *trigger)
-	{
-		return true;
-	}
+	bool OnTriggerTouch(CBaseTrigger *trigger);
 
-	virtual bool OnTriggerEndTouch(CBaseTrigger *trigger)
-	{
-		return true;
-	}
+	bool OnTriggerEndTouch(CBaseTrigger *trigger);
 
 	// Other events
-	virtual void OnTeleport(const Vector *newPosition, const QAngle *newAngles, const Vector *newVelocity) {}
+	void OnTeleport(const Vector *newPosition, const QAngle *newAngles, const Vector *newVelocity);
+
+	void ClipVelocity(Vector &in, Vector &normal, Vector &out); 
+
+	bool IsValidMovementTrace(trace_t &tr, bbox_t bounds, CTraceFilterPlayerMovementCS *filter);
+
+	void InterpolateViewAngles();
+
+	void RestoreInterpolatedViewAngles();
+
+	void UpdateAngleHistory();
+
+	void CheckVelocityQuantization();
+
+	/*
+		Ported from DanZay's SimpleKZ:
+		Duck speed is reduced by the game upon ducking or unducking.
+		The goal here is to accept that duck speed is reduced, but
+		stop it from being reduced further when spamming duck.
+
+		This is done by enforcing a minimum duck speed equivalent to
+		the value as if the player only ducked once. When not in not
+		in the middle of ducking, duck speed is reset to its normal
+		value in effort to reduce the number of times the minimum
+		duck speed is enforced. This should reduce noticeable lag.
+	*/
+	void ReduceDuckSlowdown();
+
+	void SlopeFix();
 };
 
 typedef SurfModeService *(*ModeServiceFactory)(SurfPlayer *player);

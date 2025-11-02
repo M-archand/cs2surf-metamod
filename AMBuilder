@@ -113,6 +113,7 @@ def configure_main(sdk_target, sdk, cxx):
     os.path.join(builder.sourcePath, 'src', 'surf', 'language', 'surf_language.cpp'),
     os.path.join(builder.sourcePath, 'src', 'surf', 'mode', 'surf_mode_manager.cpp'),
     os.path.join(builder.sourcePath, 'src', 'surf', 'mode', 'surf_mode_64t.cpp'),
+		os.path.join(builder.sourcePath, 'src', 'surf', 'mode', 'surf_mode.cpp'),
     os.path.join(builder.sourcePath, 'src', 'surf', 'noclip', 'surf_noclip.cpp'),
     os.path.join(builder.sourcePath, 'src', 'surf', 'option', 'surf_option.cpp'),
     os.path.join(builder.sourcePath, 'src', 'surf', 'profile', 'surf_profile.cpp'),
@@ -178,46 +179,165 @@ def configure_main(sdk_target, sdk, cxx):
 
   return binary
 
-def configure_64t(sdk, cxx):
-  _64t_binary = MMSPlugin.HL2Library(builder, cxx, f"{MMSPlugin.metadata['name']}-mode-64t", sdk)
+def configure_85t(sdk, cxx):
+  _85t_binary = MMSPlugin.HL2Library(builder, cxx, f"{MMSPlugin.metadata['name']}-mode-85t", sdk)
 
-  if _64t_binary.compiler.family == 'gcc' or _64t_binary.compiler.family == 'clang':
-    _64t_binary.compiler.defines += ['_GLIBCXX_USE_CXX11_ABI=0']
+  if _85t_binary.compiler.family == 'gcc' or _85t_binary.compiler.family == 'clang':
+    _85t_binary.compiler.defines += ['_GLIBCXX_USE_CXX11_ABI=0']
 
-  if _64t_binary.compiler.family == 'clang':
-    _64t_binary.compiler.cxxflags += ['-Wno-register', '-frtti', '-Wno-invalid-offsetof', '-Wno-parentheses']
+  if _85t_binary.compiler.family == 'clang':
+    _85t_binary.compiler.cxxflags += ['-Wno-register', '-frtti', '-Wno-invalid-offsetof', '-Wno-parentheses']
 
-  _64t_binary.compiler.cxxincludes += [
+  _85t_binary.compiler.cxxincludes += [
       os.path.join(builder.sourcePath, 'src'),
       os.path.join(builder.sourcePath, 'hl2sdk-cs2'),
       os.path.join(builder.sourcePath, 'hl2sdk-cs2', 'public', 'entity2'),
       os.path.join(builder.sourcePath, 'hl2sdk-cs2', 'game', 'server'),
   ]
 
-  if _64t_binary.compiler.target.platform == 'linux':
-    _64t_binary.compiler.postlink += [
+  if _85t_binary.compiler.target.platform == 'linux':
+    _85t_binary.compiler.postlink += [
       os.path.join(sdk['path'], 'lib', 'linux64', 'mathlib.a'),
     ] 
-    _64t_binary.sources += [
+    _85t_binary.sources += [
       'src/utils/plat_linux.cpp'
       ]
-  elif _64t_binary.compiler.target.platform == 'windows':
-    _64t_binary.compiler.postlink += [
+  elif _85t_binary.compiler.target.platform == 'windows':
+    _85t_binary.compiler.postlink += [
       os.path.join(sdk['path'], 'lib', 'public', 'win64', 'mathlib.lib'),
     ]
-    _64t_binary.sources += [
+    _85t_binary.sources += [
       'src/utils/plat_win.cpp'
       ]
 
-  _64t_binary.sources += [
+  _85t_binary.sources += [
     os.path.join(sdk['path'], 'entity2', 'entityidentity.cpp'),
     os.path.join(sdk['path'], 'entity2', 'entitysystem.cpp'),
     os.path.join(builder.sourcePath, 'src', 'utils', 'schema.cpp'),
     os.path.join(builder.sourcePath, 'src', 'utils', 'gameconfig.cpp'),
-    os.path.join(builder.sourcePath, 'src', 'surf', 'mode', 'surf_mode_64t.cpp'),
+    os.path.join(builder.sourcePath, 'src', 'surf', 'mode', 'surf_mode_85t.cpp'),
   ]
-  return _64t_binary
+  return _85t_binary
   
+def configure_102t(sdk, cxx):
+  _102t_binary = MMSPlugin.HL2Library(builder, cxx, f"{MMSPlugin.metadata['name']}-mode-102t", sdk)
+
+  if _102t_binary.compiler.family == 'gcc' or _102t_binary.compiler.family == 'clang':
+    _102t_binary.compiler.defines += ['_GLIBCXX_USE_CXX11_ABI=0']
+
+  if _102t_binary.compiler.family == 'clang':
+    _102t_binary.compiler.cxxflags += ['-Wno-register', '-frtti', '-Wno-invalid-offsetof', '-Wno-parentheses']
+
+  _102t_binary.compiler.cxxincludes += [
+      os.path.join(builder.sourcePath, 'src'),
+      os.path.join(builder.sourcePath, 'hl2sdk-cs2'),
+      os.path.join(builder.sourcePath, 'hl2sdk-cs2', 'public', 'entity2'),
+      os.path.join(builder.sourcePath, 'hl2sdk-cs2', 'game', 'server'),
+  ]
+
+  if _102t_binary.compiler.target.platform == 'linux':
+    _102t_binary.compiler.postlink += [
+      os.path.join(sdk['path'], 'lib', 'linux64', 'mathlib.a'),
+    ] 
+    _102t_binary.sources += [
+      'src/utils/plat_linux.cpp'
+      ]
+  elif _102t_binary.compiler.target.platform == 'windows':
+    _102t_binary.compiler.postlink += [
+      os.path.join(sdk['path'], 'lib', 'public', 'win64', 'mathlib.lib'),
+    ]
+    _102t_binary.sources += [
+      'src/utils/plat_win.cpp'
+      ]
+
+  _102t_binary.sources += [
+    os.path.join(sdk['path'], 'entity2', 'entityidentity.cpp'),
+    os.path.join(sdk['path'], 'entity2', 'entitysystem.cpp'),
+    os.path.join(builder.sourcePath, 'src', 'utils', 'schema.cpp'),
+    os.path.join(builder.sourcePath, 'src', 'utils', 'gameconfig.cpp'),
+    os.path.join(builder.sourcePath, 'src', 'surf', 'mode', 'surf_mode_102t.cpp'),
+  ]
+  return _102t_binary
+
+def configure_128t(sdk, cxx):
+  _128t_binary = MMSPlugin.HL2Library(builder, cxx, f"{MMSPlugin.metadata['name']}-mode-128t", sdk)
+
+  if _128t_binary.compiler.family == 'gcc' or _128t_binary.compiler.family == 'clang':
+    _128t_binary.compiler.defines += ['_GLIBCXX_USE_CXX11_ABI=0']
+
+  if _128t_binary.compiler.family == 'clang':
+    _128t_binary.compiler.cxxflags += ['-Wno-register', '-frtti', '-Wno-invalid-offsetof', '-Wno-parentheses']
+
+  _128t_binary.compiler.cxxincludes += [
+      os.path.join(builder.sourcePath, 'src'),
+      os.path.join(builder.sourcePath, 'hl2sdk-cs2'),
+      os.path.join(builder.sourcePath, 'hl2sdk-cs2', 'public', 'entity2'),
+      os.path.join(builder.sourcePath, 'hl2sdk-cs2', 'game', 'server'),
+  ]
+
+  if _128t_binary.compiler.target.platform == 'linux':
+    _128t_binary.compiler.postlink += [
+      os.path.join(sdk['path'], 'lib', 'linux64', 'mathlib.a'),
+    ] 
+    _128t_binary.sources += [
+      'src/utils/plat_linux.cpp'
+      ]
+  elif _128t_binary.compiler.target.platform == 'windows':
+    _128t_binary.compiler.postlink += [
+      os.path.join(sdk['path'], 'lib', 'public', 'win64', 'mathlib.lib'),
+    ]
+    _128t_binary.sources += [
+      'src/utils/plat_win.cpp'
+      ]
+
+  _128t_binary.sources += [
+    os.path.join(sdk['path'], 'entity2', 'entityidentity.cpp'),
+    os.path.join(sdk['path'], 'entity2', 'entitysystem.cpp'),
+    os.path.join(builder.sourcePath, 'src', 'utils', 'schema.cpp'),
+    os.path.join(builder.sourcePath, 'src', 'utils', 'gameconfig.cpp'),
+    os.path.join(builder.sourcePath, 'src', 'surf', 'mode', 'surf_mode_128t.cpp'),
+  ]
+  return _128t_binary
+
+def configure_css(sdk, cxx):
+  css_binary = MMSPlugin.HL2Library(builder, cxx, f"{MMSPlugin.metadata['name']}-mode-css", sdk)
+
+  if css_binary.compiler.family == 'gcc' or css_binary.compiler.family == 'clang':
+    css_binary.compiler.defines += ['_GLIBCXX_USE_CXX11_ABI=0']
+
+  if css_binary.compiler.family == 'clang':
+    css_binary.compiler.cxxflags += ['-Wno-register', '-frtti', '-Wno-invalid-offsetof', '-Wno-parentheses']
+
+  css_binary.compiler.cxxincludes += [
+      os.path.join(builder.sourcePath, 'src'),
+      os.path.join(builder.sourcePath, 'hl2sdk-cs2'),
+      os.path.join(builder.sourcePath, 'hl2sdk-cs2', 'public', 'entity2'),
+      os.path.join(builder.sourcePath, 'hl2sdk-cs2', 'game', 'server'),
+  ]
+
+  if css_binary.compiler.target.platform == 'linux':
+    css_binary.compiler.postlink += [
+      os.path.join(sdk['path'], 'lib', 'linux64', 'mathlib.a'),
+    ] 
+    css_binary.sources += [
+      'src/utils/plat_linux.cpp'
+      ]
+  elif css_binary.compiler.target.platform == 'windows':
+    css_binary.compiler.postlink += [
+      os.path.join(sdk['path'], 'lib', 'public', 'win64', 'mathlib.lib'),
+    ]
+    css_binary.sources += [
+      'src/utils/plat_win.cpp'
+      ]
+
+  css_binary.sources += [
+    os.path.join(sdk['path'], 'entity2', 'entityidentity.cpp'),
+    os.path.join(sdk['path'], 'entity2', 'entitysystem.cpp'),
+    os.path.join(builder.sourcePath, 'src', 'utils', 'schema.cpp'),
+    os.path.join(builder.sourcePath, 'src', 'utils', 'gameconfig.cpp'),
+    os.path.join(builder.sourcePath, 'src', 'surf', 'mode', 'surf_mode_source.cpp'),
+  ]
+  return css_binary
 
 def configure_lg(sdk, cxx):
   lg_binary = MMSPlugin.HL2Library(builder, cxx, f"{MMSPlugin.metadata['name']}-style-lowgrav", sdk)
@@ -267,30 +387,49 @@ cxx = MMSPlugin.sdk_target.cxx
 # Main binary
 binary = configure_main(sdk_target, sdk, cxx)
 # Mode binaries
-#_64t_binary = configure_64t(sdk, cxx)
+_85t_binary = configure_85t(sdk, cxx)
+_102t_binary = configure_102t(sdk, cxx)
+_128t_binary = configure_128t(sdk, cxx)
+css_binary = configure_css(sdk, cxx)
 # Style binaries
 lg_binary = configure_lg(sdk, cxx)
 
 protoc_builder = get_proto_builder(builder, sdk_target, sdk)
 
 binary.custom = [protoc_builder]
-#_64t_binary.custom = [protoc_builder]
+_85t_binary.custom = [protoc_builder]
+_102t_binary.custom = [protoc_builder]
+_128t_binary.custom = [protoc_builder]
+css_binary.custom = [protoc_builder]
 lg_binary.custom = [protoc_builder]
 
 # We have to split nodes here because they will be put into different folders.
+# Main
 nodes = builder.Add(binary)
-#mode_nodes = builder.Add(_64t_binary)
+
+# Modes
+mode_nodes = [
+  builder.Add(_85t_binary),
+  builder.Add(_102t_binary),
+  builder.Add(_128t_binary),
+  builder.Add(css_binary)
+]
+
+# Styles
 style_nodes = builder.Add(lg_binary)
 
 # If we are generating a VS project, make sure to add the modes in, and the build folder for linter.
 if builder.options.generator == 'vs':
-  # binary.sources += _64t_binary.sources
+  binary.sources += _85t_binary.sources
+  binary.sources += _102t_binary.sources
+  binary.sources += _128t_binary.sources
+  binary.sources += css_binary.sources
   binary.sources += lg_binary.sources
   binary.compiler.cxxincludes += [os.path.join(builder.buildPath, MMSPlugin.plugin_name, f'{binary.compiler.target.platform}-{cxx.target.arch}')]
 
 
 MMSPlugin.binaries += [nodes]
-#MMSPlugin.mode_binaries += [mode_nodes]
+MMSPlugin.mode_binaries += mode_nodes
 MMSPlugin.style_binaries += [style_nodes]
 
 # vim: filetype=python expandtab shiftwidth=2 tabstop=8 textwidth=99

@@ -391,6 +391,22 @@ SurfModeManager::ModePluginInfo Surf::mode::GetModeInfo(Surf::API::Mode mode)
 		{
 			return Surf::mode::GetModeInfo("64tick");
 		}
+		case Surf::API::Mode::_85tick:
+		{
+			return Surf::mode::GetModeInfo("85tick");
+		}
+		case Surf::API::Mode::_102tick:
+		{
+			return Surf::mode::GetModeInfo("102tick");
+		}
+		case Surf::API::Mode::_128tick:
+		{
+			return Surf::mode::GetModeInfo("128tick");
+		}
+		case Surf::API::Mode::Source:
+		{
+			return Surf::mode::GetModeInfo("source");
+		}
 	}
 	return SurfModeManager::ModePluginInfo();
 }

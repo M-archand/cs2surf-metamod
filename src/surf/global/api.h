@@ -14,6 +14,10 @@ namespace Surf::API
 	enum class Mode : u8
 	{
 		_64tick = 1,
+		_85tick = 2,
+		_102tick = 3,
+		_128tick = 4,
+		Source = 5,
 	};
 
 	bool DecodeModeString(std::string_view modeString, Mode &mode);
