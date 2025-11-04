@@ -225,6 +225,7 @@ void SurfTriggerService::OnMappingApiTriggerStartTouchPost(TriggerTouchTracker t
 		break;
 
 		case SURFTRIGGER_ZONE_START:
+		case SURFTRIGGER_ZONE_BONUS_START:
 		{
 			this->player->checkpointService->ResetCheckpoints();
 			this->player->timerService->StartZoneStartTouch(course);
@@ -232,6 +233,7 @@ void SurfTriggerService::OnMappingApiTriggerStartTouchPost(TriggerTouchTracker t
 		break;
 
 		case SURFTRIGGER_ZONE_END:
+		case SURFTRIGGER_ZONE_BONUS_END:
 		{
 			this->player->timerService->TimerEnd(course);
 		}
@@ -338,6 +340,7 @@ void SurfTriggerService::OnMappingApiTriggerEndTouchPost(TriggerTouchTracker tra
 		break;
 
 		case SURFTRIGGER_ZONE_START:
+		case SURFTRIGGER_ZONE_BONUS_START:
 		{
 			this->player->checkpointService->ResetCheckpoints();
 			this->player->timerService->StartZoneEndTouch(course);

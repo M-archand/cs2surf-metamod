@@ -115,23 +115,40 @@
 		"ko"		"{time}{stop_text}{pause_text}"
 		"lv"		"{time}{stop_text}{pause_text}"
 	}
+	"HUD - Stage Text"
+	{
+		// Stage X
+		"#format"	"stage:s"
+		"en"		"Stage {stage}"
+		"chi"		"{stage}"
+		"pl"		"{stage}"
+		"fi"		"{stage}"
+		"sv"		"{stage}"
+		"ua"		"{stage}"
+		"tr"		"{stage}"
+		"it"		"{stage}"
+		"es"		"{stage}"
+		"de"		"{stage}"
+		"ko"		"{stage}"
+		"lv"		"{stage}"
+	}
 	"HUD - Center Text"
 	{
-		// CP: 4/4, TPs: 12
+		// Stage X
 		// 01:23:45 (STOPPED) (PAUSED)
-		"#format"	"key_text:s,timer_text:s,speed_text:s"
-		"en"		"{timer_text}"
-		"chi"		"{timer_text}"
-		"pl"		"{timer_text}"
-		"fi"		"{timer_text}"
-		"sv"		"{timer_text}"
-		"ua"		"{timer_text}"
-		"tr"		"{timer_text}"
-		"it"		"{timer_text}"
-		"es"		"{timer_text}"
-		"de"		"{timer_text}"
-		"ko"		"{timer_text}"
-		"lv"		"{timer_text}"
+		"#format"	"key_text:s,stage_text:s,timer_text:s,speed_text:s"
+		"en"		"{stage_text}\n{timer_text}"
+		"chi"		"{stage_text}\n{timer_text}"
+		"pl"		"{stage_text}\n{timer_text}"
+		"fi"		"{stage_text}\n{timer_text}"
+		"sv"		"{stage_text}\n{timer_text}"
+		"ua"		"{stage_text}\n{timer_text}"
+		"tr"		"{stage_text}\n{timer_text}"
+		"it"		"{stage_text}\n{timer_text}"
+		"es"		"{stage_text}\n{timer_text}"
+		"de"		"{stage_text}\n{timer_text}"
+		"ko"		"{stage_text}\n{timer_text}"
+		"lv"		"{stage_text}\n{timer_text}"
 	}
 	// This text is actually "more" center.
 	"HUD - Alert Text"
@@ -155,7 +172,7 @@
 	{
 		// Speed: 234 (200)
 		// Keys: A W S D C J
-		"#format"	"key_text:s,timer_text:s,speed_text:s"
+		"#format"	"key_text:s,stage_text:s,timer_text:s,speed_text:s"
 		"en"		"{speed_text}<br>{key_text}"
 		"chi"		"{speed_text}<br>{key_text}"
 		"pl"		"{speed_text}<br>{key_text}"

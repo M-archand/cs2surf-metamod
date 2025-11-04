@@ -15,13 +15,13 @@ void SurfZoneBeamService::Init()
 
 void SurfZoneBeamService::AddZone(SurfTrigger *trigger)
 {
-	if (trigger->type == SURFTRIGGER_ZONE_START)
+	if (trigger->type == SURFTRIGGER_ZONE_START || trigger->type == SURFTRIGGER_ZONE_BONUS_START)
 	{
 		SurfZoneBeamSet beamSet;
 		CreateZoneOutlineBeams(trigger, beamSet, Color(0, 255, 0, 255));
 		startZoneBeams.AddToHead(beamSet);
 	}
-	else if (trigger->type == SURFTRIGGER_ZONE_END)
+	else if (trigger->type == SURFTRIGGER_ZONE_END || trigger->type == SURFTRIGGER_ZONE_BONUS_END)
 	{
 		SurfZoneBeamSet beamSet;
 		CreateZoneOutlineBeams(trigger, beamSet, Color(255, 0, 0, 255));

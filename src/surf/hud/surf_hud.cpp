@@ -73,6 +73,18 @@ std::string SurfHUDService::GetKeyText(const char *language)
 	// clang-format on
 }
 
+std::string SurfHUDService::GetStageText(const char *language)
+{
+	// clang-format off
+
+	int stage = this->player->timerService->GetStage();
+	return stage > 0 
+		? SurfLanguageService::PrepareMessageWithLang(language, "HUD - Stage Text", stage)
+		: "";
+
+	// clang-format on
+}
+
 std::string SurfHUDService::GetTimerText(const char *language)
 {
 	if (this->player->timerService->GetTimerRunning() || this->ShouldShowTimerAfterStop())
@@ -108,22 +120,37 @@ void SurfHUDService::DrawPanels(SurfPlayer *player, SurfPlayer *target)
 	std::string keyText = player->hudService->GetKeyText(language);
 	std::string timerText = player->hudService->GetTimerText(language);
 	std::string speedText = player->hudService->GetSpeedText(language);
+	std::string stageText = player->hudService->GetStageText(language);
 
 	// clang-format off
 	std::string centerText = SurfLanguageService::PrepareMessageWithLang(language, "HUD - Center Text", 
-		keyText.c_str(), timerText.c_str(), speedText.c_str());
+		keyText.c_str(), stageText.c_str(), timerText.c_str(), speedText.c_str());
 	std::string alertText = SurfLanguageService::PrepareMessageWithLang(language, "HUD - Alert Text", 
-		keyText.c_str(), timerText.c_str(), speedText.c_str());
+		keyText.c_str(), stageText.c_str(), timerText.c_str(), speedText.c_str());
 	std::string htmlText = SurfLanguageService::PrepareMessageWithLang(language, "HUD - Html Center Text",
-		keyText.c_str(), timerText.c_str(), speedText.c_str());
+		keyText.c_str(), stageText.c_str(), timerText.c_str(), speedText.c_str());
 
 	// clang-format on
 
-	centerText = centerText.substr(0, centerText.find_last_not_of('\n') + 1);
-	alertText = alertText.substr(0, alertText.find_last_not_of('\n') + 1);
-	htmlText = htmlText.substr(0, htmlText.find_last_not_of('\n') + 1);
+	auto trimNewlines = [](std::string &str)
+	{
+		// Remove leading newlines
+		size_t start = str.find_first_not_of('\n');
+		if (start == std::string::npos)
+		{
+			str.clear();
+			return;
+		}
+		// Remove trailing newlines
+		size_t end = str.find_last_not_of('\n');
+		str = str.substr(start, end - start + 1);
+	};
 
-	// Remove trailing newlines just in case a line is empty.
+	trimNewlines(centerText);
+	trimNewlines(alertText);
+	trimNewlines(htmlText);
+
+	// Remove leading & trailing newlines just in case a line is empty.
 	if (!centerText.empty())
 	{
 		target->PrintCentre(false, false, centerText.c_str());

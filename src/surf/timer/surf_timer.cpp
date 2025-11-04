@@ -329,6 +329,9 @@ bool SurfTimerService::TimerStop(bool playSound)
 		eventListeners[i]->OnTimerStopped(this->player, this->currentCourseGUID);
 	}
 
+	// Reset current stage immediately to remove HUD element
+	this->currentStage = 0;
+
 	return true;
 }
 
@@ -1419,7 +1422,8 @@ void SurfTimerService::OnPlayerPreferencesLoaded()
 
 void SurfDatabaseServiceEventListener_Timer::OnMapSetup()
 {
-	Surf::course::SetupLocalCourses();
+	// TODO: find a better way to do this, we now call SetupLocalCourses after all trigger_multiple spawns
+	// Surf::course::SetupLocalCourses();
 	SurfTimerService::UpdateLocalRecordCache();
 }
 

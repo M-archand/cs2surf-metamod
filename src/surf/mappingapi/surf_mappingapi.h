@@ -36,6 +36,8 @@ enum SurfTriggerType
 	SURFTRIGGER_ZONE_SPLIT,
 	SURFTRIGGER_ZONE_CHECKPOINT,
 	SURFTRIGGER_ZONE_STAGE,
+	SURFTRIGGER_ZONE_BONUS_START,
+	SURFTRIGGER_ZONE_BONUS_END,
 
 	SURFTRIGGER_TELEPORT,
 	SURFTRIGGER_MULTI_BHOP,
@@ -73,6 +75,7 @@ struct SurfMapZone
 {
 	char courseDescriptor[128];
 	i32 number; // not used on start/end zones
+	i32 bonus;
 };
 
 // SURFTRIGGER_TELEPORT/_MULTI_BHOP/_SINGLE_BHOP/_SEQUENTIAL_BHOP
@@ -214,9 +217,9 @@ namespace Surf::mapapi
 
 	inline bool IsTimerTrigger(SurfTriggerType triggerType)
 	{
-		static_assert(SURFTRIGGER_ZONE_START == 5 && SURFTRIGGER_ZONE_STAGE == 9,
+		static_assert(SURFTRIGGER_ZONE_START == 5 && SURFTRIGGER_ZONE_BONUS_END == 11,
 					  "Don't forget to change this function when changing the SurfTriggerType enum!!!");
-		return triggerType >= SURFTRIGGER_ZONE_START && triggerType <= SURFTRIGGER_ZONE_STAGE;
+		return triggerType >= SURFTRIGGER_ZONE_START && triggerType <= SURFTRIGGER_ZONE_BONUS_END;
 	}
 
 	inline bool IsPushTrigger(SurfTriggerType triggerType)

@@ -40,4 +40,5 @@ private:
 	std::string GetSpeedText(const char *language = SURF_DEFAULT_LANGUAGE);
 	std::string GetKeyText(const char *language = SURF_DEFAULT_LANGUAGE);
 	std::string GetTimerText(const char *language = SURF_DEFAULT_LANGUAGE);
+	std::string GetStageText(const char *language = SURF_DEFAULT_LANGUAGE);
 };

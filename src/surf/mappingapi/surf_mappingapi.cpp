@@ -58,9 +58,9 @@ static_global struct
 
 static_global CTimer<> *g_errorTimer;
 static_global const char *g_errorPrefix = "{darkred} ERROR: ";
-static_global const char *g_triggerNames[] = {"Disabled",   "Modifier",   "Reset Checkpoints", "Single Bhop Reset", "Antibhop",
-											  "Start zone", "End zone",   "Split zone",        "Checkpoint zone",   "Stage zone",
-											  "Teleport",   "Multi bhop", "Single bhop",       "Sequential bhop"};
+static_global const char *g_triggerNames[] = {
+	"Disabled",       "Modifier",   "Reset Checkpoints", "Single Bhop Reset", "Antibhop", "Start zone", "End zone",    "Bonus start zone",
+	"Bonus end zone", "Split zone", "Checkpoint zone",   "Stage zone",        "Teleport", "Multi bhop", "Single bhop", "Sequential bhop"};
 
 static_function MappingInterface g_mappingInterface;
 
@@ -134,9 +134,9 @@ static_function bool Mapi_CreateCourse(i32 courseNumber = 1, const char *courseN
 			return false;
 		}
 	}
+	u32 guid = (u32)g_mappingApi.courseDescriptors.Count() + 1;
 
-	i32 index = g_mappingApi.courseDescriptors.AddToTail(
-		{hammerId, targetName, disableCheckpoints, (u32)g_mappingApi.courseDescriptors.Count() + 1, courseNumber, courseName});
+	i32 index = g_mappingApi.courseDescriptors.AddToTail({hammerId, targetName, disableCheckpoints, guid, courseNumber, courseName});
 	g_sortedCourses.Insert(&g_mappingApi.courseDescriptors[index]);
 	return true;
 }
@@ -225,6 +225,8 @@ static_function void Mapi_OnTriggerMultipleSpawn(const EntitySpawnInfo_t *info)
 
 		case SURFTRIGGER_ZONE_START:
 		case SURFTRIGGER_ZONE_END:
+		case SURFTRIGGER_ZONE_BONUS_START:
+		case SURFTRIGGER_ZONE_BONUS_END:
 		case SURFTRIGGER_ZONE_SPLIT:
 		case SURFTRIGGER_ZONE_CHECKPOINT:
 		case SURFTRIGGER_ZONE_STAGE:
@@ -356,6 +358,49 @@ static_function void Mapi_OnTriggerMultipleSpawn(const EntitySpawnInfo_t *info)
 						trigger.type = SURFTRIGGER_ZONE_STAGE;
 						trigger.zone.number = stageNum;
 					}
+				}
+
+				int bonusNum = 0;
+				int chars = 0;
+				char bonusDescriptor[128];
+				bool isBonusStart = false;
+				bool isBonusEnd = false;
+				CUtlString bonusName;
+
+				if (sscanf(nameStr, "b%d_start%n", &bonusNum, &chars) == 1 && nameStr[chars] == '\0')
+				{
+					bonusName.Format("B%d", bonusNum);
+
+					snprintf(bonusDescriptor, sizeof(bonusDescriptor), "B%d", bonusNum); // Safe C-string
+					Mapi_CreateCourse(bonusNum + 1, bonusName.Get(), g_mappingApi.courseDescriptors.Count() + 1, bonusDescriptor, false);
+
+					isBonusStart = true;
+				}
+				else if (sscanf(nameStr, "b%d_end%n", &bonusNum, &chars) == 1 && nameStr[chars] == '\0')
+				{
+					snprintf(bonusDescriptor, sizeof(bonusDescriptor), "B%d", bonusNum);
+					isBonusEnd = true;
+				}
+				else if (sscanf(nameStr, "bonus%d_start%n", &bonusNum, &chars) == 1 && nameStr[chars] == '\0')
+				{
+					bonusName.Format("B%d", bonusNum);
+
+					snprintf(bonusDescriptor, sizeof(bonusDescriptor), "B%d", bonusNum); // Safe C-string
+					Mapi_CreateCourse(bonusNum + 1, bonusName.Get(), g_mappingApi.courseDescriptors.Count() + 1, bonusDescriptor, false);
+
+					isBonusStart = true;
+				}
+				else if (sscanf(nameStr, "bonus%d_end%n", &bonusNum, &chars) == 1 && nameStr[chars] == '\0')
+				{
+					snprintf(bonusDescriptor, sizeof(bonusDescriptor), "B%d", bonusNum);
+					isBonusEnd = true;
+				}
+
+				if (isBonusStart || isBonusEnd)
+				{
+					snprintf(trigger.zone.courseDescriptor, sizeof(trigger.zone.courseDescriptor), "%s", bonusDescriptor);
+					trigger.type = isBonusStart ? SURFTRIGGER_ZONE_BONUS_START : SURFTRIGGER_ZONE_BONUS_END;
+					trigger.zone.bonus = bonusNum;
 				}
 			}
 			break;
@@ -649,6 +694,8 @@ void Surf::mapapi::OnRoundPreStart()
 
 void Surf::mapapi::OnRoundStart()
 {
+	Surf::course::SetupLocalCourses();
+
 	g_mappingApi.roundIsStarting = false;
 	FOR_EACH_VEC(g_mappingApi.courseDescriptors, courseInd)
 	{
@@ -695,6 +742,8 @@ void Surf::mapapi::OnRoundStart()
 			{
 				case SURFTRIGGER_ZONE_START:
 				case SURFTRIGGER_ZONE_END:
+				case SURFTRIGGER_ZONE_BONUS_START:
+				case SURFTRIGGER_ZONE_BONUS_END:
 				case SURFTRIGGER_ZONE_STAGE:
 				{
 					CBaseEntity *pEntity = reinterpret_cast<CBaseEntity *>(trigger->entity.Get());
@@ -775,7 +824,7 @@ void Surf::mapapi::OnRoundStart()
 void Surf::mapapi::CheckEndTimerTrigger(CBaseTrigger *trigger)
 {
 	SurfTrigger *surfTrigger = Mapi_FindSurfTrigger(trigger);
-	if (surfTrigger && surfTrigger->type == SURFTRIGGER_ZONE_END)
+	if (surfTrigger && (surfTrigger->type == SURFTRIGGER_ZONE_END || surfTrigger->type == SURFTRIGGER_ZONE_BONUS_END))
 	{
 		SurfCourseDescriptor *desc = Mapi_FindCourse(surfTrigger->zone.courseDescriptor);
 		if (!desc)
@@ -813,6 +862,8 @@ const SurfCourseDescriptor *Surf::mapapi::GetCourseDescriptorFromTrigger(const S
 	{
 		case SURFTRIGGER_ZONE_START:
 		case SURFTRIGGER_ZONE_END:
+		case SURFTRIGGER_ZONE_BONUS_START:
+		case SURFTRIGGER_ZONE_BONUS_END:
 		case SURFTRIGGER_ZONE_SPLIT:
 		case SURFTRIGGER_ZONE_CHECKPOINT:
 		case SURFTRIGGER_ZONE_STAGE:
