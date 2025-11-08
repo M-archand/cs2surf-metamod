@@ -565,16 +565,25 @@ static_function void Mapi_OnTriggerPushSpawn(const EntitySpawnInfo_t *info)
 	trigger.hammerId = hammerId;
 	trigger.rotation = pushDir;
 
-	trigger.push.pushConditions |= SurfMapPush::SURF_PUSH_START_TOUCH;
+	trigger.push.pushConditions |= ekv->GetBool("triggeronstarttouch") ? SurfMapPush::SURF_PUSH_START_TOUCH : SurfMapPush::SURF_PUSH_TOUCH;
 	trigger.push.pushConditions |= SurfMapPush::SURF_PUSH_LEGACY;
 	trigger.push.impulse[0] = 0.0f;
 	trigger.push.impulse[1] = 0.0f;
 	trigger.push.impulse[2] = 0.0f;
 	trigger.push.speed = speed;
 
-	trigger.push.setSpeed[0] = true;
-	trigger.push.setSpeed[1] = true;
-	trigger.push.setSpeed[2] = true;
+	CBaseEntity *baseEntity = static_cast<CBaseEntity *>(info->m_pEntity->m_pInstance);
+	if (baseEntity)
+	{
+		uint32 spawnflags = baseEntity->m_spawnflags;
+
+		// Once Only (set velocity rather than apply acceleration) : [128]
+		bool pushOnce = (spawnflags & 128) != 0;
+
+		trigger.push.setSpeed[0] = pushOnce ? true : false;
+		trigger.push.setSpeed[1] = pushOnce ? true : false;
+		trigger.push.setSpeed[2] = pushOnce ? true : false;
+	}
 
 	trigger.push.cancelOnTeleport = false;
 	trigger.push.cooldown = 0.1f;

@@ -403,6 +403,60 @@ SCMD(surf_restart, SCFL_TIMER | SCFL_MAP)
 		return MRES_SUPERCEDE;
 	}
 
+	// Try regular surf startzone destination
+	std::vector<std::pair<Vector, QAngle>> teleportDestinations;
+	EntityInstanceIter_t iter;
+	int destCount = 0;
+	for (CEntityInstance *pEnt = iter.First(); pEnt; pEnt = iter.Next())
+	{
+		if (V_strstr(pEnt->GetClassname(), "info_teleport_destination"))
+		{
+			CBaseEntity *pEntity = static_cast<CBaseEntity *>(pEnt);
+			const SurfTrigger *surfTrigger = Surf::mapapi::GetSurfDestination(pEntity);
+
+			if (surfTrigger)
+			{
+				teleportDestinations.push_back({surfTrigger->origin, surfTrigger->rotation});
+			}
+		}
+	}
+
+	EntityInstanceIter_t iter2;
+	for (CEntityInstance *pEnt = iter2.First(); pEnt; pEnt = iter2.Next())
+	{
+		if (V_strstr(pEnt->GetClassname(), "trigger_multiple"))
+		{
+			CBaseTrigger *pTrigger = static_cast<CBaseTrigger *>(pEnt);
+			const SurfTrigger *surfTrigger = Surf::mapapi::GetSurfTrigger(pTrigger);
+
+			if (!surfTrigger)
+			{
+				continue;
+			}
+
+			if (surfTrigger->type == SURFTRIGGER_ZONE_START)
+			{
+				Vector mins = surfTrigger->mins + surfTrigger->origin;
+				Vector maxs = surfTrigger->maxs + surfTrigger->origin;
+
+				for (const auto &[destPos, destAng] : teleportDestinations)
+				{
+					if (utils::IsVectorInBox(destPos, mins, maxs))
+					{
+						player->Teleport(&destPos, &destAng, &vec3_origin);
+						return MRES_SUPERCEDE;
+					}
+				}
+
+				Vector center = (mins + maxs) * 0.5f;
+				float zoneHeight = maxs.z - mins.z;
+				center.z = mins.z + (zoneHeight * 0.15f);
+				player->SetOrigin(center);
+				return MRES_SUPERCEDE;
+			}
+		}
+	}
+
 	// If we have no custom start position, we try to get the start position of the current course.
 	if (player->timerService->GetCourse())
 	{

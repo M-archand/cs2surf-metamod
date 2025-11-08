@@ -210,6 +210,8 @@ public:
 		return currentStage;
 	}
 
+	std::string GetStartSpeedText(const char *language);
+
 	static void FormatTime(f64 time, char *output, u32 length, bool precise = true);
 
 	static CUtlString FormatTime(f64 time, bool precise = true)

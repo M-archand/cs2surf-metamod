@@ -95,6 +95,7 @@ public:
 	SCHEMA_FIELD(CCollisionProperty *, m_pCollision)
 	SCHEMA_FIELD(CHandle<CBaseEntity>, m_hGroundEntity)
 	SCHEMA_FIELD(CHandle<CBaseEntity>, m_hOwnerEntity)
+	SCHEMA_FIELD(uint32, m_spawnflags)
 	SCHEMA_FIELD(uint32_t, m_fFlags)
 	SCHEMA_FIELD(float, m_flGravityScale)
 	SCHEMA_FIELD(float, m_flActualGravityScale)

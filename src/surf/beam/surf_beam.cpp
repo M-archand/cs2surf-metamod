@@ -38,13 +38,9 @@ SCMD(surf_beam, SCFL_MISC | SCFL_PREFERENCE)
 		{
 			newDesiredBeamType = SurfBeamService::BEAM_NONE;
 		}
-		else if (SURF_STREQI(args->Arg(1), "feet"))
+		else if (SURF_STREQI(args->Arg(1), "on"))
 		{
 			newDesiredBeamType = SurfBeamService::BEAM_FEET;
-		}
-		else if (SURF_STREQI(args->Arg(1), "ground"))
-		{
-			newDesiredBeamType = SurfBeamService::BEAM_GROUND;
 		}
 		else
 		{
@@ -63,11 +59,6 @@ SCMD(surf_beam, SCFL_MISC | SCFL_PREFERENCE)
 		case SurfBeamService::BEAM_FEET:
 		{
 			player->languageService->PrintChat(true, false, "Beam Changed (Feet)");
-			break;
-		}
-		case SurfBeamService::BEAM_GROUND:
-		{
-			player->languageService->PrintChat(true, false, "Beam Changed (Ground)");
 			break;
 		}
 	}
@@ -122,10 +113,9 @@ void SurfBeamService::Update()
 	}
 	else
 	{
-		if ((this->player->GetPlayerPawn()->m_fFlags() & FL_ONGROUND && this->player->GetMoveType() == MOVETYPE_WALK)
-			|| this->player->GetMoveType() == MOVETYPE_LADDER)
+		if (this->player->GetMoveType() != MOVETYPE_LADDER)
 		{
-			this->validBeam = g_pSurfUtils->GetServerGlobals()->curtime - this->player->landingTime >= 0.04f;
+			this->validBeam = true;
 		}
 
 		if (this->player->noclipService->JustNoclipped() || this->teleportedThisTick)
@@ -143,9 +133,7 @@ void SurfBeamService::UpdatePlayerBeam()
 
 	// clang-format off
 	shouldDraw &= this->target && this->target->GetPlayerPawn() && this->target->GetPlayerPawn()->IsAlive()
-	 	&& this->target->beamService->validBeam
-	 	&& this->target->takeoffTime > 0.0f
-	 	&& (!(this->target->GetPlayerPawn()->m_fFlags() & FL_ONGROUND) || g_pSurfUtils->GetServerGlobals()->curtime - this->target->landingTime < 0.04f);
+	 	&& this->target->beamService->validBeam;
 	// clang-format on
 	if (!shouldDraw)
 	{
@@ -163,10 +151,6 @@ void SurfBeamService::UpdatePlayerBeam()
 	}
 	Vector origin = this->target->moveDataPre.m_vecAbsOrigin;
 
-	if (this->desiredBeamType == SurfBeamService::BEAM_GROUND)
-	{
-		origin.z = this->target->takeoffOrigin.z;
-	}
 	CParticleSystem *beam = static_cast<CParticleSystem *>(this->playerBeam.Get());
 
 	if (!beam)

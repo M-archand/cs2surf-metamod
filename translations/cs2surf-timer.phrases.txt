@@ -516,4 +516,10 @@
 		"chi"		"{grey}你已禁用计时器停止音效."
 		"ua"		"{grey}Ви вимкнули звук зупинки таймера."
 	}
+
+	"Start Speed"
+	{
+		"#format"	"start_speed:.0f"
+		"en"		"{grey}Start speed: {lime}{start_speed}{grey}"
+	}
 }

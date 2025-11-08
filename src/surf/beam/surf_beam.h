@@ -22,7 +22,6 @@ public:
 	enum BeamType : u8
 	{
 		BEAM_NONE = 0,
-		BEAM_GROUND,
 		BEAM_FEET,
 		BEAM_COUNT
 	} desiredBeamType;

@@ -224,6 +224,11 @@ bool SurfTimerService::TimerStart(const SurfCourseDescriptor *courseDesc, bool p
 		this->player->languageService->PrintChat(true, false, "No Prime Warning");
 	}
 
+	const char *language = this->player->languageService->GetLanguage();
+	std::string startSpeedText = this->player->timerService->GetStartSpeedText(language);
+
+	this->player->languageService->PrintChat(true, true, startSpeedText.c_str());
+
 	FOR_EACH_VEC(eventListeners, i)
 	{
 		eventListeners[i]->OnTimerStartPost(this->player, courseDesc->guid);
@@ -1404,6 +1409,17 @@ void SurfTimerService::UpdateLocalPBCache()
 	};
 	SurfDatabaseService::QueryAllPBs(player->GetSteamId64(), g_pSurfUtils->GetCurrentMapName(), onQuerySuccess,
 									 SurfDatabaseService::OnGenericTxnFailure);
+}
+
+std::string SurfTimerService::GetStartSpeedText(const char *language)
+{
+	Vector velocity, baseVelocity;
+	this->player->GetVelocity(&velocity);
+	this->player->GetBaseVelocity(&baseVelocity);
+	velocity += baseVelocity;
+
+	float startSpeed = velocity.Length2D();
+	return SurfLanguageService::PrepareMessageWithLang(language, "Start Speed", startSpeed);
 }
 
 void SurfTimerService::Init()

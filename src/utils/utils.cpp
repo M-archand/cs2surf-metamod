@@ -3,6 +3,7 @@
 #include "common.h"
 #include "cs2surf.h"
 #include "addresses.h"
+#include "patches.h"
 #include "gameconfig.h"
 #include "utils.h"
 #include "convar.h"
@@ -86,6 +87,14 @@ bool utils::Initialize(ISmmAPI *ismm, char *error, size_t maxlen)
 		Warning("%s\n", error);
 		return false;
 	}
+
+	if (!InitPatches(g_pGameConfig))
+	{
+		snprintf(error, maxlen, "Failed to initialize patches.");
+		Warning("%s\n", error);
+		return false;
+	}
+
 	g_pSurfUtils = new SurfUtils(TracePlayerBBox, GetLegacyGameEventListener, SnapViewAngles, EmitSound, SwitchTeam, SetPawn, CreateEntityByName,
 								 DispatchSpawn, RemoveEntity, DebugDrawMesh);
 
