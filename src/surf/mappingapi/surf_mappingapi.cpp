@@ -58,9 +58,8 @@ static_global struct
 
 static_global CTimer<> *g_errorTimer;
 static_global const char *g_errorPrefix = "{darkred} ERROR: ";
-static_global const char *g_triggerNames[] = {
-	"Disabled",        "Modifier",   "Start zone", "End zone", "Bonus start zone", "Bonus end zone",
-	"Checkpoint zone", "Stage zone", "Teleport"};
+static_global const char *g_triggerNames[] = {"Disabled",       "Modifier",        "Start zone", "End zone", "Bonus start zone",
+											  "Bonus end zone", "Checkpoint zone", "Stage zone", "Teleport"};
 
 static_function MappingInterface g_mappingInterface;
 

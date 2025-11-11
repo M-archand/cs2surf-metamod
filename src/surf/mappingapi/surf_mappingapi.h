@@ -97,8 +97,8 @@ struct SurfMapPush
 struct SurfCourseDescriptor
 
 {
-	SurfCourseDescriptor(i32 hammerId = -1, const char *targetName = "", u32 guid = 0,
-						 i32 courseID = INVALID_COURSE_NUMBER, const char *courseName = "")
+	SurfCourseDescriptor(i32 hammerId = -1, const char *targetName = "", u32 guid = 0, i32 courseID = INVALID_COURSE_NUMBER,
+						 const char *courseName = "")
 		: hammerId(hammerId), guid(guid), id(courseID)
 	{
 		V_snprintf(entityTargetname, sizeof(entityTargetname), "%s", targetName);

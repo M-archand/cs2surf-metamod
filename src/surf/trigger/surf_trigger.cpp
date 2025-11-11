@@ -190,8 +190,6 @@ void SurfTriggerService::UpdateTriggerTouchList()
 			this->Touch(trigger);
 		}
 	}
-
-	this->UpdateModifiersInternal();
 }
 
 void SurfTriggerService::EndTouchAll()

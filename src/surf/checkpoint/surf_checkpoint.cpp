@@ -157,7 +157,7 @@ void SurfCheckpointService::DoTeleport(const Checkpoint cp)
 	{
 		return;
 	}
-	
+
 	Vector currentOrigin;
 	this->player->GetOrigin(&currentOrigin);
 

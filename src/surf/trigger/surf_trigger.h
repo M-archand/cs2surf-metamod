@@ -103,8 +103,6 @@ private:
 	bool TouchTeleportTrigger(TriggerTouchTracker tracker);
 	void TouchPushTrigger(TriggerTouchTracker tracker);
 
-	void UpdateModifiersInternal();
-
 	void ApplyJumpFactor(bool replicate = false);
 
 	CUtlVector<PushEvent> pushEvents;
