@@ -87,26 +87,31 @@ std::string SurfHUDService::GetStageText(const char *language)
 
 std::string SurfHUDService::GetTimerText(const char *language)
 {
-	if (this->player->timerService->GetTimerRunning() || this->ShouldShowTimerAfterStop())
-	{
-		char timeText[128];
+    char timeText[128] = "";
 
-		// clang-format off
+    if (this->player->timerService->GetTimerRunning() || this->ShouldShowTimerAfterStop())
+    {
+        // clang-format off
 
-		f64 time = this->player->timerService->GetTimerRunning()
-			? player->timerService->GetTime()
-			: this->currentTimeWhenTimerStopped;
+        f64 time = this->player->timerService->GetTimerRunning()
+            ? player->timerService->GetTime()
+            : this->currentTimeWhenTimerStopped;
 
+        SurfTimerService::FormatTime(time, timeText, sizeof(timeText));
+    }
 
-		SurfTimerService::FormatTime(time, timeText, sizeof(timeText));
-		return SurfLanguageService::PrepareMessageWithLang(language, "HUD - Timer Text",
-			timeText,
-			player->timerService->GetTimerRunning() ? "" : SurfLanguageService::PrepareMessageWithLang(language, "HUD - Stopped Text").c_str(),
-			player->timerService->GetPaused() ? SurfLanguageService::PrepareMessageWithLang(language, "HUD - Paused Text").c_str() : ""
-		);
-		// clang-format on
-	}
-	return std::string("");
+    // Always return a timer line, so that when not running we pass "HUD - Stopped Text", 
+	// allowing the hud panel height to stay consitent if it is used in "HUD - Html Center Text"
+	// clang-format off
+    return SurfLanguageService::PrepareMessageWithLang(language, "HUD - Timer Text",
+        timeText,
+        this->player->timerService->GetTimerRunning()
+            ? ""
+            : SurfLanguageService::PrepareMessageWithLang(language, "HUD - Stopped Text").c_str(),
+        this->player->timerService->GetPaused()
+            ? SurfLanguageService::PrepareMessageWithLang(language, "HUD - Paused Text").c_str()
+            : ""
+    );
 }
 
 void SurfHUDService::DrawPanels(SurfPlayer *player, SurfPlayer *target)
