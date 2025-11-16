@@ -46,7 +46,7 @@
 		"de"	"{grey}Möchtest du andere Spieler nicht sehen? Verwende {default}/hide{grey}."
 		"ko"	"{grey}다른 플레이어를 보고 싶지 않으면 {default}/hide{grey}를 사용하세요."
 		"lv"	"{grey}Nevēlies redzēt citus spēlētājus? Izmanto {default}/hide{grey}."
-		"pt"	"{grey}Não quer ver outros jogadores? Use {default}/hide{grey}.
+		"pt"	"{grey}Não quer ver outros jogadores? Use {default}/hide{grey}."
 	}
 	"Tip - surf_hideweapon"
 	{
