@@ -100,7 +100,7 @@ std::string SurfHUDService::GetTimerText(const char *language)
         SurfTimerService::FormatTime(time, timeText, sizeof(timeText));
     }
 
-    // Always return a timer line, so that when not running we pass "HUD - Stopped Text", 
+    // Always return a timer line, so that when not running we pass "HUD - Stopped Text",
 	// allowing the hud panel height to stay consitent if it is used in "HUD - Html Center Text"
 	// clang-format off
     return SurfLanguageService::PrepareMessageWithLang(language, "HUD - Timer Text",
