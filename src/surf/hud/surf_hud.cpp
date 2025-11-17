@@ -87,7 +87,7 @@ std::string SurfHUDService::GetStageText(const char *language)
 
 std::string SurfHUDService::GetTimerText(const char *language)
 {
-    char timeText[128] = "";
+    char timeText[128] = "00:00.000";
 
     if (this->player->timerService->GetTimerRunning() || this->ShouldShowTimerAfterStop())
     {
@@ -105,9 +105,7 @@ std::string SurfHUDService::GetTimerText(const char *language)
 	// clang-format off
     return SurfLanguageService::PrepareMessageWithLang(language, "HUD - Timer Text",
         timeText,
-        this->player->timerService->GetTimerRunning()
-            ? ""
-            : SurfLanguageService::PrepareMessageWithLang(language, "HUD - Stopped Text").c_str(),
+        "",
         this->player->timerService->GetPaused()
             ? SurfLanguageService::PrepareMessageWithLang(language, "HUD - Paused Text").c_str()
             : ""
