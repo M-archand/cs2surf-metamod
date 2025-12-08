@@ -269,7 +269,7 @@ void SurfQuietService::ToggleHideWeapon()
 	this->SendFullUpdate();
 	this->player->optionService->SetPreferenceBool("hideWeapon", this->hideWeapon);
 	this->player->languageService->PrintChat(true, false,
-											 this->hideWeapon ? "Quiet Option - Show Weapon - Enable" : "Quiet Option - Show Weapon - Disable");
+											 this->hideWeapon ? "Quiet Option - Show Weapon - Disable" : "Quiet Option - Show Weapon - Enable");
 }
 
 void SurfQuietService::OnPhysicsSimulatePost() {}
