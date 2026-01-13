@@ -519,6 +519,56 @@ static_function void Mapi_OnInfoTeleportDestinationSpawn(const EntitySpawnInfo_t
 	g_mappingApi.triggers.AddToTail(trigger);
 };
 
+static_function void Mapi_OnTriggerTeleportSpawn(const EntitySpawnInfo_t *info)
+{
+	const CEntityKeyValues *ekv = info->m_pKeyValues;
+	i32 hammerId = ekv->GetInt("hammerUniqueId", -1);
+
+	SurfTrigger trigger = {};
+	trigger.type = SURFTRIGGER_TELEPORT;
+	trigger.hammerId = hammerId;
+	trigger.entity = info->m_pEntity->GetRefEHandle();
+
+	const char *destination = ekv->GetString("target", "");
+	const char *landmark = ekv->GetString("landmark", "");
+
+	constexpr static_persist const char *targetNamePrefix = "[PR#]";
+	if (destination && SURF_STREQLEN(destination, targetNamePrefix, strlen(targetNamePrefix)))
+	{
+		destination = destination + strlen(targetNamePrefix);
+	}
+	if (landmark && SURF_STREQLEN(landmark, targetNamePrefix, strlen(targetNamePrefix)))
+	{
+		landmark = landmark + strlen(targetNamePrefix);
+	}
+
+	if (!destination || !destination[0])
+	{
+		META_CONPRINTF("Warning: Teleport trigger (hammerID %i) has no target specified!\n", hammerId);
+		return;
+	}
+
+	snprintf(trigger.teleport.destination, sizeof(trigger.teleport.destination), "%s", destination);
+	snprintf(trigger.teleport.landmark, sizeof(trigger.teleport.landmark), "%s", landmark);
+
+	// im not sure why both are used in maps but they are so we account for it
+	bool useAngles = ekv->GetBool("use_landmark_angles", false);
+	if (!useAngles)
+	{
+		useAngles = ekv->GetBool("uselandmarkangles", false);
+	}
+	trigger.teleport.useDestinationAngles = useAngles;
+
+	trigger.teleport.resetSpeed = ekv->GetBool("timer_teleport_reset_speed", false);
+	trigger.teleport.reorientPlayer = ekv->GetBool("timer_teleport_reorient_player", false);
+	trigger.teleport.relative = ekv->GetBool("timer_teleport_relative", false);
+	trigger.teleport.delay = ekv->GetFloat("timer_teleport_delay", 0.0f);
+
+	snprintf(trigger.zone.courseDescriptor, sizeof(trigger.zone.courseDescriptor), SURF_NO_MAPAPI_COURSE_DESCRIPTOR);
+
+	g_mappingApi.triggers.AddToTail(trigger);
+};
+
 static_function void Mapi_OnTriggerPushSpawn(const EntitySpawnInfo_t *info)
 {
 	const CEntityKeyValues *ekv = info->m_pKeyValues;
@@ -669,39 +719,17 @@ void Surf::mapapi::OnSpawn(int count, const EntitySpawnInfo_t *info)
 		{
 			Mapi_OnTriggerMultipleSpawn(&info[i]);
 		}
-	}
-
-	// We need to pass the second time for the spawn points of courses.
-
-	for (i32 i = 0; i < count; i++)
-	{
-		auto ekv = info[i].m_pKeyValues;
-
-		if (!info[i].m_pEntity || !ekv || !info[i].m_pEntity->GetClassname())
-		{
-			continue;
-		}
-		const char *classname = info[i].m_pEntity->GetClassname();
-		if (SURF_STREQI(classname, "info_teleport_destination"))
+		else if (SURF_STREQI(classname, "info_teleport_destination"))
 		{
 			Mapi_OnInfoTeleportDestinationSpawn(&info[i]);
 		}
-	}
-
-	// Third pass for trigger_push
-
-	for (i32 i = 0; i < count; i++)
-	{
-		auto ekv = info[i].m_pKeyValues;
-
-		if (!info[i].m_pEntity || !ekv || !info[i].m_pEntity->GetClassname())
-		{
-			continue;
-		}
-		const char *classname = info[i].m_pEntity->GetClassname();
-		if (SURF_STREQI(classname, "trigger_push"))
+		else if (SURF_STREQI(classname, "trigger_push"))
 		{
 			Mapi_OnTriggerPushSpawn(&info[i]);
+		}
+		else if (SURF_STREQI(classname, "trigger_teleport"))
+		{
+			Mapi_OnTriggerTeleportSpawn(&info[i]);
 		}
 	}
 

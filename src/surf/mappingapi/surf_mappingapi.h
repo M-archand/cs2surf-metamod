@@ -60,6 +60,7 @@ struct SurfMapZone
 struct SurfMapTeleport
 {
 	char destination[128];
+	char landmark[128];
 	f32 delay;
 	bool useDestinationAngles;
 	bool resetSpeed;
