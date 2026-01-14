@@ -72,13 +72,12 @@ bool SurfTimerService::UnregisterEventListener(SurfTimerServiceEventListener *ev
 void SurfTimerService::StartZoneStartTouch(const SurfCourseDescriptor *course)
 {
 	this->touchedGroundSinceTouchingStartZone = !!(this->player->GetPlayerPawn()->m_fFlags & FL_ONGROUND);
-	this->TimerStop(false);
 	this->inStartzone = true;
 }
 
 void SurfTimerService::StartZoneEndTouch(const SurfCourseDescriptor *course)
 {
-	if (this->touchedGroundSinceTouchingStartZone)
+	if (this->touchedGroundSinceTouchingStartZone && !this->timerRunning)
 	{
 		this->TimerStart(course);
 	}

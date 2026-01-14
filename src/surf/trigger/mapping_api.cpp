@@ -67,26 +67,7 @@ bool SurfTriggerService::TouchTeleportTrigger(TriggerTouchTracker tracker)
 	Vector up = Vector(0, 0, 1);
 	Vector finalOrigin = destOrigin;
 
-	if (tracker.surfTrigger->teleport.landmark[0])
-	{
-		CEntityHandle landmarkHandle = GameEntitySystem()->FindFirstEntityHandleByName(tracker.surfTrigger->teleport.landmark);
-		CBaseEntity *landmark = dynamic_cast<CBaseEntity *>(GameEntitySystem()->GetEntityInstance(landmarkHandle));
-		if (landmarkHandle.IsValid() && landmark)
-		{
-			Vector landmarkOrigin = landmark->m_CBodyComponent()->m_pSceneNode()->m_vecAbsOrigin();
-			Vector playerOrigin;
-			this->player->GetOrigin(&playerOrigin);
-
-			Vector playerOffsetFromLandmark = playerOrigin - landmarkOrigin;
-			finalOrigin = destOrigin + playerOffsetFromLandmark;
-		}
-		else if (tracker.surfTrigger->teleport.landmark[0])
-		{
-			META_CONPRINTF("Invalid teleport landmark \"%s\" on trigger with hammerID %i.\n", tracker.surfTrigger->teleport.landmark,
-						   tracker.surfTrigger->hammerId);
-		}
-	}
-	else if (tracker.surfTrigger->teleport.relative)
+	if (tracker.surfTrigger->teleport.relative)
 	{
 		Vector playerOrigin;
 		this->player->GetOrigin(&playerOrigin);
@@ -133,6 +114,11 @@ bool SurfTriggerService::TouchTeleportTrigger(TriggerTouchTracker tracker)
 		this->player->OnTeleport(&finalOrigin, nullptr, nullptr);
 	}
 	this->player->SetOrigin(finalOrigin);
+
+	if (Surf::mapapi::IsPositionInStartZone(finalOrigin))
+	{
+		this->player->timerService->TimerStop(false);
+	}
 
 	return true;
 }

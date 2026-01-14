@@ -532,16 +532,6 @@ static_function void Mapi_OnTriggerTeleportSpawn(const EntitySpawnInfo_t *info)
 	const char *destination = ekv->GetString("target", "");
 	const char *landmark = ekv->GetString("landmark", "");
 
-	constexpr static_persist const char *targetNamePrefix = "[PR#]";
-	if (destination && SURF_STREQLEN(destination, targetNamePrefix, strlen(targetNamePrefix)))
-	{
-		destination = destination + strlen(targetNamePrefix);
-	}
-	if (landmark && SURF_STREQLEN(landmark, targetNamePrefix, strlen(targetNamePrefix)))
-	{
-		landmark = landmark + strlen(targetNamePrefix);
-	}
-
 	if (!destination || !destination[0])
 	{
 		META_CONPRINTF("Warning: Teleport trigger (hammerID %i) has no target specified!\n", hammerId);
@@ -563,8 +553,6 @@ static_function void Mapi_OnTriggerTeleportSpawn(const EntitySpawnInfo_t *info)
 	trigger.teleport.reorientPlayer = ekv->GetBool("timer_teleport_reorient_player", false);
 	trigger.teleport.relative = ekv->GetBool("timer_teleport_relative", false);
 	trigger.teleport.delay = ekv->GetFloat("timer_teleport_delay", 0.0f);
-
-	snprintf(trigger.zone.courseDescriptor, sizeof(trigger.zone.courseDescriptor), SURF_NO_MAPAPI_COURSE_DESCRIPTOR);
 
 	g_mappingApi.triggers.AddToTail(trigger);
 };
@@ -870,6 +858,28 @@ void Surf::mapapi::CheckEndTimerTrigger(CBaseTrigger *trigger)
 		}
 		desc->hasEndPosition = utils::FindValidPositionForTrigger(trigger, desc->endPosition, desc->endAngles);
 	}
+}
+
+bool Surf::mapapi::IsPositionInStartZone(const Vector &position)
+{
+	FOR_EACH_VEC(g_mappingApi.triggers, i)
+	{
+		const SurfTrigger *trigger = &g_mappingApi.triggers[i];
+		if (trigger->type != SURFTRIGGER_ZONE_START && trigger->type != SURFTRIGGER_ZONE_BONUS_START)
+		{
+			continue;
+		}
+
+		Vector mins = trigger->mins + trigger->origin;
+		Vector maxs = trigger->maxs + trigger->origin;
+
+		if (position.x >= mins.x && position.x <= maxs.x && position.y >= mins.y && position.y <= maxs.y && position.z >= mins.z
+			&& position.z <= maxs.z)
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 const SurfTrigger *Surf::mapapi::GetSurfTrigger(CBaseTrigger *trigger)
