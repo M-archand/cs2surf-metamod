@@ -326,6 +326,23 @@ static_function void Mapi_OnTriggerMultipleSpawn(const EntitySpawnInfo_t *info)
 					}
 				}
 
+				// CHECKPOINT HOOK
+				int cpNum = 0;
+
+				matched = sscanf(nameStr, "map_checkpoint%d", &cpNum);
+				if (matched != 1)
+				{
+					matched = sscanf(nameStr, "map_cp%d", &cpNum);
+				}
+
+				if (matched == 1)
+				{
+					snprintf(trigger.zone.courseDescriptor, sizeof(trigger.zone.courseDescriptor), SURF_NO_MAPAPI_COURSE_DESCRIPTOR);
+					trigger.type = SURFTRIGGER_ZONE_CHECKPOINT;
+					trigger.zone.number = cpNum;
+				}
+
+				// BONUS HOOK
 				int bonusNum = 0;
 				int chars = 0;
 				char bonusDescriptor[128];
@@ -541,18 +558,8 @@ static_function void Mapi_OnTriggerTeleportSpawn(const EntitySpawnInfo_t *info)
 	snprintf(trigger.teleport.destination, sizeof(trigger.teleport.destination), "%s", destination);
 	snprintf(trigger.teleport.landmark, sizeof(trigger.teleport.landmark), "%s", landmark);
 
-	// im not sure why both are used in maps but they are so we account for it
-	bool useAngles = ekv->GetBool("use_landmark_angles", false);
-	if (!useAngles)
-	{
-		useAngles = ekv->GetBool("uselandmarkangles", false);
-	}
-	trigger.teleport.useDestinationAngles = useAngles;
-
-	trigger.teleport.resetSpeed = ekv->GetBool("timer_teleport_reset_speed", false);
-	trigger.teleport.reorientPlayer = ekv->GetBool("timer_teleport_reorient_player", false);
-	trigger.teleport.relative = ekv->GetBool("timer_teleport_relative", false);
-	trigger.teleport.delay = ekv->GetFloat("timer_teleport_delay", 0.0f);
+	trigger.teleport.useDestinationAngles = true;
+	trigger.teleport.reorientPlayer = true;
 
 	g_mappingApi.triggers.AddToTail(trigger);
 };
