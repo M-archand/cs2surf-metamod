@@ -148,10 +148,18 @@ SCMD(surf_end, SCFL_MAP)
 SCMD(surf_bonus, SCFL_TIMER | SCFL_MAP)
 {
 	SurfPlayer *player = g_pSurfPlayerManager->ToPlayer(controller);
+	i32 bonusID = 0;
 
-	if (V_strlen(args->ArgS()) == 0)
+	if (V_strlen(args->ArgS()) > 0)
 	{
-		return MRES_SUPERCEDE;
+		if (utils::IsNumeric(args->ArgS()))
+		{
+			bonusID = atoi(args->ArgS());
+		}
+		else
+		{
+			return MRES_SUPERCEDE;
+		}
 	}
 
 	// First pass: Find all teleport destinations and their positions
@@ -186,14 +194,19 @@ SCMD(surf_bonus, SCFL_TIMER | SCFL_MAP)
 				continue;
 			}
 
-			// please dont have over 99 bonuses
-			if (strlen(args->ArgS()) > 2)
+			// no arg provided
+			if (bonusID == 0)
 			{
 				return MRES_SUPERCEDE;
 			}
 
-			i32 bonusArg = static_cast<i32>(std::stoi(args->ArgS()));
-			if (surfTrigger->zone.bonus == bonusArg && surfTrigger->type == SURFTRIGGER_ZONE_BONUS_START)
+			// please dont have over 99 bonuses
+			if (bonusID > 99)
+			{
+				return MRES_SUPERCEDE;
+			}
+
+			if (surfTrigger->zone.bonus == bonusID && surfTrigger->type == SURFTRIGGER_ZONE_BONUS_START)
 			{
 				Vector mins = surfTrigger->mins + surfTrigger->origin;
 				Vector maxs = surfTrigger->maxs + surfTrigger->origin;
@@ -367,7 +380,15 @@ SCMD(surf_restart, SCFL_TIMER | SCFL_MAP)
 	// If the player specify a course name, we first check if it's valid or not.
 	if (V_strlen(args->ArgS()) > 0)
 	{
-		startPosCourse = Surf::course::GetCourse(args->ArgS(), false);
+		if (utils::IsNumeric(args->ArgS()))
+		{
+			i32 courseID = atoi(args->ArgS());
+			startPosCourse = Surf::course::GetCourseByCourseID(courseID);
+		}
+		else
+		{
+			startPosCourse = Surf::course::GetCourse(args->ArgS(), false);
+		}
 
 		if (!startPosCourse || !startPosCourse || !startPosCourse->hasStartPosition)
 		{
