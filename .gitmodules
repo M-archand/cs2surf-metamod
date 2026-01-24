@@ -1,6 +1,3 @@
-[submodule "metamod-source"]
-	path = metamod-source
-	url = https://github.com/alliedmodders/metamod-source.git
 [submodule "hl2sdk-cs2"]
 	path = hl2sdk-cs2
 	url = https://github.com/alliedmodders/hl2sdk.git
@@ -23,3 +20,6 @@
 [submodule "vendor/mbedtls"]
 	path = vendor/mbedtls
 	url = https://github.com/Mbed-TLS/mbedtls/
+[submodule "metamod-source"]
+	path = metamod-source
+	url = https://github.com/alliedmodders/metamod-source.git
