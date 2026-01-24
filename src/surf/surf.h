@@ -96,10 +96,10 @@ public:
 	virtual void OnCanUnduckPost(bool &) override;
 	virtual void OnLadderMove() override;
 	virtual void OnLadderMovePost() override;
-	virtual void OnCheckJumpButton() override;
-	virtual void OnCheckJumpButtonPost() override;
-	virtual void OnJump() override;
-	virtual void OnJumpPost() override;
+	virtual void OnCheckJumpButtonLegacy() override;
+	virtual void OnCheckJumpButtonPostLegacy() override;
+	virtual void OnJumpLegacy() override;
+	virtual void OnJumpPostLegacy() override;
 	virtual void OnAirMove() override;
 	virtual void OnAirMovePost() override;
 	virtual void OnAirAccelerate(Vector &wishdir, f32 &wishspeed, f32 &accel) override;

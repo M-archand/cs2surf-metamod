@@ -240,21 +240,26 @@ public:
 
 	Vector m_outWishVel;
 	QAngle m_vecOldAngles;
+	// World space input vector. Used to compare against last the movement services' previous rotation for ground movement stuff.
 	Vector m_vecInputRotated;
+	// u/s^2.
 	Vector m_vecContinousAcceleration;
+	// Immediate delta in u/s. Air acceleration bypasses per second acceleration, applies up to half of its impulse to the velocity and the rest goes
+	// straight into this.
 	Vector m_vecFrameVelocityDelta;
 	float m_flMaxSpeed;
 	float m_flClientMaxSpeed;
 	float m_flFrictionDecel;
+	// 2026-01-21 update adds these fields to calculate exactly when during the tick the player hit the ground using physics equations
+	// rather than just assuming they landed at the end of the tick, somewhat similar to how CS2KZ landingTimeActual formula works.
+	float m_flPreAirMovePosZ;
+	float m_flPreAirMoveVelZ;
+	float m_flPreAirMoveAccelZ;
 	bool m_bInAir;
 	bool m_bGameCodeMovedPlayer; // true if usercmd cmd number == (m_nGameCodeHasMovedPlayerAfterCommand + 1)
 };
 
-#ifdef _WIN32
-static_assert(sizeof(CMoveData) == 312, "Class didn't match expected size");
-#else
-static_assert(sizeof(CMoveData) == 304, "Class didn't match expected size");
-#endif
+static_assert(sizeof(CMoveData) == 320, "Class didn't match expected size");
 
 // Custom data types goes here.
 

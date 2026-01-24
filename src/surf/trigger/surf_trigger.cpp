@@ -55,7 +55,7 @@ void SurfTriggerService::OnPhysicsSimulatePost()
 	this->lastModifiers = this->modifiers;
 }
 
-void SurfTriggerService::OnCheckJumpButton()
+void SurfTriggerService::OnCheckJumpButtonLegacy()
 {
 	this->ApplyJumpFactor(false);
 }

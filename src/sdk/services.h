@@ -10,6 +10,7 @@ class CBasePlayerWeapon;
 #include "cinbuttonstate.h"
 #include "datatypes.h"
 #include "econ/ccsplayerinventory.h"
+class CCSPlayer_MovementServices;
 
 class CPlayerPawnComponent
 {
@@ -35,14 +36,16 @@ private:
 	virtual void unk_15() = 0;
 	virtual void unk_16() = 0;
 	virtual void unk_17() = 0;
+	virtual void unk_18() = 0;
 
 public:
-	uint8 chainEntity[0x28]; // Unused
-	CBasePlayerPawn *pawn;   // 0x16
-	uint8 __pad0030[0x6];    // 0x0
+	CNetworkVarChainer chainEntity;
+	uint8 __pad0028[0x8];
+	CBasePlayerPawn *pawn;
+	uint8 __pad0038[0x8];
 };
 
-static_assert(sizeof(CPlayerPawnComponent) == 0x40);
+static_assert(sizeof(CPlayerPawnComponent) == 0x48);
 
 class CPlayer_WeaponServices : public CPlayerPawnComponent
 {
@@ -101,9 +104,38 @@ class CPlayer_MovementServices_Humanoid : public CPlayer_MovementServices
 
 public:
 	DECLARE_SCHEMA_CLASS(CPlayer_MovementServices_Humanoid);
-	SCHEMA_FIELD(bool, m_bDucking)
-	SCHEMA_FIELD(bool, m_bDucked)
 	SCHEMA_FIELD(float, m_flSurfaceFriction)
+};
+
+class CCSPlayerBaseJump
+{
+	void **vtable;
+
+public:
+	CCSPlayer_MovementServices *m_pMovementServices;
+};
+
+class CCSPlayerLegacyJump : public CCSPlayerBaseJump
+{
+public:
+	DECLARE_SCHEMA_CLASS(CCSPlayerLegacyJump)
+	SCHEMA_FIELD(bool, m_bOldJumpPressed)
+	SCHEMA_FIELD(float, m_flJumpPressedTime)
+};
+
+class CCSPlayerModernJump : public CCSPlayerBaseJump
+{
+public:
+	DECLARE_SCHEMA_CLASS(CCSPlayerModernJump)
+	SCHEMA_FIELD(int, m_nLastActualJumpPressTick)
+	SCHEMA_FIELD(float, m_flLastActualJumpPressFrac)
+	SCHEMA_FIELD(int, m_nLastUsableJumpPressTick)
+	SCHEMA_FIELD(float, m_flLastUsableJumpPressFrac)
+	SCHEMA_FIELD(int, m_nLastLandedTick)
+	SCHEMA_FIELD(float, m_flLastLandedFrac)
+	SCHEMA_FIELD(float, m_flLastLandedVelocityX)
+	SCHEMA_FIELD(float, m_flLastLandedVelocityY)
+	SCHEMA_FIELD(float, m_flLastLandedVelocityZ)
 };
 
 class CCSPlayer_MovementServices : public CPlayer_MovementServices_Humanoid
@@ -113,14 +145,19 @@ class CCSPlayer_MovementServices : public CPlayer_MovementServices_Humanoid
 public:
 	DECLARE_SCHEMA_CLASS(CCSPlayer_MovementServices);
 	SCHEMA_FIELD(Vector, m_vecLadderNormal)
-	SCHEMA_FIELD(bool, m_bOldJumpPressed)
-	SCHEMA_FIELD(float, m_flJumpPressedTime)
 	SCHEMA_FIELD(float, m_flAccumulatedJumpError)
+	SCHEMA_FIELD(bool, m_bDucked)
 	SCHEMA_FIELD(float, m_flDuckSpeed)
 	SCHEMA_FIELD(float, m_flDuckAmount)
 	SCHEMA_FIELD(float, m_flStamina)
 	SCHEMA_FIELD(bool, m_bDuckOverride)
 	SCHEMA_FIELD(float, m_flLastDuckTime)
+	SCHEMA_FIELD(float, m_bDesiresDuck)
+	SCHEMA_FIELD(bool, m_bDucking)
+	SCHEMA_FIELD(float, m_flDuckOffset)
+	SCHEMA_FIELD(bool, m_duckUntilOnGround)
+	SCHEMA_FIELD(CCSPlayerLegacyJump, m_LegacyJump)
+	SCHEMA_FIELD(CCSPlayerModernJump, m_ModernJump)
 };
 
 class CCSPlayer_WaterServices : public CPlayerPawnComponent

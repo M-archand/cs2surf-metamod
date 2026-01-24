@@ -460,44 +460,44 @@ void SurfPlayer::OnLadderMovePost()
 	}
 }
 
-void SurfPlayer::OnCheckJumpButton()
+void SurfPlayer::OnCheckJumpButtonLegacy()
 {
 	VPROF_BUDGET(__func__, "CS2Surf");
-	this->modeService->OnCheckJumpButton();
+	this->modeService->OnCheckJumpButtonLegacy();
 	FOR_EACH_VEC(this->styleServices, i)
 	{
-		this->styleServices[i]->OnCheckJumpButton();
+		this->styleServices[i]->OnCheckJumpButtonLegacy();
 	}
-	this->triggerService->OnCheckJumpButton();
+	this->triggerService->OnCheckJumpButtonLegacy();
 }
 
-void SurfPlayer::OnCheckJumpButtonPost()
+void SurfPlayer::OnCheckJumpButtonPostLegacy()
 {
 	VPROF_BUDGET(__func__, "CS2Surf");
-	this->modeService->OnCheckJumpButtonPost();
+	this->modeService->OnCheckJumpButtonPostLegacy();
 	FOR_EACH_VEC(this->styleServices, i)
 	{
-		this->styleServices[i]->OnCheckJumpButtonPost();
-	}
-}
-
-void SurfPlayer::OnJump()
-{
-	VPROF_BUDGET(__func__, "CS2Surf");
-	this->modeService->OnJump();
-	FOR_EACH_VEC(this->styleServices, i)
-	{
-		this->styleServices[i]->OnJump();
+		this->styleServices[i]->OnCheckJumpButtonPostLegacy();
 	}
 }
 
-void SurfPlayer::OnJumpPost()
+void SurfPlayer::OnJumpLegacy()
 {
 	VPROF_BUDGET(__func__, "CS2Surf");
-	this->modeService->OnJumpPost();
+	this->modeService->OnJumpLegacy();
 	FOR_EACH_VEC(this->styleServices, i)
 	{
-		this->styleServices[i]->OnJumpPost();
+		this->styleServices[i]->OnJumpLegacy();
+	}
+}
+
+void SurfPlayer::OnJumpPostLegacy()
+{
+	VPROF_BUDGET(__func__, "CS2Surf");
+	this->modeService->OnJumpPostLegacy();
+	FOR_EACH_VEC(this->styleServices, i)
+	{
+		this->styleServices[i]->OnJumpPostLegacy();
 	}
 }
 

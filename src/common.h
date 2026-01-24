@@ -68,6 +68,11 @@ typedef double f64;
 #define SURF_STREQLEN(a, b, maxlen)  (V_strncmp(a, b, maxlen) == 0)
 #define SURF_STREQILEN(a, b, maxlen) (V_strnicmp(a, b, maxlen) == 0)
 // ARRAYSIZE gets undef'd if metamod_oslink is included after commonmacros.h. We can use our own implementation instead.
-#define SURF_ARRAYSIZE(a) ((sizeof(a) / sizeof(*(a))) / static_cast<size_t>(!(sizeof(a) % sizeof(*(a)))))
+#define SURF_ARRAYSIZE(a)       ((sizeof(a) / sizeof(*(a))) / static_cast<size_t>(!(sizeof(a) % sizeof(*(a)))))
+#define SURF_FOURCC(a, b, c, d) ((u32)(((d) << 24) | ((c) << 16) | ((b) << 8) | (a)))
 
 #define VPROF_LEVEL 1
+
+// clang-format off
+#define VPROF_SCOPE_BEGIN_SURF(tag) do { VPROF_(tag, 1, "CS2Surf", false, 0)
+// clang-format on

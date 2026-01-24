@@ -119,7 +119,7 @@ public:
 	void OnPhysicsSimulate();
 	void OnPhysicsSimulatePost();
 
-	void OnCheckJumpButton();
+	void OnCheckJumpButtonLegacy();
 	void OnProcessMovement();
 	void OnProcessMovementPost();
 

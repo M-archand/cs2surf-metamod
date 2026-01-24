@@ -60,6 +60,8 @@ enum SurfModeCvars
 	MODECVAR_MP_SOLID_TEAMMATES,
 	MODECVAR_MP_SOLID_ENEMIES,
 	MODECVAR_SV_SUBTICK_MOVEMENT_VIEW_ANGLES,
+	MODECVAR_SV_LEGACY_JUMP,
+	MODECVAR_SV_BHOP_TIME_WINDOW,
 	MODECVAR_COUNT,
 };
 class SurfPlayer;
@@ -177,13 +179,13 @@ public:
 
 	void OnLadderMovePost() {}
 
-	void OnCheckJumpButton() {}
+	void OnCheckJumpButtonLegacy() {}
 
-	void OnCheckJumpButtonPost() {}
+	void OnCheckJumpButtonPostLegacy() {}
 
-	void OnJump() {}
+	void OnJumpLegacy() {}
 
-	void OnJumpPost() {}
+	void OnJumpPostLegacy() {}
 
 	void OnAirMove();
 
@@ -341,7 +343,9 @@ namespace Surf::mode
 		"sv_water_slow_amount",
 		"mp_solid_teammates",
 		"mp_solid_enemies",
-		"sv_subtick_movement_view_angles"
+		"sv_subtick_movement_view_angles",
+		"sv_legacy_jump",
+		"sv_bhop_time_window"
 	};
 
 
@@ -380,7 +384,9 @@ namespace Surf::mode
 		new CConVarRef<float>("sv_water_slow_amount"),
 		new CConVarRef<int>("mp_solid_teammates"),
 		new CConVarRef<int>("mp_solid_enemies"),
-		new CConVarRef<bool>("sv_subtick_movement_view_angles")
+		new CConVarRef<bool>("sv_subtick_movement_view_angles"),
+		new CConVarRef<bool>("sv_legacy_jump"),
+		new CConVarRef<float>("sv_bhop_time_window"),
 	};
 
 	// clang-format on

@@ -88,13 +88,13 @@ public:
 
 	virtual void OnLadderMovePost() {}
 
-	virtual void OnCheckJumpButton() {}
+	virtual void OnCheckJumpButtonLegacy() {}
 
-	virtual void OnCheckJumpButtonPost() {}
+	virtual void OnCheckJumpButtonPostLegacy() {}
 
-	virtual void OnJump() {}
+	virtual void OnJumpLegacy() {}
 
-	virtual void OnJumpPost() {}
+	virtual void OnJumpPostLegacy() {}
 
 	virtual void OnAirMove() {}
 

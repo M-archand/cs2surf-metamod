@@ -155,7 +155,7 @@ void SurfSourceModeService::OnSetupMove(PlayerCommand *pc)
 			{
 				if (subtickMove->pressed() && inputTime - this->lastJumpReleaseTime > 0.5 * ENGINE_FIXED_TICK_INTERVAL)
 				{
-					this->player->GetMoveServices()->m_bOldJumpPressed = false;
+					this->player->GetMoveServices()->m_LegacyJump().m_bOldJumpPressed = false;
 				}
 				if (!subtickMove->pressed())
 				{
