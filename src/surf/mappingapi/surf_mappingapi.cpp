@@ -726,6 +726,11 @@ void Surf::mapapi::OnSpawn(int count, const EntitySpawnInfo_t *info)
 		{
 			Mapi_OnTriggerTeleportSpawn(&info[i]);
 		}
+		else if (SURF_STREQI(classname, "game_player_equip"))
+		{
+			// allow players to choose their equipment
+			g_pSurfUtils->RemoveEntity(info[i].m_pEntity->m_pInstance);
+		}
 	}
 
 	if (g_mappingApi.fatalFailure)
