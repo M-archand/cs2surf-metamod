@@ -874,29 +874,28 @@ void Surf::mapapi::CheckEndTimerTrigger(CBaseTrigger *trigger)
 
 bool Surf::mapapi::IsPositionInOrAboveStartZone(const Vector &position)
 {
-    FOR_EACH_VEC(g_mappingApi.triggers, i)
-    {
-        const SurfTrigger *trigger = &g_mappingApi.triggers[i];
-        if (trigger->type != SURFTRIGGER_ZONE_START && trigger->type != SURFTRIGGER_ZONE_BONUS_START)
-        {
-            continue;
-        }
-        Vector mins = trigger->mins + trigger->origin;
-        Vector maxs = trigger->maxs + trigger->origin;
-        
-        bool inHorizontalBounds = position.x >= mins.x && position.x <= maxs.x && 
-                                  position.y >= mins.y && position.y <= maxs.y;
-        
-        bool inVerticalBounds = position.z >= mins.z && position.z <= maxs.z;
-        
-        bool aboveStartZone = position.z > maxs.z && position.z <= maxs.z + 400.0f;
-        
-        if (inHorizontalBounds && (inVerticalBounds || aboveStartZone))
-        {
-            return true;
-        }
-    }
-    return false;
+	FOR_EACH_VEC(g_mappingApi.triggers, i)
+	{
+		const SurfTrigger *trigger = &g_mappingApi.triggers[i];
+		if (trigger->type != SURFTRIGGER_ZONE_START && trigger->type != SURFTRIGGER_ZONE_BONUS_START)
+		{
+			continue;
+		}
+		Vector mins = trigger->mins + trigger->origin;
+		Vector maxs = trigger->maxs + trigger->origin;
+
+		bool inHorizontalBounds = position.x >= mins.x && position.x <= maxs.x && position.y >= mins.y && position.y <= maxs.y;
+
+		bool inVerticalBounds = position.z >= mins.z && position.z <= maxs.z;
+
+		bool aboveStartZone = position.z > maxs.z && position.z <= maxs.z + 400.0f;
+
+		if (inHorizontalBounds && (inVerticalBounds || aboveStartZone))
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 const SurfTrigger *Surf::mapapi::GetSurfTrigger(CBaseTrigger *trigger)

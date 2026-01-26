@@ -9,7 +9,7 @@ class SurfHUDService : public SurfBaseService
 	using SurfBaseService::SurfBaseService;
 
 private:
-    bool jumpedThisTick {};
+	bool jumpedThisTick {};
 	bool showPanel {};
 	f64 timerStoppedTime {};
 	f64 currentTimeWhenTimerStopped {};
