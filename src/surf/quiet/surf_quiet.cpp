@@ -47,6 +47,10 @@ void Surf::quiet::OnCheckTransmit(CCheckTransmitInfo **pInfo, int infoCount)
 		for (CParticleSystem *particleSystem = static_cast<CParticleSystem *>(iterParticleSystem.First()); particleSystem;
 			 particleSystem = static_cast<CParticleSystem *>(iterParticleSystem.Next()))
 		{
+			if (!targetPlayer->quietService->ShouldHide())
+			{
+				continue; // Only hide player beam if the target enables !hide
+			}
 			if (particleSystem->m_iTeamNum() != CUSTOM_PARTICLE_SYSTEM_TEAM)
 			{
 				continue; // Only hide custom particle systems created by the plugin.

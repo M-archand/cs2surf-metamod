@@ -473,7 +473,8 @@ SCMD(surf_restart, SCFL_TIMER | SCFL_MAP)
 
 				Vector center = (mins + maxs) * 0.5f;
 				float zoneHeight = maxs.z - mins.z;
-				center.z = mins.z + (zoneHeight * 0.15f);
+				// raise center.z a bit to avoid floorstuck
+				center.z = mins.z + (zoneHeight * 0.75f);
 				player->SetOrigin(center);
 				return MRES_SUPERCEDE;
 			}

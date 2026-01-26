@@ -179,7 +179,7 @@ namespace Surf::mapapi
 	void OnSpawn(int count, const EntitySpawnInfo_t *info);
 	void OnRoundPreStart();
 	void OnRoundStart();
-	bool IsPositionInStartZone(const Vector &position);
+	bool IsPositionInOrAboveStartZone(const Vector &position);
 
 	void CheckEndTimerTrigger(CBaseTrigger *trigger);
 	// This is const, unlike the trigger returned from Mapi_FindSurfTrigger.

@@ -155,7 +155,6 @@ bool SurfTimerService::TimerStart(const SurfCourseDescriptor *courseDesc, bool p
 	if (!this->player->GetPlayerPawn()->IsAlive()
 		|| this->JustStartedTimer()
 		|| this->player->JustTeleported()
-		|| this->player->inPerf
 		|| this->player->noclipService->JustNoclipped()
 		|| !this->HasValidMoveType()
 		|| this->JustLanded()
@@ -163,6 +162,11 @@ bool SurfTimerService::TimerStart(const SurfCourseDescriptor *courseDesc, bool p
 		|| (!(this->player->GetPlayerPawn()->m_fFlags & FL_ONGROUND) && !this->GetValidJump()))
 	// clang-format on
 	{
+		return false;
+	}
+	if (this->player->inPerf)
+	{
+		this->player->languageService->PrintChat(true, false, "Can't Bhop Start");
 		return false;
 	}
 	if (V_strlen(this->player->modeService->GetModeName()) > SURF_MAX_MODE_NAME_LENGTH)

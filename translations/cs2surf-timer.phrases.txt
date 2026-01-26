@@ -297,6 +297,10 @@
 		"lv"		"{darkred}Starta pozīcija netika atrasta trasei {default}{course_name}{darkred}!"
 		"pt"		"{darkred}Posição de início não encontrada para o curso {default}{course_name}{darkred}!"
 	}
+	"Can't Bhop Start"
+	{
+		"en"		"{darkred}You can't start your run with bhop(s)."
+	}
 
 	// Split #1: 12:34.56 (+12.34) | SPB +12.12 | PRO SPB +23.45
 	"Course Split Reached"

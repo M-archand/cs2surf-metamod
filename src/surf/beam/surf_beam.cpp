@@ -163,6 +163,7 @@ void SurfBeamService::UpdatePlayerBeam()
 		pKeyValues->SetBool("start_active", true);
 
 		beam->DispatchSpawn(pKeyValues);
+		beam->m_iTeamNum(CUSTOM_PARTICLE_SYSTEM_TEAM);
 		this->playerBeam = beam->GetRefEHandle();
 	}
 	origin += this->playerBeamOffset;

@@ -67,7 +67,7 @@ std::string SurfHUDService::GetKeyText(const char *language)
 		this->player->IsButtonPressed(IN_BACK) ? 'S' : '_',
 		this->player->IsButtonPressed(IN_MOVERIGHT) ? 'D' : '_',
 		this->player->IsButtonPressed(IN_DUCK) ? 'C' : '_',
-		this->player->IsButtonPressed(IN_JUMP) ? 'J' : '_'
+		this->jumpedThisTick ? 'J' : '_'
 	);
 
 	// clang-format on

@@ -143,6 +143,7 @@ void SurfPlayer::OnPhysicsSimulate()
 	{
 		this->styleServices[i]->OnPhysicsSimulate();
 	}
+	this->hudService->OnPhysicsSimulate();
 	this->noclipService->HandleMoveCollision();
 	this->EnableGodMode();
 	this->UpdatePlayerModelAlpha();
@@ -489,6 +490,7 @@ void SurfPlayer::OnJumpLegacy()
 	{
 		this->styleServices[i]->OnJumpLegacy();
 	}
+	this->hudService->OnJump();
 }
 
 void SurfPlayer::OnJumpPostLegacy()
