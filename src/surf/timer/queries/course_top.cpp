@@ -274,7 +274,7 @@ struct CourseTopRequest : public BaseRequest
 	}
 };
 
-SCMD(surf_ctop, SCFL_RECORD | SCFL_GLOBAL)
+SCMD(surf_ctop, SCFL_RECORD)
 {
 	SurfPlayer *player = g_pSurfPlayerManager->ToPlayer(controller);
 	CourseTopRequest::Create<CourseTopRequest>(player, CourseTopRequest::ctopFeatures, true, true, args);
@@ -283,7 +283,10 @@ SCMD(surf_ctop, SCFL_RECORD | SCFL_GLOBAL)
 
 SCMD_LINK(surf_coursetop, surf_ctop);
 SCMD_LINK(surf_maptop, surf_ctop);
+SCMD_LINK(surf_mtop, surf_ctop);
+SCMD_LINK(surf_top, surf_ctop);
 
+/* TODO: global
 SCMD(surf_gctop, SCFL_RECORD | SCFL_GLOBAL)
 {
 	SurfPlayer *player = g_pSurfPlayerManager->ToPlayer(controller);
@@ -303,3 +306,4 @@ SCMD(surf_sctop, SCFL_TIMER)
 
 SCMD_LINK(surf_scoursetop, surf_sctop);
 SCMD_LINK(surf_smaptop, surf_sctop);
+*/

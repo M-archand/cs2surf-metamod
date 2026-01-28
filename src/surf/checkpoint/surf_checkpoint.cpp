@@ -387,15 +387,24 @@ void SurfCheckpointService::TpToStartPosition()
 
 void SurfCheckpointService::PlayCheckpointSound()
 {
-	utils::PlaySoundToClient(this->player->GetPlayerSlot(), SURF_SND_SET_CP);
+	if (this->player->timerService->shouldPlayTimerSound)
+	{
+		utils::PlaySoundToClient(this->player->GetPlayerSlot(), SURF_SND_SET_CP);
+	}
 }
 
 void SurfCheckpointService::PlayTeleportSound()
 {
-	utils::PlaySoundToClient(this->player->GetPlayerSlot(), SURF_SND_DO_TP);
+	if (this->player->timerService->shouldPlayTimerSound)
+	{
+		utils::PlaySoundToClient(this->player->GetPlayerSlot(), SURF_SND_DO_TP);
+	}
 }
 
 void SurfCheckpointService::PlayCheckpointResetSound()
 {
-	utils::PlaySoundToClient(this->player->GetPlayerSlot(), SURF_SND_RESET_CPS);
+	if (this->player->timerService->shouldPlayTimerSound)
+	{
+		utils::PlaySoundToClient(this->player->GetPlayerSlot(), SURF_SND_RESET_CPS);
+	}
 }

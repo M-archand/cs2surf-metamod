@@ -408,32 +408,47 @@ bool SurfTimerService::JustEndedTimer()
 
 void SurfTimerService::PlayTimerEndSound()
 {
-	utils::PlaySoundToClient(this->player->GetPlayerSlot(), SURF_TIMER_SND_END);
+	if (this->shouldPlayTimerSound)
+	{
+		utils::PlaySoundToClient(this->player->GetPlayerSlot(), SURF_TIMER_SND_END);
+	}
 }
 
 void SurfTimerService::PlayTimerFalseEndSound()
 {
-	utils::PlaySoundToClient(this->player->GetPlayerSlot(), SURF_TIMER_SND_FALSE_END);
+	if (this->shouldPlayTimerSound)
+	{
+		utils::PlaySoundToClient(this->player->GetPlayerSlot(), SURF_TIMER_SND_FALSE_END);
+	}
 }
 
 void SurfTimerService::PlayMissedZoneSound()
 {
-	utils::PlaySoundToClient(this->player->GetPlayerSlot(), SURF_TIMER_SND_MISSED_ZONE);
+	if (this->shouldPlayTimerSound)
+	{
+		utils::PlaySoundToClient(this->player->GetPlayerSlot(), SURF_TIMER_SND_MISSED_ZONE);
+	}
 }
 
 void SurfTimerService::PlayReachedCheckpointSound()
 {
-	utils::PlaySoundToClient(this->player->GetPlayerSlot(), SURF_TIMER_SND_REACH_CHECKPOINT);
+	if (this->shouldPlayTimerSound)
+	{
+		utils::PlaySoundToClient(this->player->GetPlayerSlot(), SURF_TIMER_SND_REACH_CHECKPOINT);
+	}
 }
 
 void SurfTimerService::PlayReachedStageSound()
 {
-	utils::PlaySoundToClient(this->player->GetPlayerSlot(), SURF_TIMER_SND_REACH_STAGE);
+	if (this->shouldPlayTimerSound)
+	{
+		utils::PlaySoundToClient(this->player->GetPlayerSlot(), SURF_TIMER_SND_REACH_STAGE);
+	}
 }
 
 void SurfTimerService::PlayTimerStopSound()
 {
-	if (this->shouldPlayTimerStopSound)
+	if (this->shouldPlayTimerSound)
 	{
 		utils::PlaySoundToClient(this->player->GetPlayerSlot(), SURF_TIMER_SND_STOP);
 	}
@@ -441,10 +456,13 @@ void SurfTimerService::PlayTimerStopSound()
 
 void SurfTimerService::PlayMissedTimeSound()
 {
-	if (g_pSurfUtils->GetServerGlobals()->curtime - this->lastMissedTimeSoundTime > SURF_TIMER_SOUND_COOLDOWN)
+	if (this->shouldPlayTimerSound)
 	{
-		utils::PlaySoundToClient(this->player->GetPlayerSlot(), SURF_TIMER_SND_MISSED_TIME);
-		this->lastMissedTimeSoundTime = g_pSurfUtils->GetServerGlobals()->curtime;
+		if (g_pSurfUtils->GetServerGlobals()->curtime - this->lastMissedTimeSoundTime > SURF_TIMER_SOUND_COOLDOWN)
+		{
+			utils::PlaySoundToClient(this->player->GetPlayerSlot(), SURF_TIMER_SND_MISSED_TIME);
+			this->lastMissedTimeSoundTime = g_pSurfUtils->GetServerGlobals()->curtime;
+		}
 	}
 }
 
@@ -635,13 +653,13 @@ SCMD(surf_timerstopsound, SCFL_TIMER | SCFL_PREFERENCE)
 	return MRES_SUPERCEDE;
 }
 
-SCMD_LINK(surf_tss, surf_toggletimerstopsound);
+SCMD_LINK(surf_tss, surf_timerstopsound);
 
 void SurfTimerService::ToggleTimerStopSound()
 {
-	this->shouldPlayTimerStopSound = !this->shouldPlayTimerStopSound;
-	this->player->optionService->SetPreferenceBool("timerStopSound", this->shouldPlayTimerStopSound);
-	this->player->languageService->PrintChat(true, false, this->shouldPlayTimerStopSound ? "Timer Stop Sound Enabled" : "Timer Stop Sound Disabled");
+	this->shouldPlayTimerSound = !this->shouldPlayTimerSound;
+	this->player->optionService->SetPreferenceBool("timerStopSound", this->shouldPlayTimerSound);
+	this->player->languageService->PrintChat(true, false, this->shouldPlayTimerSound ? "Timer Stop Sound Enabled" : "Timer Stop Sound Disabled");
 }
 
 void SurfTimerService::Reset()
@@ -665,7 +683,7 @@ void SurfTimerService::Reset()
 	this->validJump = {};
 	this->lastInvalidateTime = {};
 	this->touchedGroundSinceTouchingStartZone = {};
-	this->shouldPlayTimerStopSound = true;
+	this->shouldPlayTimerSound = true;
 }
 
 void SurfTimerService::OnPhysicsSimulatePost()
@@ -810,7 +828,7 @@ SCMD(surf_pause, SCFL_TIMER)
 	return MRES_SUPERCEDE;
 }
 
-SCMD(surf_comparelevel, SCFL_RECORD | SCFL_TIMER | SCFL_PREFERENCE | SCFL_GLOBAL)
+SCMD(surf_comparelevel, SCFL_RECORD | SCFL_TIMER | SCFL_PREFERENCE)
 {
 	SurfPlayer *player = g_pSurfPlayerManager->ToPlayer(controller);
 	player->timerService->SetCompareTarget(args->Arg(1));
@@ -1346,7 +1364,7 @@ void SurfTimerService::OnPlayerPreferencesLoaded()
 		return;
 	}
 	this->preferredCompareType = (CompareType)this->player->optionService->GetPreferenceInt("preferredCompareType", COMPARE_GPB);
-	this->shouldPlayTimerStopSound = this->player->optionService->GetPreferenceBool("timerStopSound", true);
+	this->shouldPlayTimerSound = this->player->optionService->GetPreferenceBool("timerStopSound", true);
 }
 
 void SurfDatabaseServiceEventListener_Timer::OnMapSetup()

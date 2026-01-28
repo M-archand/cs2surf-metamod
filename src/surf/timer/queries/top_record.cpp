@@ -190,12 +190,14 @@ struct TopRecordRequest : public BaseRequest
 	}
 };
 
+/* TODO: global
 SCMD(surf_wr, SCFL_RECORD | SCFL_GLOBAL)
 {
 	SurfPlayer *player = g_pSurfPlayerManager->ToPlayer(controller);
 	TopRecordRequest::Create<TopRecordRequest>(player, TopRecordRequest::trFeatures, true, true, args);
 	return MRES_SUPERCEDE;
 }
+*/
 
 SCMD(surf_sr, SCFL_RECORD)
 {

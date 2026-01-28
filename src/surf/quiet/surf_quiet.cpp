@@ -267,6 +267,8 @@ SCMD(surf_hideweapon, SCFL_PLAYER)
 	return MRES_SUPERCEDE;
 }
 
+SCMD_LINK(surf_hw, surf_hideweapon);
+
 void SurfQuietService::ToggleHideWeapon()
 {
 	this->hideWeapon = !this->hideWeapon;

@@ -15,6 +15,7 @@ static_function std::string_view MakeStatusString(bool checkmark)
 	return checkmark ? "{green}✓{default}"sv : "{darkred}✗{default}"sv;
 }
 
+/* TODO: global
 SCMD(surf_globalcheck, SCFL_GLOBAL | SCFL_MAP | SCFL_PLAYER)
 {
 	SurfPlayer *player = g_pSurfPlayerManager->ToPlayer(controller);
@@ -145,3 +146,4 @@ SCMD(surf_globalcheck, SCFL_GLOBAL | SCFL_MAP | SCFL_PLAYER)
 }
 
 SCMD_LINK(surf_gc, surf_globalcheck);
+*/
