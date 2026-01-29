@@ -559,7 +559,6 @@ static_function void Mapi_OnTriggerTeleportSpawn(const EntitySpawnInfo_t *info)
 	snprintf(trigger.teleport.landmark, sizeof(trigger.teleport.landmark), "%s", landmark);
 
 	trigger.teleport.useDestinationAngles = true;
-	trigger.teleport.reorientPlayer = true;
 
 	g_mappingApi.triggers.AddToTail(trigger);
 };
