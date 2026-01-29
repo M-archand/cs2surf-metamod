@@ -305,6 +305,109 @@ SCMD(surf_rb, SCFL_TIMER | SCFL_MAP)
 	return MRES_SUPERCEDE;
 }
 
+SCMD(surf_stage, SCFL_TIMER | SCFL_MAP)
+{
+	SurfPlayer *player = g_pSurfPlayerManager->ToPlayer(controller);
+	if (!player->timerService->GetCourse())
+	{
+		player->languageService->PrintChat(true, false, "No Current Course");
+		return MRES_SUPERCEDE;
+	}
+
+	const SurfCourseDescriptor *course = player->timerService->GetCourse();
+	i32 stageID = 0;
+	if (course->stageCount == 0)
+	{
+		return MRES_SUPERCEDE;
+	}
+
+	if (V_strlen(args->ArgS()) > 0)
+	{
+		if (utils::IsNumeric(args->ArgS()))
+		{
+			stageID = atoi(args->ArgS());
+		}
+		else
+		{
+			return MRES_SUPERCEDE;
+		}
+	}
+
+	// First pass: Find all teleport destinations and their positions
+	std::vector<std::pair<Vector, QAngle>> teleportDestinations;
+	EntityInstanceIter_t iter;
+	int destCount = 0;
+	for (CEntityInstance *pEnt = iter.First(); pEnt; pEnt = iter.Next())
+	{
+		if (V_strstr(pEnt->GetClassname(), "info_teleport_destination"))
+		{
+			CBaseEntity *pEntity = static_cast<CBaseEntity *>(pEnt);
+			const SurfTrigger *surfTrigger = Surf::mapapi::GetSurfDestination(pEntity);
+
+			if (surfTrigger)
+			{
+				teleportDestinations.push_back({surfTrigger->origin, surfTrigger->rotation});
+			}
+		}
+	}
+
+	// Second pass: Find stage triggers and check if any teleport destinations are inside
+	EntityInstanceIter_t iter2;
+	for (CEntityInstance *pEnt = iter2.First(); pEnt; pEnt = iter2.Next())
+	{
+		if (V_strstr(pEnt->GetClassname(), "trigger_multiple"))
+		{
+			CBaseTrigger *pTrigger = static_cast<CBaseTrigger *>(pEnt);
+			const SurfTrigger *surfTrigger = Surf::mapapi::GetSurfTrigger(pTrigger);
+
+			if (!surfTrigger)
+			{
+				continue;
+			}
+
+			// no arg provided
+			if (stageID == 0)
+			{
+				return MRES_SUPERCEDE;
+			}
+
+			// please dont have over 99 stages
+			if (stageID > 99)
+			{
+				return MRES_SUPERCEDE;
+			}
+
+			if (surfTrigger->zone.number == stageID)
+			{
+				Vector mins = surfTrigger->mins + surfTrigger->origin;
+				Vector maxs = surfTrigger->maxs + surfTrigger->origin;
+
+				for (const auto &[destPos, destAng] : teleportDestinations)
+				{
+					if (utils::IsVectorInBox(destPos, mins, maxs))
+					{
+						player->timerService->TimerStop(true);
+						player->Teleport(&destPos, &destAng, &vec3_origin);
+						return MRES_SUPERCEDE;
+					}
+				}
+
+				// Fallback: if no teleport destination found, use center of trigger
+				Vector center = (mins + maxs) * 0.5f;
+				float zoneHeight = maxs.z - mins.z;
+				center.z = mins.z + (zoneHeight * 0.15f);
+				player->timerService->TimerStop(true);
+				player->SetOrigin(center);
+				return MRES_SUPERCEDE;
+			}
+		}
+	}
+
+	return MRES_SUPERCEDE;
+}
+
+SCMD_LINK(surf_s, surf_stage);
+
 SCMD(surf_rs, SCFL_TIMER | SCFL_MAP)
 {
 	SurfPlayer *player = g_pSurfPlayerManager->ToPlayer(controller);

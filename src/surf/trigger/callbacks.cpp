@@ -256,6 +256,13 @@ void SurfTriggerService::OnMappingApiTriggerStartTouchPost(TriggerTouchTracker t
 void SurfTriggerService::OnMappingApiTriggerTouchPost(TriggerTouchTracker tracker)
 {
 	bool shouldRecheckTriggers = false;
+	const SurfTrigger *trigger = tracker.surfTrigger;
+	const SurfCourseDescriptor *course = Surf::mapapi::GetCourseDescriptorFromTrigger(trigger);
+	if (Surf::mapapi::IsTimerTrigger(trigger->type) && !course)
+	{
+		return;
+	}
+
 	switch (tracker.surfTrigger->type)
 	{
 		case SURFTRIGGER_MODIFIER:
@@ -263,7 +270,6 @@ void SurfTriggerService::OnMappingApiTriggerTouchPost(TriggerTouchTracker tracke
 			this->TouchModifierTrigger(tracker);
 		}
 		break;
-
 		case SURFTRIGGER_TELEPORT:
 		{
 			this->TouchTeleportTrigger(tracker);
@@ -272,6 +278,15 @@ void SurfTriggerService::OnMappingApiTriggerTouchPost(TriggerTouchTracker tracke
 		case SURFTRIGGER_PUSH:
 		{
 			this->TouchPushTrigger(tracker);
+		}
+		break;
+		case SURFTRIGGER_ZONE_START:
+		case SURFTRIGGER_ZONE_BONUS_START:
+		{
+			if (!this->player->timerService->GetCourse())
+			{
+				this->player->timerService->SetCourse(course->guid);
+			}
 		}
 		break;
 	}
