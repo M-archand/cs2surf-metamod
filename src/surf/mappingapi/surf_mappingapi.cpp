@@ -554,11 +554,18 @@ static_function void Mapi_OnTriggerTeleportSpawn(const EntitySpawnInfo_t *info)
 		META_CONPRINTF("Warning: Teleport trigger (hammerID %i) has no target specified!\n", hammerId);
 		return;
 	}
-
 	snprintf(trigger.teleport.destination, sizeof(trigger.teleport.destination), "%s", destination);
-	snprintf(trigger.teleport.landmark, sizeof(trigger.teleport.landmark), "%s", landmark);
 
-	trigger.teleport.useDestinationAngles = true;
+	if (landmark || landmark[0])
+	{
+		snprintf(trigger.teleport.landmark, sizeof(trigger.teleport.landmark), "%s", landmark);
+		trigger.teleport.relative = true;
+		trigger.teleport.useDestinationAngles = false;
+	}
+	else
+	{
+		trigger.teleport.useDestinationAngles = true;
+	}
 
 	g_mappingApi.triggers.AddToTail(trigger);
 };

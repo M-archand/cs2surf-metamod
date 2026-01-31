@@ -145,7 +145,8 @@ public:
 	static bool ShouldTouchOnStartTouch(TriggerTouchTracker tracker)
 	{
 		// TODO: Let mapping API decide whether it is not the case.
-		return true;
+		// for now disable for trigger teleport because it completely breaks landmark offsets
+		return tracker.surfTrigger->type != SURFTRIGGER_TELEPORT;
 	}
 
 	static bool ShouldTouchBeforeEndTouch(TriggerTouchTracker tracker)

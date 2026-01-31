@@ -248,6 +248,11 @@ void SurfTriggerService::OnMappingApiTriggerStartTouchPost(TriggerTouchTracker t
 			}
 		}
 		break;
+		case SURFTRIGGER_TELEPORT:
+		{
+			this->TouchTeleportTrigger(tracker);
+		}
+		break;
 		default:
 			break;
 	}
@@ -268,11 +273,6 @@ void SurfTriggerService::OnMappingApiTriggerTouchPost(TriggerTouchTracker tracke
 		case SURFTRIGGER_MODIFIER:
 		{
 			this->TouchModifierTrigger(tracker);
-		}
-		break;
-		case SURFTRIGGER_TELEPORT:
-		{
-			this->TouchTeleportTrigger(tracker);
 		}
 		break;
 		case SURFTRIGGER_PUSH:

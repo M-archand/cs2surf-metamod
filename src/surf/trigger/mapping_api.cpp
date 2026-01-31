@@ -44,10 +44,11 @@ bool SurfTriggerService::TouchTeleportTrigger(TriggerTouchTracker tracker)
 		triggerOrigin = trigger->m_CBodyComponent()->m_pSceneNode()->m_vecAbsOrigin();
 	}
 
-	// NOTE: We only use the trigger's origin if we're using a relative destination, so if
+	// NOTE: We only use the landmarks's origin if we're using a relative destination, so if
 	// we're not using a relative destination and don't have it, then it's fine.
-	// TODO: Can this actually happen? If the trigger is touched then the entity must be valid.
-	if (!trigger && tracker.surfTrigger->teleport.relative)
+	CEntityHandle landmarkHandle = GameEntitySystem()->FindFirstEntityHandleByName(tracker.surfTrigger->teleport.landmark);
+	CBaseEntity *landmark = dynamic_cast<CBaseEntity *>(GameEntitySystem()->GetEntityInstance(landmarkHandle));
+	if (!landmark && tracker.surfTrigger->teleport.relative)
 	{
 		return false;
 	}
@@ -64,21 +65,20 @@ bool SurfTriggerService::TouchTeleportTrigger(TriggerTouchTracker tracker)
 	}
 
 	bool shouldReorientPlayer = tracker.surfTrigger->teleport.reorientPlayer && destAngles[YAW] != 0;
-	Vector up = Vector(0, 0, 1);
+	Vector landmarkOrigin = landmark->m_CBodyComponent()->m_pSceneNode()->m_vecAbsOrigin();
 	Vector finalOrigin = destOrigin;
 
 	if (tracker.surfTrigger->teleport.relative)
 	{
 		Vector playerOrigin;
 		this->player->GetOrigin(&playerOrigin);
-		Vector playerOffsetFromTrigger = playerOrigin - triggerOrigin;
+		Vector playerOffsetFromLandmark = playerOrigin - landmarkOrigin;
 
 		if (shouldReorientPlayer)
 		{
-			VectorRotate(playerOffsetFromTrigger, QAngle(0, destAngles[YAW], 0), playerOffsetFromTrigger);
+			VectorRotate(playerOffsetFromLandmark, QAngle(0, destAngles[YAW], 0), playerOffsetFromLandmark);
 		}
-
-		finalOrigin = destOrigin + playerOffsetFromTrigger;
+		finalOrigin = destOrigin + playerOffsetFromLandmark;
 	}
 	QAngle finalPlayerAngles;
 	this->player->GetAngles(&finalPlayerAngles);
