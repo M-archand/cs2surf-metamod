@@ -65,13 +65,13 @@ bool SurfTriggerService::TouchTeleportTrigger(TriggerTouchTracker tracker)
 	}
 
 	bool shouldReorientPlayer = tracker.surfTrigger->teleport.reorientPlayer && destAngles[YAW] != 0;
-	Vector landmarkOrigin = landmark->m_CBodyComponent()->m_pSceneNode()->m_vecAbsOrigin();
 	Vector finalOrigin = destOrigin;
 
 	if (tracker.surfTrigger->teleport.relative)
 	{
 		Vector playerOrigin;
 		this->player->GetOrigin(&playerOrigin);
+		Vector landmarkOrigin = landmark->m_CBodyComponent()->m_pSceneNode()->m_vecAbsOrigin();
 		Vector playerOffsetFromLandmark = playerOrigin - landmarkOrigin;
 
 		if (shouldReorientPlayer)

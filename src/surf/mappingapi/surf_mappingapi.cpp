@@ -555,15 +555,16 @@ static_function void Mapi_OnTriggerTeleportSpawn(const EntitySpawnInfo_t *info)
 		return;
 	}
 	snprintf(trigger.teleport.destination, sizeof(trigger.teleport.destination), "%s", destination);
+	snprintf(trigger.teleport.landmark, sizeof(trigger.teleport.landmark), "%s", landmark);
 
-	if (landmark || landmark[0])
+	if (landmark && landmark[0])
 	{
-		snprintf(trigger.teleport.landmark, sizeof(trigger.teleport.landmark), "%s", landmark);
 		trigger.teleport.relative = true;
 		trigger.teleport.useDestinationAngles = false;
 	}
 	else
 	{
+		trigger.teleport.relative = false;
 		trigger.teleport.useDestinationAngles = true;
 	}
 
