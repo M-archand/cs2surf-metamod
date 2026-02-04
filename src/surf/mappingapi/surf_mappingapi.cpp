@@ -531,7 +531,6 @@ static_function void Mapi_OnInfoTeleportDestinationSpawn(const EntitySpawnInfo_t
 	trigger.type = SURFTRIGGER_DESTINATION;
 	trigger.hammerId = hammerId;
 	trigger.entity = info->m_pEntity->GetRefEHandle();
-	snprintf(trigger.zone.courseDescriptor, sizeof(trigger.zone.courseDescriptor), SURF_NO_MAPAPI_COURSE_DESCRIPTOR);
 
 	g_mappingApi.triggers.AddToTail(trigger);
 };
@@ -608,8 +607,6 @@ static_function void Mapi_OnTriggerPushSpawn(const EntitySpawnInfo_t *info)
 	trigger.push.delay = 0.0f;
 
 	trigger.entity = info->m_pEntity->GetRefEHandle();
-
-	snprintf(trigger.zone.courseDescriptor, sizeof(trigger.zone.courseDescriptor), SURF_NO_MAPAPI_COURSE_DESCRIPTOR);
 
 	g_mappingApi.triggers.AddToTail(trigger);
 };

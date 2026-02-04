@@ -248,14 +248,6 @@ void SurfTriggerService::OnMappingApiTriggerStartTouchPost(TriggerTouchTracker t
 			}
 		}
 		break;
-		case SURFTRIGGER_TELEPORT:
-		{
-			if (tracker.surfTrigger->teleport.relative)
-			{
-				this->TouchTeleportTrigger(tracker);
-			}
-		}
-		break;
 		default:
 			break;
 	}

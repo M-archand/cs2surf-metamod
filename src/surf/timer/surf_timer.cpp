@@ -375,7 +375,7 @@ void SurfTimerService::InvalidateJump()
 
 void SurfTimerService::PlayTimerStartSound()
 {
-	if (g_pSurfUtils->GetServerGlobals()->curtime - this->lastStartSoundTime > SURF_TIMER_SOUND_COOLDOWN)
+	if (g_pSurfUtils->GetServerGlobals()->curtime - this->lastStartSoundTime > SURF_TIMER_SOUND_COOLDOWN && this->shouldPlayTimerSound)
 	{
 		utils::PlaySoundToClient(this->player->GetPlayerSlot(), SURF_TIMER_SND_START);
 		this->lastStartSoundTime = g_pSurfUtils->GetServerGlobals()->curtime;

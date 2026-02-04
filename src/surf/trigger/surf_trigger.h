@@ -146,7 +146,7 @@ public:
 	{
 		// TODO: Let mapping API decide whether it is not the case.
 		// for now disable for relative teleports because it completely breaks landmark offsets
-		return !tracker.surfTrigger->teleport.relative;
+		return true;
 	}
 
 	static bool ShouldTouchBeforeEndTouch(TriggerTouchTracker tracker)

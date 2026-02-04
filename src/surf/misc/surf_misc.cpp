@@ -509,7 +509,6 @@ SCMD(surf_restart, SCFL_TIMER | SCFL_MAP)
 			player->noclipService->DisableNoclip();
 			player->noclipService->HandleNoclip();
 		}
-		player->GetPlayerPawn()->Respawn();
 	}
 	else
 	{
@@ -604,6 +603,9 @@ SCMD(surf_restart, SCFL_TIMER | SCFL_MAP)
 			return MRES_SUPERCEDE;
 		}
 	}
+
+	// last resort, just respawn
+	player->GetPlayerPawn()->Respawn();
 
 	return MRES_SUPERCEDE;
 }
