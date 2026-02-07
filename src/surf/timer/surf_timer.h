@@ -349,10 +349,7 @@ public:
 	void Resume(bool force = false);
 	bool CanResume(bool showError = false);
 
-	void TogglePause()
-	{
-		paused ? Resume() : Pause();
-	}
+	void TogglePause();
 
 	void ToggleTimerStopSound();
 	bool shouldPlayTimerSound = true;

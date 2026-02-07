@@ -95,8 +95,8 @@ void SurfPlayer::Reset()
 	this->beamService->Reset();
 	this->telemetryService->Reset();
 
-	g_pSurfModeManager->SwitchToMode(this, SurfOptionService::GetOptionStr("defaultMode", SURF_DEFAULT_MODE), true, true);
-	g_pSurfStyleManager->ClearStyles(this, true);
+	g_pSurfModeManager->SwitchToMode(this, SurfOptionService::GetOptionStr("defaultMode", SURF_DEFAULT_MODE), true, true, false);
+	g_pSurfStyleManager->ClearStyles(this, true, false);
 	CSplitString styles(SurfOptionService::GetOptionStr("defaultStyles"), ",");
 	FOR_EACH_VEC(styles, i)
 	{

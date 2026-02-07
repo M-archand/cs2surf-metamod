@@ -646,6 +646,18 @@ bool SurfTimerService::CanResume(bool showError)
 	return true;
 }
 
+void SurfTimerService::TogglePause()
+{
+	if (!this->player->IsAlive())
+	{
+		Surf::misc::JoinTeam(player, CS_TEAM_CT);
+	}
+	else
+	{
+		paused ? Resume() : Pause();
+	}
+}
+
 SCMD(surf_timerstopsound, SCFL_TIMER | SCFL_PREFERENCE)
 {
 	SurfPlayer *player = g_pSurfPlayerManager->ToPlayer(controller);
