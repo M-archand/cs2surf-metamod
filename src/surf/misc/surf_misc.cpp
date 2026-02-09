@@ -225,6 +225,7 @@ SCMD(surf_bonus, SCFL_TIMER | SCFL_MAP)
 				float zoneHeight = maxs.z - mins.z;
 				center.z = mins.z + (zoneHeight * 0.15f);
 				player->SetOrigin(center);
+				player->SetVelocity(vec3_origin);
 				return MRES_SUPERCEDE;
 			}
 		}
@@ -297,6 +298,7 @@ SCMD(surf_rb, SCFL_TIMER | SCFL_MAP)
 				float zoneHeight = maxs.z - mins.z;
 				center.z = mins.z + (zoneHeight * 0.15f);
 				player->SetOrigin(center);
+				player->SetVelocity(vec3_origin);
 				return MRES_SUPERCEDE;
 			}
 		}
@@ -398,6 +400,7 @@ SCMD(surf_stage, SCFL_TIMER | SCFL_MAP)
 				center.z = mins.z + (zoneHeight * 0.15f);
 				player->timerService->TimerStop(true);
 				player->SetOrigin(center);
+				player->SetVelocity(vec3_origin);
 				return MRES_SUPERCEDE;
 			}
 		}
@@ -468,6 +471,7 @@ SCMD(surf_rs, SCFL_TIMER | SCFL_MAP)
 				float zoneHeight = maxs.z - mins.z;
 				center.z = mins.z + (zoneHeight * 0.15f);
 				player->SetOrigin(center);
+				player->SetVelocity(vec3_origin);
 				return MRES_SUPERCEDE;
 			}
 		}
@@ -578,6 +582,7 @@ SCMD(surf_restart, SCFL_TIMER | SCFL_MAP)
 				// raise center.z a bit to avoid floorstuck
 				center.z = mins.z + (zoneHeight * 0.75f);
 				player->SetOrigin(center);
+				player->SetVelocity(vec3_origin);
 				return MRES_SUPERCEDE;
 			}
 		}

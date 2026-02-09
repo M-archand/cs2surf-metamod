@@ -14,7 +14,7 @@ constexpr char sql_getpb[] = R"(
 // The following queries should have no style!
 
 constexpr char sql_getmaprank[] = R"(
-    SELECT COUNT(DISTINCT Times.SteamID64) 
+    SELECT COUNT(DISTINCT Times.SteamID64) + 1
         FROM Times 
         INNER JOIN MapCourses ON MapCourses.ID=Times.MapCourseID 
         INNER JOIN Maps ON Maps.ID = MapCourses.MapID
@@ -27,8 +27,7 @@ constexpr char sql_getmaprank[] = R"(
             INNER JOIN Maps ON Maps.ID = MapCourses.MapID
             INNER JOIN Players ON Players.SteamID64=Times.SteamID64 
             WHERE Players.Cheater=0 AND Times.SteamID64=%llu AND Maps.Name='%s'
-            AND MapCourses.Name='%s' AND Times.ModeID=%d AND Times.StyleIDFlags=0) 
-    + 1
+            AND MapCourses.Name='%s' AND Times.ModeID=%d AND Times.StyleIDFlags=0)
 )";
 
 constexpr char sql_getlowestmaprank[] = R"(
