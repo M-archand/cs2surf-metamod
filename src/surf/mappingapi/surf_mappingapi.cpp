@@ -714,6 +714,7 @@ void Surf::mapapi::OnSpawn(int count, const EntitySpawnInfo_t *info)
 			continue;
 		}
 		const char *classname = info[i].m_pEntity->GetClassname();
+		const char *targetname = ekv->GetString("targetname", "");
 		if (SURF_STREQI(classname, "trigger_multiple"))
 		{
 			Mapi_OnTriggerMultipleSpawn(&info[i]);
@@ -738,6 +739,10 @@ void Surf::mapapi::OnSpawn(int count, const EntitySpawnInfo_t *info)
 		else if (SURF_STREQI(classname, "point_servercommand"))
 		{
 			// fuck gambling you slimy losers
+			g_pSurfUtils->RemoveEntity(info[i].m_pEntity->m_pInstance);
+		}
+		else if (SURF_STREQI(classname, "func_brush") && SURF_STREQI(targetname, "clash_ad"))
+		{
 			g_pSurfUtils->RemoveEntity(info[i].m_pEntity->m_pInstance);
 		}
 	}
