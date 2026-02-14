@@ -15,7 +15,7 @@
 #define SURF_SND_RESET_CPS "UIPanorama.round_report_odds_dn"
 
 // TODO: add sound & menu addon if its even necessary
-#define SURF_WORKSHOP_ADDON_ID            ""
+#define SURF_WORKSHOP_ADDON_ID            "3665732047"
 #define SURF_WORKSHOP_ADDON_SNDEVENT_FILE ""
 
 #define SURF_DEFAULT_CHAT_PREFIX  "{lime}Surf {grey}|{default}"

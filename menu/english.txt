@@ -1,5 +1,5 @@
-// CS2KZ Menu (English)
-// English radio menu support addon for CS2KZ plugin.
+// CS2Surf Menu (English)
+// English radio menu support addon for CS2Surf plugin.
 "RadioPanel.txt"
 {
 	"Groups"
@@ -7,37 +7,44 @@
 		"menu_simple"
 		{
 			"hotkey"	"0"
-			"title"		"TP Menu (Simple)"
+			"title"		"Main Menu"
 			"timeout"	"100000"
 
 			"Commands"
 			{
-				"Checkpoint"
+				"Respawn"
 				{
 					"hotkey"	"1"
-					"label"		"Saveloc"
-					"cmd"		"surf_cp; radio"
+					"label"		"Respawn"
+					"cmd"		"surf_r; radio"
 				}
 
-				"Teleport"
+				"Respawn Stage"
 				{
 					"hotkey"	"2"
-					"label"		"Loadloc"
-					"cmd"		"surf_tp; radio"
+					"label"		"Respawn Stage"
+					"cmd"		"surf_rs; radio"
+				}
+
+				"Respawn Bonus"
+				{
+					"hotkey"	"3"
+					"label"		"Respawn Bonus"
+					"cmd"		"surf_rb; radio"
 				}
 
 				"Pause"
 				{
-					"hotkey"	"3"
+					"hotkey"	"4"
 					"label"		"Pause/Resume"
 					"cmd"		"surf_pause; radio"
 				}
 
-				"Restart"
+				"Noclip"
 				{
-					"hotkey"	"4"
-					"label"		"Restart/Respawn"
-					"cmd"		"surf_r; radio"
+					"hotkey"	"5"
+					"label"		"Toggle Noclip"
+					"cmd"		"surf_noclip; radio"
 				}
 			}
 		}
@@ -45,65 +52,51 @@
 		"menu_advanced"
 		{
 			"hotkey"	"1"
-			"title"		"TP Menu (Advanced)"
+			"title"		"Practice Menu"
 			"timeout"	"100000"
 
 			"Commands"
 			{
-				"Checkpoint"
+				"Saveloc"
 				{
 					"hotkey"	"1"
 					"label"		"Saveloc"
 					"cmd"		"surf_cp; radio1"
 				}
 
-				"Teleport"
+				"Loadloc"
 				{
 					"hotkey"	"2"
 					"label"		"Loadloc"
 					"cmd"		"surf_tp; radio1"
 				}
 				
-				"Prev Checkpoint"
+				"Prevloc"
 				{
 					"hotkey"	"3"
-					"label"		"Prev CP"
+					"label"		"Prevloc"
 					"cmd"		"surf_prevcp; radio1"
 				}
 
-				"Next Checkpoint"
+				"Nextloc"
 				{
 					"hotkey"	"4"
-					"label"		"Next CP"
+					"label"		"Nextloc"
 					"cmd"		"surf_nextcp; radio1"
 				}
 
-				"Undo Teleport"
+				"Respawn"
 				{
 					"hotkey"	"5"
-					"label"		"Undo TP"
-					"cmd"		"surf_undo; radio1"
-				}
-
-				"Pause"
-				{
-					"hotkey"	"6"
-					"label"		"Pause/Resume"
-					"cmd"		"surf_pause; radio1"
-				}
-
-				"Restart"
-				{
-					"hotkey"	"7"
-					"label"		"Restart/Respawn"
+					"label"		"Respawn"
 					"cmd"		"surf_r; radio1"
 				}
 
 				"Noclip"
 				{
-					"hotkey"	"8"
+					"hotkey"	"6"
 					"label"		"Toggle Noclip"
-					"cmd"		"kz_noclip; radio1"
+					"cmd"		"surf_noclip; radio1"
 				}
 			}
 		}

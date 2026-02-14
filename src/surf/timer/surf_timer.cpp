@@ -625,6 +625,7 @@ void SurfTimerService::Resume(bool force)
 	}
 	this->player->GetMoveServices()->m_flDuckAmount = this->lastDuckValue;
 	this->player->GetMoveServices()->m_flStamina = this->lastStaminaValue;
+	this->player->GetPlayerPawn()->SetGravityScale(1);
 
 	FOR_EACH_VEC(eventListeners, i)
 	{
