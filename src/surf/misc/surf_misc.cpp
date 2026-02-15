@@ -222,10 +222,15 @@ SCMD(surf_bonus, SCFL_TIMER | SCFL_MAP)
 
 				// Fallback: if no teleport destination found, use center of trigger
 				Vector center = (mins + maxs) * 0.5f;
-				float zoneHeight = maxs.z - mins.z;
-				center.z = mins.z + (zoneHeight * 0.15f);
-				player->SetOrigin(center);
-				player->SetVelocity(vec3_origin);
+				Vector safeOrigin;
+				QAngle ang;
+				Vector distFromCenter = {20, 20, 40};
+				Vector offset = {0, 0, 0};
+				if (utils::FindValidPositionAroundCenter(center, distFromCenter, offset, safeOrigin, ang))
+				{
+					player->SetOrigin(safeOrigin);
+					player->SetVelocity(vec3_origin);
+				}
 				return MRES_SUPERCEDE;
 			}
 		}
@@ -295,10 +300,15 @@ SCMD(surf_rb, SCFL_TIMER | SCFL_MAP)
 
 				// Fallback: if no teleport destination found, use center of trigger
 				Vector center = (mins + maxs) * 0.5f;
-				float zoneHeight = maxs.z - mins.z;
-				center.z = mins.z + (zoneHeight * 0.15f);
-				player->SetOrigin(center);
-				player->SetVelocity(vec3_origin);
+				Vector safeOrigin;
+				QAngle ang;
+				Vector distFromCenter = {20, 20, 40};
+				Vector offset = {0, 0, 0};
+				if (utils::FindValidPositionAroundCenter(center, distFromCenter, offset, safeOrigin, ang))
+				{
+					player->SetOrigin(safeOrigin);
+					player->SetVelocity(vec3_origin);
+				}
 				return MRES_SUPERCEDE;
 			}
 		}
@@ -396,11 +406,15 @@ SCMD(surf_stage, SCFL_TIMER | SCFL_MAP)
 
 				// Fallback: if no teleport destination found, use center of trigger
 				Vector center = (mins + maxs) * 0.5f;
-				float zoneHeight = maxs.z - mins.z;
-				center.z = mins.z + (zoneHeight * 0.15f);
-				player->timerService->TimerStop(true);
-				player->SetOrigin(center);
-				player->SetVelocity(vec3_origin);
+				Vector safeOrigin;
+				QAngle ang;
+				Vector distFromCenter = {20, 20, 40};
+				Vector offset = {0, 0, 0};
+				if (utils::FindValidPositionAroundCenter(center, distFromCenter, offset, safeOrigin, ang))
+				{
+					player->SetOrigin(safeOrigin);
+					player->SetVelocity(vec3_origin);
+				}
 				return MRES_SUPERCEDE;
 			}
 		}
@@ -468,10 +482,15 @@ SCMD(surf_rs, SCFL_TIMER | SCFL_MAP)
 
 				// Fallback: if no teleport destination found, use center of trigger
 				Vector center = (mins + maxs) * 0.5f;
-				float zoneHeight = maxs.z - mins.z;
-				center.z = mins.z + (zoneHeight * 0.15f);
-				player->SetOrigin(center);
-				player->SetVelocity(vec3_origin);
+				Vector safeOrigin;
+				QAngle ang;
+				Vector distFromCenter = {20, 20, 40};
+				Vector offset = {0, 0, 0};
+				if (utils::FindValidPositionAroundCenter(center, distFromCenter, offset, safeOrigin, ang))
+				{
+					player->SetOrigin(safeOrigin);
+					player->SetVelocity(vec3_origin);
+				}
 				return MRES_SUPERCEDE;
 			}
 		}
@@ -578,11 +597,15 @@ SCMD(surf_restart, SCFL_TIMER | SCFL_MAP)
 				}
 
 				Vector center = (mins + maxs) * 0.5f;
-				float zoneHeight = maxs.z - mins.z;
-				// raise center.z a bit to avoid floorstuck
-				center.z = mins.z + (zoneHeight * 0.75f);
-				player->SetOrigin(center);
-				player->SetVelocity(vec3_origin);
+				Vector safeOrigin;
+				QAngle ang;
+				Vector distFromCenter = {20, 20, 40};
+				Vector offset = {0, 0, 0};
+				if (utils::FindValidPositionAroundCenter(center, distFromCenter, offset, safeOrigin, ang))
+				{
+					player->SetOrigin(safeOrigin);
+					player->SetVelocity(vec3_origin);
+				}
 				return MRES_SUPERCEDE;
 			}
 		}
