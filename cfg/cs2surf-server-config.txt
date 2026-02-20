@@ -23,6 +23,15 @@
 	
 	// Whether we override chat processing or not.
 	"overridePlayerChat"		"true"
+
+	// Default FOV for players.
+	"defaultFOV"						"90"
+	
+	// Minimum FOV for players.
+	"minFOV"							"80"
+
+	// Maximum FOV for players.
+	"maxFOV"							"130"
 	
 	// Local database configurations.
 	"db"

@@ -64,4 +64,8 @@
 		"lv"	"{grey}Rakstot {default}/hideweapon {grey}, tu vari izslēgt ieroča redzamību."
 		"pt"	"{grey}Digite {default}/hideweapon {grey}para alternar a visibilidade da sua arma."
 	}
+	"Tip - surf_fov"
+	{
+		"en"	"{grey}Use {default}/fov {purple}<value> {default}to change your FOV."
+	}
 }

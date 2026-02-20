@@ -117,6 +117,7 @@ bool SurfTriggerService::TouchTeleportTrigger(TriggerTouchTracker tracker)
 
 	if (Surf::mapapi::IsPositionInOrAboveStartZone(finalOrigin))
 	{
+		this->player->SetVelocity(vec3_origin);
 		this->player->timerService->TimerStop(false);
 	}
 

@@ -2,6 +2,9 @@
 	Keeps track of course descriptors along with various types of triggers, applying effects to player when necessary.
 */
 
+#include <string>
+#include <regex>
+
 #include "surf/surf.h"
 #include "surf/mode/surf_mode.h"
 #include "surf/trigger/surf_trigger.h"
@@ -287,30 +290,32 @@ static_function void Mapi_OnTriggerMultipleSpawn(const EntitySpawnInfo_t *info)
 			// Check for pre-mapping api triggers for backwards compatibility.
 			if (g_mappingApi.mapApiVersion == SURF_NO_MAPAPI_VERSION)
 			{
+				CUtlString triggerName = info->m_pEntity->m_name.String();
+				std::string name(triggerName.Get());
+
 				// START/END HOOKS
-				if (info->m_pEntity->NameMatches("timer_startzone") || info->m_pEntity->NameMatches("timer_endzone"))
+				if (name.find("timer_startzone") != std::string::npos || name.find("timer_endzone") != std::string::npos)
 				{
 					snprintf(trigger.zone.courseDescriptor, sizeof(trigger.zone.courseDescriptor), SURF_NO_MAPAPI_COURSE_DESCRIPTOR);
-					trigger.type = info->m_pEntity->NameMatches("timer_startzone") ? SURFTRIGGER_ZONE_START : SURFTRIGGER_ZONE_END;
+					trigger.type = name.find("timer_startzone") != std::string::npos ? SURFTRIGGER_ZONE_START : SURFTRIGGER_ZONE_END;
 				}
-				else if (info->m_pEntity->NameMatches("map_start") || info->m_pEntity->NameMatches("map_end"))
+				else if (name.find("map_start") != std::string::npos || name.find("map_end") != std::string::npos)
 				{
 					snprintf(trigger.zone.courseDescriptor, sizeof(trigger.zone.courseDescriptor), SURF_NO_MAPAPI_COURSE_DESCRIPTOR);
-					trigger.type = info->m_pEntity->NameMatches("map_start") ? SURFTRIGGER_ZONE_START : SURFTRIGGER_ZONE_END;
+					trigger.type = name.find("map_start") != std::string::npos ? SURFTRIGGER_ZONE_START : SURFTRIGGER_ZONE_END;
 				}
 
 				// STAGE HOOK
-				CUtlString triggerName = info->m_pEntity->m_name.String();
-				const char *nameStr = triggerName.Get();
+				std::regex stagePattern(R"(s.*(\d+)_start)");
+				std::smatch match;
 				int stageNum = 0;
 
-				int matched = sscanf(nameStr, "stage%d_start", &stageNum);
-				if (matched != 1)
+				if (std::regex_search(name, match, stagePattern))
 				{
-					matched = sscanf(nameStr, "s%d_start", &stageNum);
+					stageNum = std::stoi(match.str(1));
 				}
 
-				if (matched == 1)
+				if (stageNum != 0)
 				{
 					snprintf(trigger.zone.courseDescriptor, sizeof(trigger.zone.courseDescriptor), SURF_NO_MAPAPI_COURSE_DESCRIPTOR);
 
@@ -327,55 +332,43 @@ static_function void Mapi_OnTriggerMultipleSpawn(const EntitySpawnInfo_t *info)
 				}
 
 				// CHECKPOINT HOOK
+				std::regex cpPattern(R"(map_c.*(\d+))");
 				int cpNum = 0;
 
-				matched = sscanf(nameStr, "map_checkpoint%d", &cpNum);
-				if (matched != 1)
+				if (std::regex_search(name, match, cpPattern))
 				{
-					matched = sscanf(nameStr, "map_cp%d", &cpNum);
-				}
-
-				if (matched == 1)
-				{
+					cpNum = std::stoi(match.str(1));
 					snprintf(trigger.zone.courseDescriptor, sizeof(trigger.zone.courseDescriptor), SURF_NO_MAPAPI_COURSE_DESCRIPTOR);
 					trigger.type = SURFTRIGGER_ZONE_CHECKPOINT;
 					trigger.zone.number = cpNum;
 				}
 
 				// BONUS HOOK
-				int bonusNum = 0;
-				int chars = 0;
+				std::string bonusName = "B";
 				char bonusDescriptor[128];
 				bool isBonusStart = false;
 				bool isBonusEnd = false;
-				CUtlString bonusName;
 
-				if (sscanf(nameStr, "b%d_start%n", &bonusNum, &chars) == 1 && nameStr[chars] == '\0')
+				std::regex bStartPattern(R"(b.*(\d+)_start)");
+				std::regex bEndPattern(R"(b.*(\d+)_end)");
+				int bonusNum = 0;
+
+				if (std::regex_search(name, match, bStartPattern))
 				{
-					bonusName.Format("B%d", bonusNum);
+					bonusNum = std::stoi(match.str(1));
+					bonusName.append(match.str(1));
 
-					snprintf(bonusDescriptor, sizeof(bonusDescriptor), "B%d", bonusNum); // Safe C-string
-					Mapi_CreateCourse(bonusNum + 1, bonusName.Get(), g_mappingApi.courseDescriptors.Count() + 1, bonusDescriptor);
+					snprintf(bonusDescriptor, sizeof(bonusDescriptor), "B%d", bonusNum);
+					Mapi_CreateCourse(bonusNum + 1, bonusName.c_str(), g_mappingApi.courseDescriptors.Count() + 1, bonusDescriptor);
 
 					isBonusStart = true;
 				}
-				else if (sscanf(nameStr, "b%d_end%n", &bonusNum, &chars) == 1 && nameStr[chars] == '\0')
-				{
-					snprintf(bonusDescriptor, sizeof(bonusDescriptor), "B%d", bonusNum);
-					isBonusEnd = true;
-				}
-				else if (sscanf(nameStr, "bonus%d_start%n", &bonusNum, &chars) == 1 && nameStr[chars] == '\0')
-				{
-					bonusName.Format("B%d", bonusNum);
 
-					snprintf(bonusDescriptor, sizeof(bonusDescriptor), "B%d", bonusNum); // Safe C-string
-					Mapi_CreateCourse(bonusNum + 1, bonusName.Get(), g_mappingApi.courseDescriptors.Count() + 1, bonusDescriptor);
-
-					isBonusStart = true;
-				}
-				else if (sscanf(nameStr, "bonus%d_end%n", &bonusNum, &chars) == 1 && nameStr[chars] == '\0')
+				if (std::regex_search(name, match, bEndPattern))
 				{
+					bonusNum = std::stoi(match.str(1));
 					snprintf(bonusDescriptor, sizeof(bonusDescriptor), "B%d", bonusNum);
+
 					isBonusEnd = true;
 				}
 

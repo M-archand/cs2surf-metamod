@@ -2,6 +2,7 @@
 #include "../timer/surf_timer.h"
 #include "surf/language/surf_language.h"
 #include "utils/simplecmds.h"
+#include "utils/ctimer.h"
 
 static_global class SurfTimerServiceEventListener_Spec : public SurfTimerServiceEventListener
 {
@@ -126,10 +127,31 @@ bool SurfSpecService::SpectatePlayer(const char *playerName)
 		return MRES_SUPERCEDE;
 	}
 
+	this->SpectatePlayer(targetPlayer);
+	return true;
+}
+
+static_function f64 TeleportObserver(CPlayerUserId userID, Vector origin, QAngle angles)
+{
+	SurfPlayer *player = g_pSurfPlayerManager->ToPlayer(userID);
+	if (player && player->GetObserverPawn())
+	{
+		player->GetObserverPawn()->Teleport(&origin, &angles, nullptr);
+	}
+	return 0.0f;
+};
+
+bool SurfSpecService::SpectatePlayer(SurfPlayer *target)
+{
+	if (!target || !this->CanSpectate())
+	{
+		return false;
+	}
 	// Join spectator team if not already in it.
+	CCSPlayerController *controller = this->player->GetController();
 	if (controller->GetTeam() != CS_TEAM_SPECTATOR)
 	{
-		Surf::misc::JoinTeam(player, CS_TEAM_SPECTATOR, true);
+		Surf::misc::JoinTeam(this->player, CS_TEAM_SPECTATOR, true);
 	}
 
 	CPlayer_ObserverServices *obsService = player->GetController()->m_hObserverPawn()->m_pObserverServices;
@@ -138,13 +160,24 @@ bool SurfSpecService::SpectatePlayer(const char *playerName)
 		player->languageService->PrintChat(true, false, "Spectate Failure (Generic)");
 		return false;
 	}
-	// This needs to be set if the player spectates themself, so that the camera position is correct.
-	controller->m_DesiredObserverMode(OBS_MODE_IN_EYE);
-	controller->m_hDesiredObserverTarget(targetPlayer->GetPlayerPawn());
 
 	obsService->m_iObserverMode(OBS_MODE_IN_EYE);
 	obsService->m_iObserverLastMode(OBS_MODE_NONE);
-	obsService->m_hObserverTarget(targetPlayer->GetPlayerPawn());
+	obsService->m_hObserverTarget(target->GetPlayerPawn());
+
+	if (target == this->player)
+	{
+		controller->m_DesiredObserverMode(OBS_MODE_ROAMING);
+		obsService->m_iObserverMode(OBS_MODE_ROAMING);
+		controller->m_hDesiredObserverTarget(target->GetPlayerPawn());
+		obsService->m_hObserverTarget(target->GetPlayerPawn());
+		Vector origin;
+		QAngle angles;
+		this->player->GetEyeOrigin(&origin);
+		this->player->GetAngles(&angles);
+		StartTimer<CPlayerUserId, Vector, QAngle>(TeleportObserver, player->GetClient()->GetUserID(), std::move(origin), std::move(angles), 0.0f,
+												  false, false);
+	}
 	return true;
 }
 
@@ -214,20 +247,35 @@ SCMD(surf_spec, SCFL_SPEC)
 		player->languageService->PrintChat(true, false, "Spectate Failure (Generic)");
 		return MRES_SUPERCEDE;
 	}
+	// Count alive players and find first alive player
 	u32 numAlivePlayers = 0;
+	SurfPlayer *firstAlivePlayer = nullptr;
 	for (i32 i = 0; i < MAXPLAYERS + 1; i++)
 	{
 		SurfPlayer *otherPlayer = g_pSurfPlayerManager->ToPlayer(i);
 		if (otherPlayer && otherPlayer->IsAlive() && otherPlayer != player)
 		{
 			numAlivePlayers++;
+			if (!firstAlivePlayer)
+			{
+				firstAlivePlayer = otherPlayer;
+			}
 		}
 	}
+
+	// Handle automatic spectating
 	if (numAlivePlayers == 0 && args->ArgC() == 1)
 	{
 		player->specService->SpectatePlayer("@me");
 		return MRES_SUPERCEDE;
 	}
+	if (numAlivePlayers == 1)
+	{
+		player->specService->SpectatePlayer(firstAlivePlayer);
+		return MRES_SUPERCEDE;
+	}
+
+	// Handle explicit target
 	if (args->ArgC() < 2)
 	{
 		player->languageService->PrintChat(true, false, "Spec Command Usage", args->ArgS());
@@ -235,7 +283,6 @@ SCMD(surf_spec, SCFL_SPEC)
 	}
 
 	player->specService->SpectatePlayer(args->Arg(1));
-
 	return MRES_SUPERCEDE;
 }
 

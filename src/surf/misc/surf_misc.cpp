@@ -161,6 +161,7 @@ SCMD(surf_bonus, SCFL_TIMER | SCFL_MAP)
 			return MRES_SUPERCEDE;
 		}
 	}
+	player->timerService->SetStage(0);
 
 	// First pass: Find all teleport destinations and their positions
 	std::vector<std::pair<Vector, QAngle>> teleportDestinations;
@@ -206,7 +207,12 @@ SCMD(surf_bonus, SCFL_TIMER | SCFL_MAP)
 				return MRES_SUPERCEDE;
 			}
 
-			if (surfTrigger->zone.bonus == bonusID && surfTrigger->type == SURFTRIGGER_ZONE_BONUS_START)
+			if (surfTrigger->type != SURFTRIGGER_ZONE_BONUS_START)
+			{
+				continue;
+			}
+
+			if (surfTrigger->zone.bonus == bonusID)
 			{
 				Vector mins = surfTrigger->mins + surfTrigger->origin;
 				Vector maxs = surfTrigger->maxs + surfTrigger->origin;
@@ -215,6 +221,7 @@ SCMD(surf_bonus, SCFL_TIMER | SCFL_MAP)
 				{
 					if (utils::IsVectorInBox(destPos, mins, maxs))
 					{
+						player->timerService->TimerStop(true);
 						player->Teleport(&destPos, &destAng, &vec3_origin);
 						return MRES_SUPERCEDE;
 					}
@@ -228,6 +235,7 @@ SCMD(surf_bonus, SCFL_TIMER | SCFL_MAP)
 				Vector offset = {0, 0, 0};
 				if (utils::FindValidPositionAroundCenter(center, distFromCenter, offset, safeOrigin, ang))
 				{
+					player->timerService->TimerStop(true);
 					player->SetOrigin(safeOrigin);
 					player->SetVelocity(vec3_origin);
 				}
@@ -284,7 +292,12 @@ SCMD(surf_rb, SCFL_TIMER | SCFL_MAP)
 				continue;
 			}
 
-			if (surfTrigger->type == SURFTRIGGER_ZONE_BONUS_START && V_strcmp(surfTrigger->zone.courseDescriptor, course->name) == 0)
+			if (surfTrigger->type != SURFTRIGGER_ZONE_BONUS_START)
+			{
+				continue;
+			}
+
+			if (V_strcmp(surfTrigger->zone.courseDescriptor, course->name) == 0)
 			{
 				Vector mins = surfTrigger->mins + surfTrigger->origin;
 				Vector maxs = surfTrigger->maxs + surfTrigger->origin;
@@ -293,6 +306,7 @@ SCMD(surf_rb, SCFL_TIMER | SCFL_MAP)
 				{
 					if (utils::IsVectorInBox(destPos, mins, maxs))
 					{
+						player->timerService->TimerStop(true);
 						player->Teleport(&destPos, &destAng, &vec3_origin);
 						return MRES_SUPERCEDE;
 					}
@@ -306,6 +320,7 @@ SCMD(surf_rb, SCFL_TIMER | SCFL_MAP)
 				Vector offset = {0, 0, 0};
 				if (utils::FindValidPositionAroundCenter(center, distFromCenter, offset, safeOrigin, ang))
 				{
+					player->timerService->TimerStop(true);
 					player->SetOrigin(safeOrigin);
 					player->SetVelocity(vec3_origin);
 				}
@@ -320,13 +335,7 @@ SCMD(surf_rb, SCFL_TIMER | SCFL_MAP)
 SCMD(surf_stage, SCFL_TIMER | SCFL_MAP)
 {
 	SurfPlayer *player = g_pSurfPlayerManager->ToPlayer(controller);
-	if (!player->timerService->GetCourse())
-	{
-		player->languageService->PrintChat(true, false, "No Current Course");
-		return MRES_SUPERCEDE;
-	}
-
-	const SurfCourseDescriptor *course = player->timerService->GetCourse();
+	const SurfCourseDescriptor *course = Surf::course::GetCourse("Main", false);
 	i32 stageID = 0;
 	if (course->stageCount == 0)
 	{
@@ -389,6 +398,11 @@ SCMD(surf_stage, SCFL_TIMER | SCFL_MAP)
 				return MRES_SUPERCEDE;
 			}
 
+			if (surfTrigger->type != SURFTRIGGER_ZONE_STAGE && surfTrigger->type != SURFTRIGGER_ZONE_START)
+			{
+				continue;
+			}
+
 			if (surfTrigger->zone.number == stageID)
 			{
 				Vector mins = surfTrigger->mins + surfTrigger->origin;
@@ -400,6 +414,7 @@ SCMD(surf_stage, SCFL_TIMER | SCFL_MAP)
 					{
 						player->timerService->TimerStop(true);
 						player->Teleport(&destPos, &destAng, &vec3_origin);
+						player->timerService->SetStage(stageID);
 						return MRES_SUPERCEDE;
 					}
 				}
@@ -412,6 +427,9 @@ SCMD(surf_stage, SCFL_TIMER | SCFL_MAP)
 				Vector offset = {0, 0, 0};
 				if (utils::FindValidPositionAroundCenter(center, distFromCenter, offset, safeOrigin, ang))
 				{
+					player->timerService->TimerStop(true);
+					player->timerService->SetStage(stageID);
+
 					player->SetOrigin(safeOrigin);
 					player->SetVelocity(vec3_origin);
 				}
@@ -462,6 +480,11 @@ SCMD(surf_rs, SCFL_TIMER | SCFL_MAP)
 			const SurfTrigger *surfTrigger = Surf::mapapi::GetSurfTrigger(pTrigger);
 
 			if (!surfTrigger)
+			{
+				continue;
+			}
+
+			if (surfTrigger->type != SURFTRIGGER_ZONE_STAGE && surfTrigger->type != SURFTRIGGER_ZONE_START)
 			{
 				continue;
 			}
@@ -524,6 +547,7 @@ SCMD(surf_restart, SCFL_TIMER | SCFL_MAP)
 	}
 
 	player->timerService->OnTeleportToStart();
+	player->timerService->SetStage(0);
 	if (player->GetPlayerPawn()->IsAlive())
 	{
 		// Fix players spawning 500u under spawn positions.

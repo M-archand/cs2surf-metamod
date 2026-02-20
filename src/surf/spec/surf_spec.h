@@ -21,6 +21,7 @@ public:
 
 	bool IsSpectating(SurfPlayer *target);
 	bool SpectatePlayer(const char *playerName);
+	bool SpectatePlayer(SurfPlayer *target);
 	bool CanSpectate();
 
 	void GetSpectatorList(CUtlVector<CUtlString> &spectatorList);

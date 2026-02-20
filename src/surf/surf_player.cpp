@@ -21,6 +21,7 @@
 #include "trigger/surf_trigger.h"
 #include "global/surf_global.h"
 #include "profile/surf_profile.h"
+#include "fov/surf_fov.h"
 
 #include "sdk/datatypes.h"
 #include "sdk/entity/cbasetrigger.h"
@@ -53,6 +54,7 @@ void SurfPlayer::Init()
 	delete this->triggerService;
 	delete this->globalService;
 	delete this->profileService;
+	delete this->fovService;
 
 	this->anticheatService = new SurfAnticheatService(this);
 	this->beamService = new SurfBeamService(this);
@@ -72,6 +74,7 @@ void SurfPlayer::Init()
 	this->triggerService = new SurfTriggerService(this);
 	this->globalService = new SurfGlobalService(this);
 	this->profileService = new SurfProfileService(this);
+	this->fovService = new SurfFOVService(this);
 
 	Surf::mode::InitModeService(this);
 }
@@ -147,6 +150,7 @@ void SurfPlayer::OnPhysicsSimulate()
 	this->noclipService->HandleMoveCollision();
 	this->EnableGodMode();
 	this->UpdatePlayerModelAlpha();
+	this->fovService->OnPhysicsSimulate();
 }
 
 void SurfPlayer::OnPhysicsSimulatePost()

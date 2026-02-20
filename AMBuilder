@@ -122,6 +122,7 @@ def configure_main(sdk_target, sdk, cxx):
     os.path.join(builder.sourcePath, 'src', 'surf', 'option', 'surf_option.cpp'),
     os.path.join(builder.sourcePath, 'src', 'surf', 'profile', 'surf_profile.cpp'),
     os.path.join(builder.sourcePath, 'src', 'surf', 'quiet', 'surf_quiet.cpp'),
+		os.path.join(builder.sourcePath, 'src', 'surf', 'fov', 'surf_fov.cpp'),
     os.path.join(builder.sourcePath, 'src', 'surf', 'replays', 'surf_replays.cpp'),
     os.path.join(builder.sourcePath, 'src', 'surf', 'spec', 'surf_spec.cpp'),
     os.path.join(builder.sourcePath, 'src', 'surf', 'goto', 'surf_goto.cpp'),

@@ -996,4 +996,8 @@
 		"ua"		"Увімк./вимк. автоматичне приховування зброї."
 		"pt"		"Habilitar/Desabilitar esconder a arma automaticamente."
 	}
+	"Command Description - surf_fov"
+	{
+		"en"		"Change your FOV."
+	}
 }

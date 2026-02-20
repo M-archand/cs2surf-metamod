@@ -48,6 +48,7 @@ class SurfTelemetryService;
 class SurfTimerService;
 class SurfTipService;
 class SurfTriggerService;
+class SurfFOVService;
 
 class SurfPlayer : public MovementPlayer
 {
@@ -159,6 +160,7 @@ public:
 	SurfTimerService *timerService {};
 	SurfTipService *tipService {};
 	SurfTriggerService *triggerService {};
+	SurfFOVService *fovService {};
 
 	void EnableGodMode();
 

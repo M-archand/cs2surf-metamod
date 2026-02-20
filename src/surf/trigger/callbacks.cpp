@@ -290,6 +290,10 @@ void SurfTriggerService::OnMappingApiTriggerTouchPost(TriggerTouchTracker tracke
 			{
 				this->player->timerService->SetCourse(course->guid);
 			}
+			else if (this->player->timerService->GetCourse()->guid != course->guid)
+			{
+				this->player->timerService->SetCourse(course->guid);
+			}
 		}
 		break;
 	}

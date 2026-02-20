@@ -205,6 +205,11 @@ public:
 		return currentStage;
 	}
 
+	void SetStage(int stage)
+	{
+		currentStage = stage;
+	}
+
 	bool InStartzone()
 	{
 		return inStartzone;
