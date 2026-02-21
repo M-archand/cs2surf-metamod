@@ -6,7 +6,7 @@
 class CBaseModelEntity : public CBaseEntity
 {
 public:
-	DECLARE_SCHEMA_CLASS(CBaseModelEntity);
+	DECLARE_SCHEMA_CLASS_ENTITY(CBaseModelEntity);
 
 	SCHEMA_FIELD(CCollisionProperty, m_Collision)
 	SCHEMA_FIELD(Color, m_clrRender)
@@ -16,7 +16,7 @@ public:
 
 class CBeam : public CBaseModelEntity {
 public:
-	DECLARE_SCHEMA_CLASS(CBeam);
+	DECLARE_SCHEMA_CLASS_ENTITY(CBeam);
 
 	SCHEMA_FIELD(float, m_fWidth);
 	SCHEMA_FIELD(Vector, m_vecEndPos);

@@ -585,10 +585,10 @@ static_function void Mapi_OnTriggerPushSpawn(const EntitySpawnInfo_t *info)
 	CBaseEntity *baseEntity = static_cast<CBaseEntity *>(info->m_pEntity->m_pInstance);
 	if (baseEntity)
 	{
-		uint32 spawnflags = baseEntity->m_spawnflags;
+		uint32 flags = baseEntity->m_fFlags;
 
 		// Once Only (set velocity rather than apply acceleration) : [128]
-		bool pushOnce = (spawnflags & 128) != 0;
+		bool pushOnce = (flags & 128) != 0;
 
 		trigger.push.setSpeed[0] = pushOnce ? true : false;
 		trigger.push.setSpeed[1] = pushOnce ? true : false;

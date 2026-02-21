@@ -15,7 +15,7 @@ class CCSPlayer_MovementServices;
 class CPlayerPawnComponent
 {
 public:
-	DECLARE_SCHEMA_CLASS(CPlayerPawnComponent);
+	DECLARE_SCHEMA_CLASS_ENTITY(CPlayerPawnComponent);
 
 private:
 	virtual void unk_00() = 0;
@@ -52,7 +52,7 @@ class CPlayer_WeaponServices : public CPlayerPawnComponent
 	virtual ~CPlayer_WeaponServices() = 0;
 
 public:
-	DECLARE_SCHEMA_CLASS(CPlayer_WeaponServices)
+	DECLARE_SCHEMA_CLASS_ENTITY(CPlayer_WeaponServices)
 	SCHEMA_FIELD(CHandle<CBaseModelEntity>, m_hActiveWeapon)
 	SCHEMA_FIELD_POINTER(CUtlVector<CHandle<CBaseModelEntity>>, m_hMyWeapons)
 };
@@ -62,7 +62,7 @@ class CPlayer_ObserverServices : public CPlayerPawnComponent
 	virtual ~CPlayer_ObserverServices() = 0;
 
 public:
-	DECLARE_SCHEMA_CLASS(CPlayer_ObserverServices)
+	DECLARE_SCHEMA_CLASS_ENTITY(CPlayer_ObserverServices)
 	SCHEMA_FIELD(ObserverMode_t, m_iObserverMode)
 	SCHEMA_FIELD(ObserverMode_t, m_iObserverLastMode)
 	SCHEMA_FIELD(CHandle<CBaseEntity>, m_hObserverTarget)
@@ -73,7 +73,7 @@ class CPlayer_MovementServices : public CPlayerPawnComponent
 	virtual ~CPlayer_MovementServices() = 0;
 
 public:
-	DECLARE_SCHEMA_CLASS(CPlayer_MovementServices);
+	DECLARE_SCHEMA_CLASS_ENTITY(CPlayer_MovementServices);
 	SCHEMA_FIELD_POINTER(CInButtonState, m_nButtons)
 	SCHEMA_FIELD_POINTER(float, m_arrForceSubtickMoveWhen)
 
@@ -103,7 +103,7 @@ class CPlayer_MovementServices_Humanoid : public CPlayer_MovementServices
 	virtual ~CPlayer_MovementServices_Humanoid() = 0;
 
 public:
-	DECLARE_SCHEMA_CLASS(CPlayer_MovementServices_Humanoid);
+	DECLARE_SCHEMA_CLASS_ENTITY(CPlayer_MovementServices_Humanoid);
 	SCHEMA_FIELD(float, m_flSurfaceFriction)
 };
 
@@ -115,18 +115,18 @@ public:
 	CCSPlayer_MovementServices *m_pMovementServices;
 };
 
-class CCSPlayerLegacyJump : public CCSPlayerBaseJump
+class alignas(8) CCSPlayerLegacyJump : public CCSPlayerBaseJump
 {
 public:
-	DECLARE_SCHEMA_CLASS(CCSPlayerLegacyJump)
+	DECLARE_SCHEMA_CLASS_BASE(CCSPlayerLegacyJump, 0)
 	SCHEMA_FIELD(bool, m_bOldJumpPressed)
 	SCHEMA_FIELD(float, m_flJumpPressedTime)
 };
 
-class CCSPlayerModernJump : public CCSPlayerBaseJump
+class alignas(8) CCSPlayerModernJump : public CCSPlayerBaseJump
 {
 public:
-	DECLARE_SCHEMA_CLASS(CCSPlayerModernJump)
+	DECLARE_SCHEMA_CLASS_BASE(CCSPlayerModernJump, 0)
 	SCHEMA_FIELD(int, m_nLastActualJumpPressTick)
 	SCHEMA_FIELD(float, m_flLastActualJumpPressFrac)
 	SCHEMA_FIELD(int, m_nLastUsableJumpPressTick)
@@ -143,7 +143,7 @@ class CCSPlayer_MovementServices : public CPlayer_MovementServices_Humanoid
 	virtual ~CCSPlayer_MovementServices() = 0;
 
 public:
-	DECLARE_SCHEMA_CLASS(CCSPlayer_MovementServices);
+	DECLARE_SCHEMA_CLASS_ENTITY(CCSPlayer_MovementServices);
 	SCHEMA_FIELD(Vector, m_vecLadderNormal)
 	SCHEMA_FIELD(float, m_flAccumulatedJumpError)
 	SCHEMA_FIELD(bool, m_bDucked)
@@ -165,7 +165,7 @@ class CCSPlayer_WaterServices : public CPlayerPawnComponent
 	virtual ~CCSPlayer_WaterServices() = 0;
 
 public:
-	DECLARE_SCHEMA_CLASS(CCSPlayer_WaterServices);
+	DECLARE_SCHEMA_CLASS_ENTITY(CCSPlayer_WaterServices);
 	SCHEMA_FIELD(float, m_flWaterJumpTime)
 	SCHEMA_FIELD(Vector, m_vecWaterJumpVel)
 };
@@ -175,7 +175,7 @@ class CPlayer_ItemServices : public CPlayerPawnComponent
 	virtual ~CPlayer_ItemServices() = 0;
 
 public:
-	DECLARE_SCHEMA_CLASS(CPlayer_ItemServices);
+	DECLARE_SCHEMA_CLASS_ENTITY(CPlayer_ItemServices);
 };
 
 class CCSPlayer_ItemServices : public CPlayer_ItemServices
@@ -183,7 +183,7 @@ class CCSPlayer_ItemServices : public CPlayer_ItemServices
 	virtual ~CCSPlayer_ItemServices() = 0;
 
 public:
-	DECLARE_SCHEMA_CLASS(CCSPlayer_ItemServices);
+	DECLARE_SCHEMA_CLASS_ENTITY(CCSPlayer_ItemServices);
 
 private:
 	virtual CBasePlayerWeapon *_GiveNamedItem(const char *pchName) = 0;
@@ -198,7 +198,7 @@ public:
 class CCSPlayerController_InventoryServices
 {
 public:
-	DECLARE_SCHEMA_CLASS(CCSPlayerController_InventoryServices)
+	DECLARE_SCHEMA_CLASS_ENTITY(CCSPlayerController_InventoryServices)
 
 	SCHEMA_FIELD_POINTER_OFFSET(CCSPlayerInventory, m_nPersonaDataXpTrailLevel, 4)
 
