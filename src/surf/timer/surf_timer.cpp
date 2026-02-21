@@ -211,6 +211,8 @@ bool SurfTimerService::TimerStart(const SurfCourseDescriptor *courseDesc, bool p
 		this->currentStage = 0;
 	}
 
+	this->player->checkpointService->ResetCheckpoints();
+
 	SetCourse(courseDesc->guid);
 	this->validTime = true;
 	this->shouldAnnounceMissedTime = true;
