@@ -449,7 +449,14 @@ SCMD(surf_rs, SCFL_TIMER | SCFL_MAP)
 	int currentStage = player->timerService->GetStage();
 	if (currentStage == 0)
 	{
+		// not a staged map or stage has not been set
 		return MRES_SUPERCEDE;
+	}
+
+	if (currentStage == 1)
+	{
+		// player is running !rs in startzone stage
+		player->timerService->TimerStop(true);
 	}
 
 	// First pass: Find all teleport destinations and their positions

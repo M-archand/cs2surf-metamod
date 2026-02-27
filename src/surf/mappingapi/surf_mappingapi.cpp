@@ -879,12 +879,12 @@ void Surf::mapapi::CheckEndTimerTrigger(CBaseTrigger *trigger)
 	}
 }
 
-bool Surf::mapapi::IsPositionInOrAboveStartZone(const Vector &position)
+const SurfTrigger *Surf::mapapi::IsPositionInOrAboveTimerZone(const Vector &position)
 {
 	FOR_EACH_VEC(g_mappingApi.triggers, i)
 	{
 		const SurfTrigger *trigger = &g_mappingApi.triggers[i];
-		if (trigger->type != SURFTRIGGER_ZONE_START && trigger->type != SURFTRIGGER_ZONE_BONUS_START)
+		if (trigger->type != SURFTRIGGER_ZONE_START && trigger->type != SURFTRIGGER_ZONE_BONUS_START && trigger->type != SURFTRIGGER_ZONE_STAGE)
 		{
 			continue;
 		}
@@ -899,10 +899,10 @@ bool Surf::mapapi::IsPositionInOrAboveStartZone(const Vector &position)
 
 		if (inHorizontalBounds && (inVerticalBounds || aboveStartZone))
 		{
-			return true;
+			return trigger;
 		}
 	}
-	return false;
+	return nullptr;
 }
 
 const SurfTrigger *Surf::mapapi::GetSurfTrigger(CBaseTrigger *trigger)

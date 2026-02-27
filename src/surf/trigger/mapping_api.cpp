@@ -32,6 +32,11 @@ bool SurfTriggerService::TouchTeleportTrigger(TriggerTouchTracker tracker)
 	{
 		META_CONPRINTF("Invalid teleport destination \"%s\" on trigger with hammerID %i.\n", tracker.surfTrigger->teleport.destination,
 					   tracker.surfTrigger->hammerId);
+		if (strcmp(tracker.surfTrigger->teleport.destination, "!self") == 0)
+		{
+			// very very rare edgecase but shouldnt cause issue?
+			this->player->SetVelocity(vec3_origin);
+		}
 		return false;
 	}
 
@@ -108,18 +113,24 @@ bool SurfTriggerService::TouchTeleportTrigger(TriggerTouchTracker tracker)
 		this->player->SetVelocity(finalVelocity);
 	}
 
+	const SurfTrigger *zoneDestination = Surf::mapapi::IsPositionInOrAboveTimerZone(finalOrigin);
+	if (zoneDestination)
+	{
+		// set velo to 0 for bonus/main/stage zones
+		this->player->SetVelocity(vec3_origin);
+		if (zoneDestination->type != SURFTRIGGER_ZONE_STAGE)
+		{
+			// only stop timer for bonus/main startzones
+			this->player->timerService->TimerStop(false);
+		}
+	}
+
 	// We need to call teleport hook because we don't use teleport function directly.
 	if (this->player->processingMovement && this->player->currentMoveData)
 	{
 		this->player->OnTeleport(&finalOrigin, nullptr, nullptr);
 	}
 	this->player->SetOrigin(finalOrigin);
-
-	if (Surf::mapapi::IsPositionInOrAboveStartZone(finalOrigin))
-	{
-		this->player->SetVelocity(vec3_origin);
-		this->player->timerService->TimerStop(false);
-	}
 
 	return true;
 }
