@@ -80,6 +80,10 @@ bool SurfPlugin::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bo
 		// We need to reset the map for mapping api to properly load in.
 		utils::ResetMap();
 	}
+
+	// We don't need command filtering for surf maps.
+	CommandLine()->AppendParm("-disable_workshop_command_filtering", "");
+
 	return true;
 }
 

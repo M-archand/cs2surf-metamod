@@ -438,17 +438,16 @@ CUtlString SurfStyleManager::GetStylesString(SurfPlayer *player)
 
 void SurfStyleManager::PrintActiveStyles(SurfPlayer *player)
 {
-	player->languageService->PrintConsole(false, false, "Current Styles");
+	std::string styles = "";
 	FOR_EACH_VEC(player->styleServices, i)
 	{
-		// clang-format off
-		player->PrintConsole(false, false,
-			"%s (%s)",
-			player->styleServices[i]->GetStyleName(),
-			player->styleServices[i]->GetStyleShortName()
-		);
-		// clang-format on
+		styles += player->styleServices[i]->GetStyleName();
+		if (i != player->styleServices.Count() - 1)
+		{
+			styles += ", ";
+		}
 	}
+	player->languageService->PrintChat(true, false, "Current Styles", styles.c_str());
 }
 
 void SurfStyleManager::PrintAllStyles(SurfPlayer *player)
@@ -485,8 +484,10 @@ void SurfDatabaseServiceEventListener_Styles::OnDatabaseSetup()
 SCMD(surf_style, SCFL_MODESTYLE)
 {
 	SurfPlayer *player = g_pSurfPlayerManager->ToPlayer(controller);
-	if (!args->Arg(1))
+	if (args->ArgC() == 1)
 	{
+		styleManager.PrintActiveStyles(player);
+		return MRES_SUPERCEDE;
 	}
 	if (args->Arg(1)[0] == '+')
 	{

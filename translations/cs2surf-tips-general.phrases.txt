@@ -21,8 +21,8 @@
 	}
 	"Tip - surf_mode"
 	{
-		"en"	"{grey}You can switch to a mode by typing its abbreviation. For example, type {default}/64t{grey} to switch to the {purple}64tick {grey}mode or {default}/source {grey}to switch to the {purple}Source {grey}mode."
-		"pt"	"{grey}Você pode alternar para um modo digitando sua abreviação. Por exemplo, digite {default}/64t{grey} para alternar para o modo {purple}64tick {grey} ou {default}/source {grey} para alternar para o modo {purple}Source {grey}."
+		"en"	"{grey}You can switch to a mode by typing its abbreviation. For example, type {default}/64t{grey} to switch to the {purple}64tick {grey}mode or {default}/css {grey}to switch to the {purple}CS:Source {grey}mode."
+		"pt"	"{grey}Você pode alternar para um modo digitando sua abreviação. Por exemplo, digite {default}/64t{grey} para alternar para o modo {purple}64tick {grey} ou {default}/css {grey} para alternar para o modo {purple}CS:Source {grey}."
 	}
 	"Tip - surf_restart"
 	{
