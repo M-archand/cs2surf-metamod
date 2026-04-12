@@ -18,6 +18,7 @@ public:
 		Vector origin;
 		Vector velocity;
 		QAngle angles;
+		f64 time;
 		Vector ladderNormal;
 		bool onLadder {};
 		CHandle<CBaseEntity> groundEnt;

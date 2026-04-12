@@ -88,6 +88,7 @@ void SurfCheckpointService::SetCheckpoint()
 	this->player->GetOrigin(&cp.origin);
 	this->player->GetAngles(&cp.angles);
 	this->player->GetVelocity(&cp.velocity);
+	cp.time = this->player->timerService->GetTime();
 	cp.slopeDropHeight = pawn->m_flSlopeDropHeight();
 	cp.slopeDropOffset = pawn->m_flSlopeDropOffset();
 	if (this->player->GetMoveServices())
@@ -164,6 +165,7 @@ void SurfCheckpointService::DoTeleport(const Checkpoint cp)
 	this->player->GetAngles(&this->undoTeleportData.angles);
 	this->undoTeleportData.slopeDropHeight = pawn->m_flSlopeDropHeight();
 	this->undoTeleportData.slopeDropOffset = pawn->m_flSlopeDropOffset();
+	this->undoTeleportData.time = this->player->timerService->GetTime();
 	if (this->player->GetMoveServices())
 	{
 		this->undoTeleportData.ladderNormal = this->player->GetMoveServices()->m_vecLadderNormal();
@@ -193,6 +195,7 @@ void SurfCheckpointService::DoTeleport(const Checkpoint cp)
 	}
 	pawn->m_flSlopeDropHeight(cp.slopeDropHeight);
 	pawn->m_flSlopeDropOffset(cp.slopeDropOffset);
+	this->player->timerService->SetTime(cp.time);
 
 	CBaseEntity *groundEntity = static_cast<CBaseEntity *>(GameEntitySystem()->GetEntityInstance(cp.groundEnt));
 	// Don't attach the player onto moving platform (because they might not be there anymore). World doesn't move
