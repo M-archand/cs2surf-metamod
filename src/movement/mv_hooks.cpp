@@ -39,7 +39,6 @@ void movement::InitDetours()
 	INIT_DETOUR(g_pGameConfig, TryPlayerMove);
 	INIT_DETOUR(g_pGameConfig, CategorizePosition);
 	INIT_DETOUR(g_pGameConfig, CheckFalling);
-	INIT_DETOUR(g_pGameConfig, PostPlayerMove);
 	INIT_DETOUR(g_pGameConfig, PostThink);
 }
 
@@ -433,15 +432,6 @@ void FASTCALL movement::Detour_CheckFalling(CCSPlayer_MovementServices *ms, CMov
 	player->OnCheckFalling();
 	CheckFalling(ms, mv);
 	player->OnCheckFallingPost();
-}
-
-void FASTCALL movement::Detour_PostPlayerMove(CCSPlayer_MovementServices *ms, CMoveData *mv)
-{
-	VPROF_BUDGET(__func__, "CS2Surf");
-	MovementPlayer *player = playerManager->ToPlayer(ms);
-	player->OnPostPlayerMove();
-	PostPlayerMove(ms, mv);
-	player->OnPostPlayerMovePost();
 }
 
 void FASTCALL movement::Detour_PostThink(CCSPlayerPawnBase *pawn)

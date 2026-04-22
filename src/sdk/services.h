@@ -20,8 +20,8 @@ public:
 private:
 	virtual void unk_00() = 0;
 	virtual void unk_01() = 0;
+	virtual void unk_02() = 0;
 	virtual ~CPlayerPawnComponent() = 0;
-	virtual void unk_03() = 0;
 	virtual void unk_04() = 0;
 	virtual void unk_05() = 0;
 	virtual void unk_06() = 0;
@@ -37,6 +37,7 @@ private:
 	virtual void unk_16() = 0;
 	virtual void unk_17() = 0;
 	virtual void unk_18() = 0;
+	virtual void unk_19() = 0;
 
 public:
 	CNetworkVarChainer chainEntity;
@@ -154,7 +155,6 @@ public:
 	SCHEMA_FIELD(float, m_flLastDuckTime)
 	SCHEMA_FIELD(float, m_bDesiresDuck)
 	SCHEMA_FIELD(bool, m_bDucking)
-	SCHEMA_FIELD(float, m_flDuckOffset)
 	SCHEMA_FIELD(bool, m_duckUntilOnGround)
 	SCHEMA_FIELD(CCSPlayerLegacyJump, m_LegacyJump)
 	SCHEMA_FIELD(CCSPlayerModernJump, m_ModernJump)

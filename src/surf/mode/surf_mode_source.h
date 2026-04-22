@@ -59,7 +59,6 @@ class SurfSourceModeService : public SurfModeService
 	using SurfModeService::SurfModeService;
 
 	static inline CVValue_t modeCvarValues[] = {
-		(bool)false,    // slope_drop_enable
 		(float)5.0f,    // sv_accelerate
 		(bool)false,    // sv_accelerate_use_weapon_speed
 		(float)150.0f,  // sv_airaccelerate

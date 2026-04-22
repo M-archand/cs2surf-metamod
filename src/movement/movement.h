@@ -67,7 +67,6 @@ namespace movement
 	void FASTCALL Detour_TryPlayerMove(CCSPlayer_MovementServices *, CMoveData *, Vector *, trace_t *, bool *);
 	void FASTCALL Detour_CategorizePosition(CCSPlayer_MovementServices *, CMoveData *, bool);
 	void FASTCALL Detour_CheckFalling(CCSPlayer_MovementServices *, CMoveData *);
-	void FASTCALL Detour_PostPlayerMove(CCSPlayer_MovementServices *, CMoveData *);
 	void FASTCALL Detour_PostThink(CCSPlayerPawnBase *);
 } // namespace movement
 

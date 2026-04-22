@@ -28,8 +28,7 @@
 enum SurfModeCvars
 {
 	MODECVAR_FIRST = 0,
-	MODECVAR_SLOPE_DROP_ENABLE = 0,
-	MODECVAR_SV_ACCELERATE,
+	MODECVAR_SV_ACCELERATE = 0,
 	MODECVAR_SV_ACCELERATE_USE_WEAPON_SPEED,
 	MODECVAR_SV_AIRACCELERATE,
 	MODECVAR_SV_AIR_MAX_WISHSPEED,
@@ -312,7 +311,6 @@ namespace Surf::mode
 	// clang-format off
 
 	inline const char *modeCvarNames[] = {
-		"slope_drop_enable",
 		"sv_accelerate",
 		"sv_accelerate_use_weapon_speed",
 		"sv_airaccelerate",
@@ -353,7 +351,6 @@ namespace Surf::mode
 	// Quite a horrible thing to do but there is no other way around it...
 	inline ConVarRefAbstract *modeCvarRefs[] =
 	{
-		new CConVarRef<bool>("slope_drop_enable"),
 		new CConVarRef<float>("sv_accelerate"),
 		new CConVarRef<bool>("sv_accelerate_use_weapon_speed"),
 		new CConVarRef<float>("sv_airaccelerate"),

@@ -38,7 +38,7 @@ void SurfSpecService::LoadPosition()
 	{
 		return;
 	}
-	this->player->GetPlayerPawn()->Teleport(&this->savedOrigin, &this->savedAngles, nullptr);
+	this->player->Teleport(&this->savedOrigin, &this->savedAngles, nullptr);
 	if (this->savedOnLadder)
 	{
 		this->player->SetMoveType(MOVETYPE_LADDER);
