@@ -59,7 +59,7 @@ class SurfSlowMoStyleService : public SurfStyleService
 	using SurfStyleService::SurfStyleService;
 
 private:
-	Vector startVelocity;
+	float initialFrametime;
 
 public:
 	virtual const char *GetStyleName() override
@@ -76,6 +76,5 @@ public:
 	virtual void Init() override;
 	virtual void Cleanup() override;
 	virtual void OnProcessMovement() override;
-	virtual void OnAirMovePost() override;
-	virtual void OnWalkMovePost() override;
+	virtual void OnProcessMovementPost() override;
 };

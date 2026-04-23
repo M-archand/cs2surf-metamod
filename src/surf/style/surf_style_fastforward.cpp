@@ -93,31 +93,17 @@ void SurfFastForwardStyleService::Cleanup() {}
 
 void SurfFastForwardStyleService::OnProcessMovement()
 {
-	this->startVelocity = this->player->currentMoveData->m_vecVelocity;
+	// from CS2Fixes
+	// Yes, this is what source1 does to scale player speed
+	// Scale frametime during the entire movement processing step and revert right after
+	CGlobalVars *globals = g_pSurfUtils->GetGlobals();
+
+	this->initialFrametime = globals->frametime;
+	globals->frametime *= 1.5f;
 }
 
-void SurfFastForwardStyleService::OnAirMovePost()
+void SurfFastForwardStyleService::OnProcessMovementPost()
 {
-	// prevent respawn velocity weirdness
-	if (this->player->timerService->InStartzone())
-	{
-		return;
-	}
-
-	Vector currentVel = this->player->currentMoveData->m_vecVelocity;
-	Vector delta = currentVel - this->startVelocity;
-	this->player->currentMoveData->m_vecVelocity = this->startVelocity + (delta * 1.5f);
-}
-
-void SurfFastForwardStyleService::OnWalkMovePost()
-{
-	// prevent respawn velocity weirdness
-	if (this->player->timerService->InStartzone())
-	{
-		return;
-	}
-
-	Vector currentVel = this->player->currentMoveData->m_vecVelocity;
-	Vector delta = currentVel - this->startVelocity;
-	this->player->currentMoveData->m_vecVelocity = this->startVelocity + (delta * 1.5f);
+	CGlobalVars *globals = g_pSurfUtils->GetGlobals();
+	globals->frametime = this->initialFrametime;
 }
