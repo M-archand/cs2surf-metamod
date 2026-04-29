@@ -5,6 +5,7 @@
 #include "surf/noclip/surf_noclip.h"
 #include "surf/timer/surf_timer.h"
 #include "surf/language/surf_language.h"
+#include "surf/replays/surf_replaysystem.h"
 
 /*
 	Note: Whether touching is allowed is set determined by the mode, while Mapping API effects will be applied after touching events.
@@ -18,6 +19,7 @@ bool SurfTriggerService::OnTriggerStartTouchPre(CBaseTrigger *trigger)
 	{
 		retValue &= this->player->styleServices[i]->OnTriggerStartTouch(trigger);
 	}
+	retValue &= Surf::replaysystem::CanTouchTrigger(this->player, trigger);
 	return retValue;
 }
 
@@ -28,6 +30,7 @@ bool SurfTriggerService::OnTriggerTouchPre(CBaseTrigger *trigger, TriggerTouchTr
 	{
 		retValue &= this->player->styleServices[i]->OnTriggerTouch(trigger);
 	}
+	retValue &= Surf::replaysystem::CanTouchTrigger(this->player, trigger);
 	return retValue;
 }
 
@@ -38,31 +41,53 @@ bool SurfTriggerService::OnTriggerEndTouchPre(CBaseTrigger *trigger, TriggerTouc
 	{
 		retValue &= this->player->styleServices[i]->OnTriggerEndTouch(trigger);
 	}
+	retValue &= Surf::replaysystem::CanTouchTrigger(this->player, trigger);
 	return retValue;
 }
 
 // Mapping API stuff.
-void SurfTriggerService::OnTriggerStartTouchPost(CBaseTrigger *trigger, TriggerTouchTracker tracker)
+void SurfTriggerService::OnTriggerStartTouchPost(CBaseTrigger *trigger, TriggerTouchTracker &tracker)
 {
 	if (!tracker.surfTrigger || !trigger->PassesTriggerFilters(this->player->GetPlayerPawn()))
 	{
 		return;
 	}
+	tracker.mappingApiStartedTouch = true;
 	this->OnMappingApiTriggerStartTouchPost(tracker);
 }
 
-void SurfTriggerService::OnTriggerTouchPost(CBaseTrigger *trigger, TriggerTouchTracker tracker)
+void SurfTriggerService::OnTriggerTouchPost(CBaseTrigger *trigger, TriggerTouchTracker &tracker)
 {
-	if (!tracker.surfTrigger || !trigger->PassesTriggerFilters(this->player->GetPlayerPawn()))
+	if (!tracker.surfTrigger)
 	{
 		return;
+	}
+	bool filterPasses = trigger->PassesTriggerFilters(this->player->GetPlayerPawn());
+	if (!filterPasses)
+	{
+		// Filter lost while inside the trigger - treat as a virtual end touch.
+		if (tracker.mappingApiStartedTouch)
+		{
+			tracker.mappingApiStartedTouch = false;
+			this->OnMappingApiTriggerEndTouchPost(tracker);
+		}
+		return;
+	}
+	// The filter wasn't active when the player entered this trigger, but it is now.
+	// We need to retroactively fire StartTouch for this trigger so that modifiers get applied correctly.
+	if (!tracker.mappingApiStartedTouch)
+	{
+		tracker.mappingApiStartedTouch = true;
+		this->OnMappingApiTriggerStartTouchPost(tracker);
 	}
 	this->OnMappingApiTriggerTouchPost(tracker);
 }
 
-void SurfTriggerService::OnTriggerEndTouchPost(CBaseTrigger *trigger, TriggerTouchTracker tracker)
+void SurfTriggerService::OnTriggerEndTouchPost(CBaseTrigger *trigger, TriggerTouchTracker &tracker)
 {
-	if (!tracker.surfTrigger || !trigger->PassesTriggerFilters(this->player->GetPlayerPawn()))
+	// Only fire the mapping API end touch if the mapping API start touch was actually fired,
+	// so that counter increments/decrements stay symmetric regardless of when the filter became active.
+	if (!tracker.surfTrigger || !tracker.mappingApiStartedTouch)
 	{
 		return;
 	}

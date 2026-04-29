@@ -52,6 +52,13 @@ void SurfNoclipService::HandleNoclip()
 			pawn->m_Collision().m_CollisionGroup() = SURF_COLLISION_GROUP_STANDARD;
 			pawn->CollisionRulesChanged();
 		}
+		if (pawn->m_nActualMoveType() == MOVETYPE_NOCLIP || pawn->m_MoveType() == MOVETYPE_NOCLIP)
+		{
+			if (this->player->IsAlive() && this->player->timerService->GetTimerRunning())
+			{
+				this->player->timerService->TimerStop();
+			}
+		}
 	}
 }
 

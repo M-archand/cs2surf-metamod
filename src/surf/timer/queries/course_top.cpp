@@ -37,7 +37,7 @@ struct CourseTopRequest : public BaseRequest
 
 	struct RunStats
 	{
-		u64 runID;
+		CUtlString runID;
 		CUtlString name;
 		f64 time;
 		u64 steamid64;
@@ -50,14 +50,12 @@ struct CourseTopRequest : public BaseRequest
 
 		CUtlString GetRunID()
 		{
-			CUtlString fmt;
-			fmt.Format("%llu", runID);
-			return fmt;
+			return runID;
 		}
 
 		CUtlString GetTime()
 		{
-			return SurfTimerService::FormatTime(time);
+			return utils::FormatTime(time);
 		}
 
 		CUtlString GetSteamID64()
@@ -127,7 +125,7 @@ struct CourseTopRequest : public BaseRequest
 					while (result->FetchRow())
 					{
 						req->srData.overallData.AddToTail(
-							{(u64)result->GetInt64(0), result->GetString(2), result->GetFloat(3), (u64)result->GetInt64(1)});
+							{result->GetString(0), result->GetString(2), result->GetFloat(3), (u64)result->GetInt64(1)});
 					}
 				}
 			};
@@ -177,8 +175,10 @@ struct CourseTopRequest : public BaseRequest
 
 				for (const auto &record : ctops.overall)
 				{
+					CUtlString id;
+					id.Format("%u", record.id);
 					req->wrData.overallData.AddToTail(
-						{record.id, record.player.name.c_str(), record.time, record.player.id, (u64)floor(record.points)});
+						{id, record.player.name.c_str(), record.time, record.player.id, (u64)floor(record.points)});
 				}
 			};
 			this->globalStatus = ResponseStatus::PENDING;

@@ -8,7 +8,7 @@ void SurfDatabaseService::QueryAllRecords(CUtlString mapName, TransactionSuccess
 
 	Transaction txn;
 
-	char query[1024];
+	char query[2048];
 	// Get PB
 	V_snprintf(query, sizeof(query), sql_getsrs, cleanedMapName.c_str());
 	txn.queries.push_back(query);
@@ -24,7 +24,7 @@ void SurfDatabaseService::QueryRecords(CUtlString mapName, CUtlString courseName
 
 	Transaction txn;
 
-	char query[1024];
+	char query[2048];
 	// Get PB
 	V_snprintf(query, sizeof(query), sql_getcoursetop, cleanedMapName.c_str(), cleanedCourseName.c_str(), modeID, count, offset);
 	txn.queries.push_back(query);

@@ -27,7 +27,7 @@ void SurfDatabaseService::SetupMap()
 	}
 
 	Transaction txn;
-	char query[1024];
+	char query[2048];
 	CUtlString mapName = g_pSurfUtils->GetServerGlobals()->mapname.ToCStr();
 	auto escapedMapName = SurfDatabaseService::GetDatabaseConnection()->Escape(mapName.Get());
 	auto databaseType = SurfDatabaseService::GetDatabaseType();

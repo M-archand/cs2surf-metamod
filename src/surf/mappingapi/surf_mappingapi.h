@@ -200,6 +200,11 @@ namespace Surf::mapapi
 	{
 		return triggerType == SURFTRIGGER_PUSH;
 	}
+
+	inline bool IsTeleportTrigger(SurfTriggerType triggerType)
+	{
+		return triggerType == SURFTRIGGER_TELEPORT;
+	}
 } // namespace Surf::mapapi
 
 // Exposed interface to modes.

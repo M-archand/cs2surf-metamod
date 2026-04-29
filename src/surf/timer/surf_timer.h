@@ -3,6 +3,7 @@
 #include "../surf.h"
 #include "../checkpoint/surf_checkpoint.h"
 #include "surf/mappingapi/surf_mappingapi.h"
+#include "utils/uuid.h"
 
 #define SURF_MAX_MODE_NAME_LENGTH 128
 
@@ -97,6 +98,10 @@ public:
 	}
 
 	virtual void OnResumePost(SurfPlayer *player) {}
+
+	virtual void OnCheckpointZoneTouchPost(SurfPlayer *player, u32 checkpointZone) {}
+
+	virtual void OnStageZoneTouchPost(SurfPlayer *player, u32 stageZone) {}
 };
 
 class SurfTimerService : public SurfBaseService
@@ -217,26 +222,17 @@ public:
 
 	std::string GetStartSpeedText(const char *language);
 
-	static void FormatTime(f64 time, char *output, u32 length, bool precise = true);
-
-	static CUtlString FormatTime(f64 time, bool precise = true)
-	{
-		char temp[32];
-		FormatTime(time, temp, sizeof(temp), precise);
-		return CUtlString(temp);
-	}
-
 	static void FormatDiffTime(f64 time, char *output, u32 length, bool precise = true)
 	{
 		char temp[32];
 		if (time > 0)
 		{
-			FormatTime(time, temp, sizeof(temp), precise);
+			utils::FormatTime(time, temp, sizeof(temp), precise);
 			V_snprintf(output, length, "+%s", temp);
 		}
 		else
 		{
-			FormatTime(-time, temp, sizeof(temp), precise);
+			utils::FormatTime(-time, temp, sizeof(temp), precise);
 			V_snprintf(output, length, "-%s", temp);
 		}
 	}
@@ -315,6 +311,7 @@ private:
 
 	bool JustEndedTimer();
 
+public:
 	void PlayTimerEndSound();
 	void PlayTimerFalseEndSound();
 	void PlayMissedZoneSound();

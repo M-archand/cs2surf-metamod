@@ -1,0 +1,45 @@
+#pragma once
+
+#include "surf_replay.h"
+
+namespace Surf::replaysystem::compression
+{
+	// Compressed section header (written before each compressed data block)
+	struct CompressedSectionHeader
+	{
+		u32 compressedSize;   // Size of compressed data
+		u32 uncompressedSize; // Original size of data
+		u32 elementCount;     // Number of elements (e.g., tick count)
+	};
+
+	// Compress a buffer using zstd level 3
+	bool Compress(const void *src, size_t srcSize, void **outDst, size_t *outDstSize);
+
+	// Decompress a buffer using zstd
+	bool Decompress(const void *src, size_t srcSize, void *dst, size_t dstSize);
+
+	// Write compressed tick data with delta encoding
+	i32 WriteTickDataCompressed(FileHandle_t file, const std::vector<TickData> &tickData, const std::vector<SubtickData> &subtickData);
+
+	// Read compressed tick data with delta decoding
+	bool ReadTickDataCompressed(FileHandle_t file, std::vector<TickData> &outTickData, std::vector<SubtickData> &outSubtickData,
+								  u32 replayVersion);
+
+	// Read compressed weapon changes
+	bool ReadWeaponsCompressed(FileHandle_t file, std::vector<std::pair<i32, EconInfo>> &outWeaponTable);
+
+	// Read compressed events
+	bool ReadEventsCompressed(FileHandle_t file, std::vector<RpEvent> &outEvents);
+
+	// Read compressed CmdData
+	bool ReadCmdDataCompressed(FileHandle_t file, std::vector<CmdData> &outCmdData, std::vector<SubtickData> &outCmdSubtickData);
+
+	// Write compressed weapon changes
+	i32 WriteWeaponsCompressed(FileHandle_t file, const std::vector<std::pair<i32, EconInfo>> &weaponTable);
+
+	// Write compressed events
+	i32 WriteEventsCompressed(FileHandle_t file, const std::vector<RpEvent> &events);
+
+	// Write compressed CmdData
+	i32 WriteCmdDataCompressed(FileHandle_t file, const std::vector<CmdData> &cmdData, const std::vector<SubtickData> &cmdSubtickData);
+} // namespace Surf::replaysystem::compression

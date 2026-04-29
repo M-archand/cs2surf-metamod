@@ -121,9 +121,9 @@ public:
 
 	virtual void OnPhysicsSimulatePost() {}
 
-	void OnProcessUsercmds(void *, int) {}
+	void OnProcessUsercmds(PlayerCommand *, int) {}
 
-	void OnProcessUsercmdsPost(void *, int) {}
+	void OnProcessUsercmdsPost(PlayerCommand *, int) {}
 
 	virtual void OnSetupMove(PlayerCommand *) {}
 

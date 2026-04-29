@@ -74,7 +74,8 @@ void SurfTriggerService::OnStopTouchGround()
 	FOR_EACH_VEC(this->triggerTrackers, i)
 	{
 		TriggerTouchTracker tracker = this->triggerTrackers[i];
-		if (!tracker.surfTrigger)
+		CBaseTrigger *trigger = dynamic_cast<CBaseTrigger *>(GameEntitySystem()->GetEntityInstance(tracker.triggerHandle));
+		if (!tracker.surfTrigger || !trigger)
 		{
 			continue;
 		}

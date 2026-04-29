@@ -31,7 +31,7 @@ void SurfDatabaseService::InsertAndUpdateStyleIDs(CUtlString styleName, CUtlStri
 		return;
 	}
 	Transaction txn;
-	char query[1024];
+	char query[2048];
 	switch (SurfDatabaseService::GetDatabaseType())
 	{
 		case DatabaseType::SQLite:

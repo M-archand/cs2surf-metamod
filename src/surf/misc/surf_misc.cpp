@@ -29,29 +29,17 @@
 #define RESTART_CHECK_INTERVAL 1800.0f
 static_global CTimer<> *mapRestartTimer;
 
-static_global class SurfOptionServiceEventListener_Misc : public SurfOptionServiceEventListener
-{
-	virtual void OnPlayerPreferencesLoaded(SurfPlayer *player)
-	{
-		bool hideLegs = player->optionService->GetPreferenceBool("hideLegs", true);
-		if (player->HidingLegs() != hideLegs)
-		{
-			player->ToggleHideLegs();
-		}
-	}
-} optionEventListener;
-
 SCMD(surf_hidelegs, SCFL_PLAYER | SCFL_PREFERENCE)
 {
 	SurfPlayer *player = g_pSurfPlayerManager->ToPlayer(controller);
 	player->ToggleHideLegs();
-	if (player->HidingLegs())
+	if (player->optionService->GetPreferenceBool("hideLegs"))
 	{
-		player->languageService->PrintChat(true, false, "Quiet Option - Show Player Legs - Disable");
+		player->languageService->PrintChat(true, false, "Quiet Option - Hide Player Legs - Enable");
 	}
 	else
 	{
-		player->languageService->PrintChat(true, false, "Quiet Option - Show Player Legs - Enable");
+		player->languageService->PrintChat(true, false, "Quiet Option - Hide Player Legs - Disable");
 	}
 	return MRES_SUPERCEDE;
 }
@@ -529,9 +517,8 @@ SCMD(surf_rs, SCFL_TIMER | SCFL_MAP)
 	return MRES_SUPERCEDE;
 }
 
-SCMD(surf_restart, SCFL_TIMER | SCFL_MAP)
+void Surf::misc::HandleTeleportToCourse(SurfPlayer *player, const CCommand *args)
 {
-	SurfPlayer *player = g_pSurfPlayerManager->ToPlayer(controller);
 	const SurfCourseDescriptor *startPosCourse = nullptr;
 	// If the player specify a course name, we first check if it's valid or not.
 	if (V_strlen(args->ArgS()) > 0)
@@ -549,7 +536,7 @@ SCMD(surf_restart, SCFL_TIMER | SCFL_MAP)
 		if (!startPosCourse || !startPosCourse || !startPosCourse->hasStartPosition)
 		{
 			player->languageService->PrintChat(true, false, "No Start Position For Course", args->ArgS());
-			return MRES_SUPERCEDE;
+			return;
 		}
 	}
 
@@ -572,14 +559,14 @@ SCMD(surf_restart, SCFL_TIMER | SCFL_MAP)
 	if (startPosCourse)
 	{
 		player->Teleport(&startPosCourse->startPosition, &startPosCourse->startAngles, &vec3_origin);
-		return MRES_SUPERCEDE;
+		return;
 	}
 
 	// Then prioritize custom start position.
 	if (player->checkpointService->HasCustomStartPosition())
 	{
 		player->checkpointService->TpToStartPosition();
-		return MRES_SUPERCEDE;
+		return;
 	}
 
 	// Try regular surf startzone destination
@@ -623,7 +610,7 @@ SCMD(surf_restart, SCFL_TIMER | SCFL_MAP)
 					if (utils::IsVectorInBox(destPos, mins, maxs))
 					{
 						player->Teleport(&destPos, &destAng, &vec3_origin);
-						return MRES_SUPERCEDE;
+						return;
 					}
 				}
 
@@ -637,7 +624,7 @@ SCMD(surf_restart, SCFL_TIMER | SCFL_MAP)
 					player->SetOrigin(safeOrigin);
 					player->SetVelocity(vec3_origin);
 				}
-				return MRES_SUPERCEDE;
+				return;
 			}
 		}
 	}
@@ -649,7 +636,7 @@ SCMD(surf_restart, SCFL_TIMER | SCFL_MAP)
 		{
 			player->Teleport(&player->timerService->GetCourse()->startPosition, &player->timerService->GetCourse()->startAngles, &vec3_origin);
 		}
-		return MRES_SUPERCEDE;
+		return;
 	}
 
 	// If we have no active course the map only has one course, !r should send the player to that course.
@@ -659,13 +646,20 @@ SCMD(surf_restart, SCFL_TIMER | SCFL_MAP)
 		if (descriptor && descriptor->hasStartPosition)
 		{
 			player->Teleport(&descriptor->startPosition, &descriptor->startAngles, &vec3_origin);
-			return MRES_SUPERCEDE;
+			return;
 		}
 	}
 
 	// last resort, just respawn
 	player->GetPlayerPawn()->Respawn();
 
+	return;
+}
+
+SCMD(surf_restart, SCFL_TIMER | SCFL_MAP)
+{
+	SurfPlayer *player = g_pSurfPlayerManager->ToPlayer(controller);
+	Surf::misc::HandleTeleportToCourse(player, args);
 	return MRES_SUPERCEDE;
 }
 
@@ -690,7 +684,7 @@ SCMD(surf_playercheck, SCFL_PLAYER)
 				continue;
 			}
 
-			if (V_strstr(V_strlower((char *)controller->GetPlayerName()), V_strlower((char *)args->ArgS())))
+			if (V_strstr(V_strlower((char *)g_pSurfPlayerManager->players[i]->GetName()), V_strlower((char *)args->ArgS())))
 			{
 				targetPlayer = g_pSurfPlayerManager->ToPlayer(i);
 				break;
@@ -732,7 +726,6 @@ static_function f64 CheckRestart()
 
 void Surf::misc::Init()
 {
-	SurfOptionService::RegisterEventListener(&optionEventListener);
 	Surf::misc::EnforceTimeLimit();
 	mapRestartTimer = StartTimer(CheckRestart, RESTART_CHECK_INTERVAL, true, true);
 	CConVarRef<int32> sv_infinite_ammo("sv_infinite_ammo");
@@ -1133,7 +1126,7 @@ void Surf::misc::OnPhysicsGameSystemFrameBoundary(void *pThis)
 	}
 }
 
-void Surf::misc::OnServerActivate()
+void Surf::misc::OnActivateServer()
 {
 	Surf::misc::EnforceTimeLimit();
 	g_pSurfUtils->UpdateCurrentMapMD5();

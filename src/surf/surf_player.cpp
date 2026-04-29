@@ -19,6 +19,8 @@
 #include "timer/surf_timer.h"
 #include "tip/surf_tip.h"
 #include "trigger/surf_trigger.h"
+#include "recording/surf_recording.h"
+#include "replays/surf_replaysystem.h"
 #include "global/surf_global.h"
 #include "profile/surf_profile.h"
 #include "fov/surf_fov.h"
@@ -34,7 +36,6 @@ extern CSteamGameServerAPIContext g_steamAPI;
 void SurfPlayer::Init()
 {
 	MovementPlayer::Init();
-	this->hideLegs = false;
 
 	// TODO: initialize every service.
 	delete this->anticheatService;
@@ -52,6 +53,7 @@ void SurfPlayer::Init()
 	delete this->tipService;
 	delete this->telemetryService;
 	delete this->triggerService;
+	delete this->recordingService;
 	delete this->globalService;
 	delete this->profileService;
 	delete this->fovService;
@@ -72,6 +74,7 @@ void SurfPlayer::Init()
 	this->tipService = new SurfTipService(this);
 	this->telemetryService = new SurfTelemetryService(this);
 	this->triggerService = new SurfTriggerService(this);
+	this->recordingService = new SurfRecordingService(this);
 	this->globalService = new SurfGlobalService(this);
 	this->profileService = new SurfProfileService(this);
 	this->fovService = new SurfFOVService(this);
@@ -97,6 +100,7 @@ void SurfPlayer::Reset()
 	this->triggerService->Reset();
 	this->beamService->Reset();
 	this->telemetryService->Reset();
+	this->recordingService->Reset();
 
 	g_pSurfModeManager->SwitchToMode(this, SurfOptionService::GetOptionStr("defaultMode", SURF_DEFAULT_MODE), true, true, false);
 	g_pSurfStyleManager->ClearStyles(this, true, false);
@@ -120,6 +124,7 @@ void SurfPlayer::OnPlayerActive()
 	g_pSurfStyleManager->RefreshStyles(this, false);
 
 	this->optionService->OnPlayerActive();
+	this->recordingService->EnsureCircularRecorderInitialized();
 }
 
 void SurfPlayer::OnPlayerFullyConnect()
@@ -140,6 +145,7 @@ void SurfPlayer::OnPhysicsSimulate()
 {
 	VPROF_BUDGET(__func__, "CS2Surf");
 	MovementPlayer::OnPhysicsSimulate();
+	this->recordingService->OnPhysicsSimulate();
 	this->triggerService->OnPhysicsSimulate();
 	this->modeService->OnPhysicsSimulate();
 	FOR_EACH_VEC(this->styleServices, i)
@@ -151,12 +157,14 @@ void SurfPlayer::OnPhysicsSimulate()
 	this->EnableGodMode();
 	this->UpdatePlayerModelAlpha();
 	this->fovService->OnPhysicsSimulate();
+	Surf::replaysystem::OnPhysicsSimulate(this);
 }
 
 void SurfPlayer::OnPhysicsSimulatePost()
 {
 	VPROF_BUDGET(__func__, "CS2Surf");
 	MovementPlayer::OnPhysicsSimulatePost();
+	this->recordingService->OnPhysicsSimulatePost();
 	this->triggerService->OnPhysicsSimulatePost();
 	this->telemetryService->OnPhysicsSimulatePost();
 	this->modeService->OnPhysicsSimulatePost();
@@ -165,6 +173,7 @@ void SurfPlayer::OnPhysicsSimulatePost()
 		this->styleServices[i]->OnPhysicsSimulatePost();
 	}
 	this->timerService->OnPhysicsSimulatePost();
+	Surf::replaysystem::OnPhysicsSimulatePost(this);
 	if (this->specService->GetSpectatedPlayer())
 	{
 		SurfHUDService::DrawPanels(this->specService->GetSpectatedPlayer(), this);
@@ -177,9 +186,10 @@ void SurfPlayer::OnPhysicsSimulatePost()
 	this->profileService->OnPhysicsSimulatePost();
 }
 
-void SurfPlayer::OnProcessUsercmds(void *cmds, int numcmds)
+void SurfPlayer::OnProcessUsercmds(PlayerCommand *cmds, int numcmds)
 {
 	VPROF_BUDGET(__func__, "CS2Surf");
+	this->recordingService->OnProcessUsercmds(cmds, numcmds);
 	this->modeService->OnProcessUsercmds(cmds, numcmds);
 	FOR_EACH_VEC(this->styleServices, i)
 	{
@@ -187,7 +197,7 @@ void SurfPlayer::OnProcessUsercmds(void *cmds, int numcmds)
 	}
 }
 
-void SurfPlayer::OnProcessUsercmdsPost(void *cmds, int numcmds)
+void SurfPlayer::OnProcessUsercmdsPost(PlayerCommand *cmds, int numcmds)
 {
 	VPROF_BUDGET(__func__, "CS2Surf");
 	this->modeService->OnProcessUsercmdsPost(cmds, numcmds);
@@ -200,6 +210,7 @@ void SurfPlayer::OnProcessUsercmdsPost(void *cmds, int numcmds)
 void SurfPlayer::OnSetupMove(PlayerCommand *pc)
 {
 	VPROF_BUDGET(__func__, "CS2Surf");
+	this->recordingService->OnSetupMove(pc);
 	this->modeService->OnSetupMove(pc);
 	FOR_EACH_VEC(this->styleServices, i)
 	{
@@ -223,6 +234,7 @@ void SurfPlayer::OnProcessMovement()
 	MovementPlayer::OnProcessMovement();
 
 	Surf::mode::ApplyModeSettings(this);
+	Surf::replaysystem::OnProcessMovement(this);
 
 	this->triggerService->OnProcessMovement();
 	this->modeService->OnProcessMovement();
@@ -242,6 +254,7 @@ void SurfPlayer::OnProcessMovementPost()
 		this->styleServices[i]->OnProcessMovementPost();
 	}
 	this->triggerService->OnProcessMovementPost();
+	Surf::replaysystem::OnProcessMovementPost(this);
 	MovementPlayer::OnProcessMovementPost();
 }
 
@@ -748,6 +761,7 @@ void SurfPlayer::OnTeleport(const Vector *origin, const QAngle *angles, const Ve
 	this->lastTeleportTime = g_pSurfUtils->GetServerGlobals()->curtime;
 	this->modeService->OnTeleport(origin, angles, velocity);
 	this->timerService->OnTeleport(origin, angles, velocity);
+	this->recordingService->OnTeleport(origin, angles, velocity);
 	if (origin)
 	{
 		this->beamService->OnTeleport();
@@ -776,11 +790,12 @@ void SurfPlayer::UpdatePlayerModelAlpha()
 		return;
 	}
 	Color ogColor = pawn->m_clrRender();
-	if (this->hideLegs && pawn->m_clrRender().a() == 255)
+	bool hideLegs = this->optionService->GetPreferenceBool("hideLegs");
+	if (hideLegs && pawn->m_clrRender().a() == 255)
 	{
 		pawn->m_clrRender(Color(255, 255, 255, 254));
 	}
-	else if (!this->hideLegs && pawn->m_clrRender().a() != 255)
+	else if (!hideLegs && pawn->m_clrRender().a() != 255)
 	{
 		pawn->m_clrRender(Color(255, 255, 255, 255));
 	}
@@ -793,8 +808,7 @@ bool SurfPlayer::JustTeleported(f32 threshold)
 
 void SurfPlayer::ToggleHideLegs()
 {
-	this->hideLegs = !this->hideLegs;
-	this->optionService->SetPreferenceBool("hideLegs", this->hideLegs);
+	this->optionService->SetPreferenceBool("hideLegs", !this->optionService->GetPreferenceBool("hideLegs", false));
 }
 
 void SurfPlayer::PlayErrorSound()

@@ -10,7 +10,7 @@ void SurfDatabaseService::QueryPB(u64 steamID64, CUtlString mapName, CUtlString 
 
 	Transaction txn;
 
-	char query[1024];
+	char query[2048];
 	// Get PB
 	V_snprintf(query, sizeof(query), sql_getpb, steamID64, cleanedMapName.c_str(), cleanedCourseName.c_str(), modeID, 0ull, 1);
 	txn.queries.push_back(query);
@@ -34,7 +34,7 @@ void SurfDatabaseService::QueryPBRankless(u64 steamID64, CUtlString mapName, CUt
 
 	std::string cleanedCourseName = SurfDatabaseService::GetDatabaseConnection()->Escape(courseName.Get());
 
-	char query[1024];
+	char query[2048];
 	Transaction txn;
 	// Get PB
 	V_snprintf(query, sizeof(query), sql_getpb, steamID64, cleanedMapName.c_str(), cleanedCourseName.c_str(), modeID, styleIDFlags, 1);
@@ -49,7 +49,7 @@ void SurfDatabaseService::QueryAllPBs(u64 steamID64, CUtlString mapName, Transac
 	std::string cleanedMapName = SurfDatabaseService::GetDatabaseConnection()->Escape(mapName.Get());
 	Transaction txn;
 
-	char query[1024];
+	char query[2048];
 	// Get PB
 	V_snprintf(query, sizeof(query), sql_getpbs, steamID64, cleanedMapName.c_str());
 	txn.queries.push_back(query);

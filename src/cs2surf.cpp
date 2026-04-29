@@ -24,6 +24,8 @@
 #include "surf/global/surf_global.h"
 #include "surf/beam/surf_beam.h"
 #include "surf/beam/surf_zone_beam.h"
+#include "surf/recording/surf_recording.h"
+#include "surf/replays/surf_replaysystem.h"
 
 #include <vendor/MultiAddonManager/public/imultiaddonmanager.h>
 #include <vendor/ClientCvarValue/public/iclientcvarvalue.h>
@@ -59,6 +61,7 @@ bool SurfPlugin::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bo
 	SurfZoneBeamService::Init();
 	Surf::misc::Init();
 	SurfQuietService::Init();
+	SurfRecordingService::Init();
 	if (!Surf::mode::CheckModeCvars())
 	{
 		return false;
@@ -79,10 +82,13 @@ bool SurfPlugin::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bo
 		g_pSurfPlayerManager->OnLateLoad();
 		// We need to reset the map for mapping api to properly load in.
 		utils::ResetMap();
+		Surf::replaysystem::Init();
 	}
 
 	// We don't need command filtering for surf maps.
 	CommandLine()->AppendParm("-disable_workshop_command_filtering", "");
+
+	Surf::replaysystem::InitWatcher();
 
 	return true;
 }
@@ -91,6 +97,7 @@ bool SurfPlugin::Unload(char *error, size_t maxlen)
 {
 	this->unloading = true;
 	Surf::misc::UnrestrictTimeLimit();
+	SurfRecordingService::Shutdown();
 	hooks::Cleanup();
 	Surf::mode::EnableReplicatedModeCvars();
 	utils::Cleanup();
@@ -101,6 +108,7 @@ bool SurfPlugin::Unload(char *error, size_t maxlen)
 	SurfGlobalService::Cleanup();
 	SurfLanguageService::Cleanup();
 	SurfOptionService::Cleanup();
+	Surf::replaysystem::Cleanup();
 	ConVar_Unregister();
 	return true;
 }

@@ -49,6 +49,7 @@ class SurfTimerService;
 class SurfTipService;
 class SurfTriggerService;
 class SurfFOVService;
+class SurfRecordingService;
 
 class SurfPlayer : public MovementPlayer
 {
@@ -68,8 +69,8 @@ public:
 
 	virtual void OnPhysicsSimulate() override;
 	virtual void OnPhysicsSimulatePost() override;
-	virtual void OnProcessUsercmds(void *, int) override;
-	virtual void OnProcessUsercmdsPost(void *, int) override;
+	virtual void OnProcessUsercmds(PlayerCommand *, int) override;
+	virtual void OnProcessUsercmdsPost(PlayerCommand *, int) override;
 	virtual void OnSetupMove(PlayerCommand *) override;
 	virtual void OnSetupMovePost(PlayerCommand *) override;
 	virtual void OnProcessMovement() override;
@@ -134,7 +135,6 @@ public:
 	void PlayErrorSound();
 
 private:
-	bool hideLegs {};
 	f64 lastTeleportTime {};
 	f32 lastValidYaw {};
 	bool oldUsingTurnbinds {};
@@ -161,16 +161,12 @@ public:
 	SurfTipService *tipService {};
 	SurfTriggerService *triggerService {};
 	SurfFOVService *fovService {};
+	SurfRecordingService *recordingService {};
 
 	void EnableGodMode();
 
 	// Leg stuff
 	void ToggleHideLegs();
-
-	bool HidingLegs()
-	{
-		return this->hideLegs;
-	}
 
 	void UpdatePlayerModelAlpha();
 	// Teleport checking, used for multiple services
@@ -248,7 +244,7 @@ namespace Surf
 	namespace misc
 	{
 		void Init();
-		void OnServerActivate();
+		void OnActivateServer();
 		void JoinTeam(SurfPlayer *player, int newTeam, bool restorePos = true);
 		void ProcessConCommand(ConCommandRef cmd, const CCommandContext &ctx, const CCommand &args);
 		META_RES CheckBlockedRadioCommands(const char *cmd);
@@ -257,5 +253,6 @@ namespace Surf
 		void EnforceTimeLimit();
 		void UnrestrictTimeLimit();
 		void OnPhysicsGameSystemFrameBoundary(void *pThis);
+		void HandleTeleportToCourse(SurfPlayer *player, const CCommand *args);
 	} // namespace misc
 }; // namespace Surf

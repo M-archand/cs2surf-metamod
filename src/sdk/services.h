@@ -10,6 +10,7 @@ class CBasePlayerWeapon;
 #include "cinbuttonstate.h"
 #include "datatypes.h"
 #include "econ/ccsplayerinventory.h"
+#include "entity/cbaseplayerweapon.h"
 class CCSPlayer_MovementServices;
 
 class CPlayerPawnComponent
@@ -54,8 +55,8 @@ class CPlayer_WeaponServices : public CPlayerPawnComponent
 
 public:
 	DECLARE_SCHEMA_CLASS_ENTITY(CPlayer_WeaponServices)
-	SCHEMA_FIELD(CHandle<CBaseModelEntity>, m_hActiveWeapon)
-	SCHEMA_FIELD_POINTER(CUtlVector<CHandle<CBaseModelEntity>>, m_hMyWeapons)
+	SCHEMA_FIELD(CHandle<CBasePlayerWeapon>, m_hActiveWeapon)
+	SCHEMA_FIELD_POINTER(CUtlVector<CHandle<CBasePlayerWeapon>>, m_hMyWeapons)
 };
 
 class CPlayer_ObserverServices : public CPlayerPawnComponent
@@ -189,10 +190,10 @@ private:
 	virtual CBasePlayerWeapon *_GiveNamedItem(const char *pchName) = 0;
 
 public:
-	virtual bool GiveNamedItemBool(const char *pchName) = 0;
+	virtual bool GiveNamedItemBool(const char *pchName, bool keepGear) = 0;
 	virtual CBasePlayerWeapon *GiveNamedItem(const char *pchName) = 0;
 	virtual void DropActiveWeapon(CBasePlayerWeapon *pWeapon) = 0;
-	virtual void StripPlayerWeapons(bool removeSuit) = 0;
+	virtual void RemoveAllItems(bool removeSuit) = 0;
 };
 
 class CCSPlayerController_InventoryServices

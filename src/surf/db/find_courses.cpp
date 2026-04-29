@@ -7,7 +7,7 @@ void SurfDatabaseService::FindFirstCourseByMapName(CUtlString mapName, Transacti
 {
 	auto cleanMapName = SurfDatabaseService::GetDatabaseConnection()->Escape(mapName.Get());
 
-	char query[1024];
+	char query[2048];
 	V_snprintf(query, sizeof(query), sql_mapcourses_findfirst_mapname, cleanMapName.c_str(), cleanMapName.c_str());
 
 	Transaction txn;

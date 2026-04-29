@@ -1085,9 +1085,8 @@ bool Surf::course::UpdateCourseGlobalID(const char *courseName, u32 globalID)
 	return false;
 }
 
-SCMD(surf_course, SCFL_MAP)
+static void ListCourses(SurfPlayer *player)
 {
-	SurfPlayer *player = g_pSurfPlayerManager->ToPlayer(controller);
 	if (player->timerService->GetCourse())
 	{
 		player->languageService->PrintChat(true, false, "Current Course", player->timerService->GetCourse()->name);
@@ -1100,6 +1099,27 @@ SCMD(surf_course, SCFL_MAP)
 	for (u32 i = 0; i < Surf::course::GetCourseCount(); i++)
 	{
 		player->PrintConsole(false, false, "%s", g_sortedCourses[i]->name);
+	}
+}
+
+SCMD(surf_courses, SCFL_MAP)
+{
+	SurfPlayer *player = g_pSurfPlayerManager->ToPlayer(controller);
+	ListCourses(player);
+	return MRES_SUPERCEDE;
+}
+
+
+SCMD(surf_course, SCFL_MAP)
+{
+	SurfPlayer *player = g_pSurfPlayerManager->ToPlayer(controller);
+	if (args->ArgC() < 2)
+	{
+		ListCourses(player);
+	}
+	else
+	{
+		Surf::misc::HandleTeleportToCourse(player, args);
 	}
 	return MRES_SUPERCEDE;
 }

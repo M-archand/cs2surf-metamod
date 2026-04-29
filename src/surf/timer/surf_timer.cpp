@@ -9,6 +9,7 @@
 #include "surf/language/surf_language.h"
 #include "surf/trigger/surf_trigger.h"
 #include "surf/spec/surf_spec.h"
+#include "surf/recording/surf_recording.h"
 #include "announce.h"
 
 #include "utils/utils.h"
@@ -100,6 +101,7 @@ void SurfTimerService::CheckpointZoneStartTouch(const SurfCourseDescriptor *cour
 		this->ShowCheckpointText(cpNumber);
 		this->lastCheckpoint = cpNumber;
 		this->reachedCheckpoints++;
+		CALL_FORWARD(eventListeners, OnCheckpointZoneTouchPost, this->player, cpNumber);
 	}
 }
 
@@ -134,6 +136,7 @@ void SurfTimerService::StageZoneStartTouch(const SurfCourseDescriptor *course, i
 		this->PlayReachedStageSound();
 		this->ShowStageText();
 		this->currentStage++;
+		CALL_FORWARD(eventListeners, OnStageZoneTouchPost, this->player, stageNumber);
 	}
 }
 
@@ -185,7 +188,12 @@ bool SurfTimerService::TimerStart(const SurfCourseDescriptor *courseDesc, bool p
 		return false;
 	}
 
-	this->currentTime = 0.0f;
+	// In CS2Surf you can touch trigger in half tick intervals, but here we are incrementing by full tick intervals only.
+	// Since the player was still in the trigger for half a tick, we need to offset by half a tick if we started in a half tick.
+	// So the current time should be subtracted by the difference between server curtime and client curtime at the moment of starting the timer,
+	// That way when we increment by full tick intervals in OnPhysicsSimulatePost, the time will be correct.
+	this->currentTime = g_pSurfUtils->GetGlobals()->curtime - g_pSurfUtils->GetServerGlobals()->curtime;
+	assert(this->currentTime <= 0 && this->currentTime > -ENGINE_FIXED_TICK_INTERVAL);
 	this->timerRunning = true;
 
 	this->reachedCheckpoints = 0;
@@ -313,14 +321,15 @@ bool SurfTimerService::TimerEnd(const SurfCourseDescriptor *courseDesc)
 	}
 	this->PlayTimerEndSound();
 
-	if (!this->player->GetPlayerPawn()->IsBot())
-	{
-		RecordAnnounce::Create(this->player);
-	}
-
 	FOR_EACH_VEC(eventListeners, i)
 	{
 		eventListeners[i]->OnTimerEndPost(this->player, this->currentCourseGUID, time);
+	}
+
+	// This must be called after OnTimerEndPost so that the run UUID is set correctly.
+	if (!this->player->GetPlayerPawn()->IsBot())
+	{
+		RecordAnnounce::Create(this->player);
 	}
 
 	// Reset current stage immediately to remove HUD element
@@ -340,7 +349,7 @@ bool SurfTimerService::TimerStop(bool playSound)
 	{
 		for (SurfPlayer *spec = player->specService->GetNextSpectator(NULL); spec != NULL; spec = player->specService->GetNextSpectator(spec))
 		{
-			player->timerService->PlayTimerStopSound();
+			spec->timerService->PlayTimerStopSound();
 		}
 		this->PlayTimerStopSound();
 	}
@@ -464,42 +473,6 @@ void SurfTimerService::PlayMissedTimeSound()
 		{
 			utils::PlaySoundToClient(this->player->GetPlayerSlot(), SURF_TIMER_SND_MISSED_TIME);
 			this->lastMissedTimeSoundTime = g_pSurfUtils->GetServerGlobals()->curtime;
-		}
-	}
-}
-
-void SurfTimerService::FormatTime(f64 time, char *output, u32 length, bool precise)
-{
-	int roundedTime = RoundFloatToInt(time * 1000); // Time rounded to number of ms
-
-	int milliseconds = roundedTime % 1000;
-	roundedTime = (roundedTime - milliseconds) / 1000;
-	int seconds = roundedTime % 60;
-	roundedTime = (roundedTime - seconds) / 60;
-	int minutes = roundedTime % 60;
-	roundedTime = (roundedTime - minutes) / 60;
-	int hours = roundedTime;
-
-	if (hours == 0)
-	{
-		if (precise)
-		{
-			snprintf(output, length, "%02i:%02i.%03i", minutes, seconds, milliseconds);
-		}
-		else
-		{
-			snprintf(output, length, "%i:%02i", minutes, seconds);
-		}
-	}
-	else
-	{
-		if (precise)
-		{
-			snprintf(output, length, "%i:%02i:%02i.%03i", hours, minutes, seconds, milliseconds);
-		}
-		else
-		{
-			snprintf(output, length, "%i:%02i:%02i", hours, minutes, seconds);
 		}
 	}
 }
@@ -1202,7 +1175,7 @@ void SurfTimerService::CheckMissedTime()
 
 	if (this->shouldAnnounceMissedTime && pb->overall.pbTime > 0 && this->GetTime() > pb->overall.pbTime)
 	{
-		CUtlString timeText = SurfTimerService::FormatTime(pb->overall.pbTime);
+		CUtlString timeText = utils::FormatTime(pb->overall.pbTime);
 		this->player->languageService->PrintChat(true, false, missedTimeKeys[this->currentCompareType], timeText.Get());
 		this->shouldAnnounceMissedTime = false;
 		this->PlayMissedTimeSound();
@@ -1226,7 +1199,7 @@ void SurfTimerService::ShowCheckpointText(u32 currentCheckpoint)
 	CUtlString time;
 	std::string pbDiff = "";
 
-	time = SurfTimerService::FormatTime(this->cpZoneTimes[currentCheckpoint - 1]);
+	time = utils::FormatTime(this->cpZoneTimes[currentCheckpoint - 1]);
 	if (this->lastCheckpoint != 0)
 	{
 		f64 diff = this->cpZoneTimes[currentCheckpoint - 1] - this->cpZoneTimes[this->lastCheckpoint - 1];
@@ -1271,7 +1244,7 @@ void SurfTimerService::ShowStageText()
 	CUtlString time;
 	std::string pbDiff = "";
 
-	time = SurfTimerService::FormatTime(this->stageZoneTimes[this->currentStage - 1]);
+	time = utils::FormatTime(this->stageZoneTimes[this->currentStage - 1]);
 
 	auto modeInfo = Surf::mode::GetModeInfo(this->player->modeService->GetModeName());
 	PBDataKey key = ToPBDataKey(modeInfo.id, course->guid);

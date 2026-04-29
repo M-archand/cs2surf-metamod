@@ -8,6 +8,7 @@
 #include "surf/option/surf_option.h"
 #include "surf/timer/surf_timer.h"
 #include "surf/language/surf_language.h"
+#include "surf/replays/surf_replaysystem.h"
 
 #include "tier0/memdbgon.h"
 
@@ -87,6 +88,31 @@ std::string SurfHUDService::GetStageText(const char *language)
 
 std::string SurfHUDService::GetTimerText(const char *language)
 {
+	if (Surf::replaysystem::IsReplayBot(this->player))
+	{
+		char timeText[128];
+
+		f64 time = Surf::replaysystem::GetTime();
+		bool paused = Surf::replaysystem::GetPaused();
+		bool timerRunning = Surf::replaysystem::GetEndTime() == 0.0f;
+		// Show timer if time is not 0 or end time is not 0.
+		if (time == 0.0f && Surf::replaysystem::GetEndTime() == 0.0f)
+		{
+			return std::string("");
+		}
+		if (!timerRunning)
+		{
+			time = Surf::replaysystem::GetEndTime();
+		}
+		utils::FormatTime(time, timeText, sizeof(timeText));
+		// clang-format off
+		return SurfLanguageService::PrepareMessageWithLang(language, "HUD - Timer Text",
+			timeText,
+			timerRunning ? "" : SurfLanguageService::PrepareMessageWithLang(language, "HUD - Stopped Text").c_str(),
+			paused ? SurfLanguageService::PrepareMessageWithLang(language, "HUD - Paused Text").c_str() : ""
+		);
+		// clang-format on
+	}
 	if (this->player->timerService->GetTimerRunning() || this->ShouldShowTimerAfterStop())
 	{
 		char timeText[128];
@@ -97,12 +123,14 @@ std::string SurfHUDService::GetTimerText(const char *language)
 			? player->timerService->GetTime()
 			: this->currentTimeWhenTimerStopped;
 
+		bool timerRunning = this->player->timerService->GetTimerRunning();
+		bool paused = this->player->timerService->GetPaused();
 
-		SurfTimerService::FormatTime(time, timeText, sizeof(timeText));
+		utils::FormatTime(time, timeText, sizeof(timeText));
 		return SurfLanguageService::PrepareMessageWithLang(language, "HUD - Timer Text",
 			timeText,
-			player->timerService->GetTimerRunning() ? "" : SurfLanguageService::PrepareMessageWithLang(language, "HUD - Stopped Text").c_str(),
-			player->timerService->GetPaused() ? SurfLanguageService::PrepareMessageWithLang(language, "HUD - Paused Text").c_str() : ""
+			timerRunning ? "" : SurfLanguageService::PrepareMessageWithLang(language, "HUD - Stopped Text").c_str(),
+			paused ? SurfLanguageService::PrepareMessageWithLang(language, "HUD - Paused Text").c_str() : ""
 		);
 		// clang-format on
 	}

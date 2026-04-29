@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cbaseplayerpawn.h"
+#include "sdk/econ/ceconitemview.h"
 
 class CCSPlayerPawnBase : public CBasePlayerPawn
 {
@@ -18,6 +19,9 @@ public:
 
 	SCHEMA_FIELD(QAngle, m_angEyeAngles)
 	SCHEMA_FIELD(bool, m_bLeftHanded)
+
+	SCHEMA_FIELD(CEconItemView, m_EconGloves);
+	SCHEMA_FIELD(uint8, m_nEconGlovesChanged);
 
 	SCHEMA_FIELD(float, m_flViewmodelOffsetX);
 	SCHEMA_FIELD(float, m_flViewmodelOffsetY);

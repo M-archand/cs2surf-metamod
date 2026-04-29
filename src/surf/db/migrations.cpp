@@ -39,6 +39,7 @@ static_global const std::string mysqlMigrations[] =
 	trimString(mysql_mapcourses_create),
 	trimString(mysql_times_create),
 	trimString(mysql_startpos_create),
+	trimString(mysql_times_alter_id_column),
 };
 
 static_global const std::string sqliteMigrations[] = 
@@ -50,6 +51,10 @@ static_global const std::string sqliteMigrations[] =
 	trimString(sqlite_mapcourses_create),
 	trimString(sqlite_times_create),
 	trimString(sqlite_startpos_create),
+	trimString(sqlite_times_alter_id_column_1),
+	trimString(sqlite_times_alter_id_column_2),
+	trimString(sqlite_times_alter_id_column_3),
+	trimString(sqlite_times_alter_id_column_4),
 };
 
 // clang-format on
@@ -156,7 +161,7 @@ void SurfDatabaseService::CheckMigrations(std::vector<ISQLQuery *> queries)
 	}
 
 	Transaction txn;
-	char query[1024];
+	char query[2048];
 	for (u32 i = current; i < max; i++)
 	{
 		switch (SurfDatabaseService::GetDatabaseType())

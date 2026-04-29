@@ -188,7 +188,7 @@ struct PBRequest : public BaseRequest
 		SurfPlayer *player = g_pSurfPlayerManager->ToPlayer(userID);
 
 		char overallTime[32];
-		SurfTimerService::FormatTime(this->gpbData.runTime, overallTime, sizeof(overallTime));
+		utils::FormatTime(this->gpbData.runTime, overallTime, sizeof(overallTime));
 
 		if (!globallyBanned)
 		{
@@ -214,7 +214,7 @@ struct PBRequest : public BaseRequest
 		SurfPlayer *player = g_pSurfPlayerManager->ToPlayer(userID);
 
 		char overallTime[32];
-		SurfTimerService::FormatTime(this->pbData.runTime, overallTime, sizeof(overallTime));
+		utils::FormatTime(this->pbData.runTime, overallTime, sizeof(overallTime));
 
 		if (!globallyBanned)
 		{

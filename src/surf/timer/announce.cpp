@@ -4,6 +4,7 @@
 #include "surf/global/events.h"
 #include "surf/language/surf_language.h"
 #include "surf/mode/surf_mode.h"
+#include "surf/recording/surf_recording.h"
 #include "surf/style/surf_style.h"
 
 #include "vendor/sql_mm/src/public/sql_mm.h"
@@ -12,7 +13,7 @@ CConVar<bool> surf_debug_announce_global("surf_debug_announce_global", FCVAR_NON
 
 RecordAnnounce::RecordAnnounce(SurfPlayer *player)
 	: uid(RecordAnnounce::idCount++), timestamp(g_pSurfUtils->GetServerGlobals()->realtime), userID(player->GetClient()->GetUserID()),
-	  time(player->timerService->GetTime())
+	  time(player->timerService->GetTime()), runUUID(player->recordingService->GetCurrentRunUUID().ToString())
 {
 	this->local = SurfDatabaseService::IsReady() && SurfDatabaseService::IsMapSetUp();
 	this->global = player->hasPrime && SurfGlobalService::IsAvailable();
@@ -270,8 +271,8 @@ void RecordAnnounce::SubmitLocal()
 
 		rec->UpdateLocalCache();
 	};
-	SurfDatabaseService::SaveTime(this->player.steamid64, this->course.localID, this->mode.localID, this->time, this->styleIDs, this->metadata,
-								  onSuccess, onFailure);
+	SurfDatabaseService::SaveTime(this->runUUID.c_str(), this->player.steamid64, this->course.localID, this->mode.localID, this->time,
+								this->styleIDs, this->metadata, onSuccess, onFailure);
 }
 
 void RecordAnnounce::UpdateLocalCache()
@@ -287,7 +288,7 @@ void RecordAnnounce::UpdateLocalCache()
 void RecordAnnounce::AnnounceRun()
 {
 	char formattedTime[32];
-	SurfTimerService::FormatTime(time, formattedTime, sizeof(formattedTime));
+	utils::FormatTime(time, formattedTime, sizeof(formattedTime));
 
 	CUtlString combinedModeStyleText;
 	combinedModeStyleText.Format("{purple}%s{grey}", this->mode.name.c_str());

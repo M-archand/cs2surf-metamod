@@ -936,6 +936,10 @@
 	}
 	"Command Description - surf_course"
 	{
+		"en"		"Teleport to a course, or display the current course and the list of all courses in the map."
+	}
+	"Command Description - surf_courses"
+	{
 		"en"		"Display the current course and the list of all courses in the map."
 		"chi"		"显示当前关卡与当前地图的关卡列表."
 		"sv"		"Visa tillfälliga banan och lista alla tillgängliga banor på kartan."
@@ -999,5 +1003,45 @@
 	"Command Description - surf_fov"
 	{
 		"en"		"Change your FOV."
+	}
+	"Command Description - surf_rpsave"
+	{
+		"en"		"Manually save past gameplay into a replay."
+	}
+	"Command Description - surf_replay"
+	{
+		"en"		"Play a previously saved replay."
+	}
+	"Command Description - surf_replays"
+	{
+		"en"		"List saved replays."
+	}
+  	"Command Description - surf_rpgoto"
+	{
+		"en"		"Go to a specific time in the replay. (hh:mm:ss)"
+	}
+  	"Command Description - surf_rpgototick"
+	{
+		"en"		"Go to a specific tick in the replay."
+	}
+  	"Command Description - surf_rpinfo"
+	{
+		"en"		"Display information about the current replay."
+	}
+  	"Command Description - surf_rppause"
+	{
+		"en"		"Pause or resume the current replay."
+	}
+  	"Command Description - surf_rploadprogress"
+	{
+		"en"		"Display the loading progress of the replay."
+	}
+  	"Command Description - surf_rpcancelload"
+	{
+		"en"		"Cancel the loading of the replay."
+	}
+	"Command Description - surf_rphidelegs"
+	{
+		"en"		"Toggle replay bot's first person legs visibility."
 	}
 }

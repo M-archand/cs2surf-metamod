@@ -4,21 +4,24 @@
 #include "surf/timer/surf_timer.h"
 #include "queries/save_time.h"
 #include "queries/times.h"
+#include "utils/uuid.h"
 #include "vendor/sql_mm/src/public/sql_mm.h"
 
 using namespace Surf::Database;
 
-void SurfDatabaseService::SaveTime(u64 steamID, u32 courseID, i32 modeID, f64 time, u64 styleIDs, std::string_view metadata,
-								   TransactionSuccessCallbackFunc onSuccess, TransactionFailureCallbackFunc onFailure)
+void SurfDatabaseService::SaveTime(const char *runUUID, u64 steamID, u32 courseID, i32 modeID, f64 time, u64 styleIDs,
+								std::string_view metadata, TransactionSuccessCallbackFunc onSuccess, TransactionFailureCallbackFunc onFailure)
 {
 	if (!SurfDatabaseService::IsReady())
 	{
 		return;
 	}
 
-	char query[1024];
+	char query[2048];
 	Transaction txn;
-	V_snprintf(query, sizeof(query), sql_times_insert, steamID, courseID, modeID, styleIDs, time, metadata.data());
+	
+	// Always use UUID insert since all migrations must be applied for the plugin to run
+	V_snprintf(query, sizeof(query), sql_times_insert, runUUID, steamID, courseID, modeID, styleIDs, time, metadata.data());
 	txn.queries.push_back(query);
 	if (styleIDs != 0)
 	{

@@ -15,7 +15,7 @@ bool SurfDatabaseService::AreCoursesSetUp()
 
 void SurfDatabaseService::SetupCourses(CUtlVector<SurfCourseDescriptor *> &courses)
 {
-	char query[1024];
+	char query[2048];
 	Transaction txn;
 	FOR_EACH_VEC(courses, i)
 	{

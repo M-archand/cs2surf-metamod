@@ -153,7 +153,7 @@ struct TopRecordRequest : public BaseRequest
 		// Local stuff
 
 		char standardTime[32];
-		SurfTimerService::FormatTime(wrData.runTime, standardTime, sizeof(standardTime));
+		utils::FormatTime(wrData.runTime, standardTime, sizeof(standardTime));
 
 		// Global Records on surf_map (Main) [VNL]
 		player->languageService->PrintChat(true, false, "WR Header", mapName.Get(), courseName.Get(), modeName.Get());
@@ -174,7 +174,7 @@ struct TopRecordRequest : public BaseRequest
 		// Local stuff
 
 		char standardTime[32];
-		SurfTimerService::FormatTime(srData.runTime, standardTime, sizeof(standardTime));
+		utils::FormatTime(srData.runTime, standardTime, sizeof(standardTime));
 
 		// Server Records on surf_map (Main) [VNL]
 		player->languageService->PrintChat(true, false, "SR Header", mapName.Get(), courseName.Get(), modeName.Get());
