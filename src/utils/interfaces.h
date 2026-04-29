@@ -25,7 +25,6 @@ class CServerSideClient;
 class CCSGameRules;
 class BotProfile;
 
-
 // temporary botprofile classes
 #include "utllinkedlist.h"
 #include "utlvector.h"

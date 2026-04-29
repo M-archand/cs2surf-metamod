@@ -9,8 +9,8 @@
 
 using namespace Surf::Database;
 
-void SurfDatabaseService::SaveTime(const char *runUUID, u64 steamID, u32 courseID, i32 modeID, f64 time, u64 styleIDs,
-								std::string_view metadata, TransactionSuccessCallbackFunc onSuccess, TransactionFailureCallbackFunc onFailure)
+void SurfDatabaseService::SaveTime(const char *runUUID, u64 steamID, u32 courseID, i32 modeID, f64 time, u64 styleIDs, std::string_view metadata,
+								   TransactionSuccessCallbackFunc onSuccess, TransactionFailureCallbackFunc onFailure)
 {
 	if (!SurfDatabaseService::IsReady())
 	{
@@ -19,7 +19,7 @@ void SurfDatabaseService::SaveTime(const char *runUUID, u64 steamID, u32 courseI
 
 	char query[2048];
 	Transaction txn;
-	
+
 	// Always use UUID insert since all migrations must be applied for the plugin to run
 	V_snprintf(query, sizeof(query), sql_times_insert, runUUID, steamID, courseID, modeID, styleIDs, time, metadata.data());
 	txn.queries.push_back(query);

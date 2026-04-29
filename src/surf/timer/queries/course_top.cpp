@@ -177,8 +177,7 @@ struct CourseTopRequest : public BaseRequest
 				{
 					CUtlString id;
 					id.Format("%u", record.id);
-					req->wrData.overallData.AddToTail(
-						{id, record.player.name.c_str(), record.time, record.player.id, (u64)floor(record.points)});
+					req->wrData.overallData.AddToTail({id, record.player.name.c_str(), record.time, record.player.id, (u64)floor(record.points)});
 				}
 			};
 			this->globalStatus = ResponseStatus::PENDING;

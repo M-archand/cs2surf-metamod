@@ -132,6 +132,7 @@ struct Recorder
 			cmdSubtickData.push_back(data);
 		}
 	}
+
 	static void Init(ReplayHeader &hdr, SurfPlayer *player, ReplayType type);
 };
 

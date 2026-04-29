@@ -83,7 +83,6 @@ void SurfRecordingService::OnActivateServer()
 	}
 }
 
-
 void SurfRecordingService::ProcessFileWriteCompletion()
 {
 	if (s_fileWriter)

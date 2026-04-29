@@ -172,7 +172,6 @@ static_global int finishMoveHook {};
 SH_DECL_MANUALHOOK2_void(FinishMove, 0, 0, 0, PlayerCommand *, CMoveData *);
 static_function void Hook_OnFinishMove(PlayerCommand *pCmd, CMoveData *pMoveData);
 
-
 void hooks::Initialize()
 {
 	SH_MANUALHOOK_RECONFIGURE(StartTouch, g_pGameConfig->GetOffset("StartTouch"), 0, 0);

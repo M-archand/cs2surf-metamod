@@ -271,8 +271,8 @@ void RecordAnnounce::SubmitLocal()
 
 		rec->UpdateLocalCache();
 	};
-	SurfDatabaseService::SaveTime(this->runUUID.c_str(), this->player.steamid64, this->course.localID, this->mode.localID, this->time,
-								this->styleIDs, this->metadata, onSuccess, onFailure);
+	SurfDatabaseService::SaveTime(this->runUUID.c_str(), this->player.steamid64, this->course.localID, this->mode.localID, this->time, this->styleIDs,
+								  this->metadata, onSuccess, onFailure);
 }
 
 void RecordAnnounce::UpdateLocalCache()

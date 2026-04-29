@@ -9,8 +9,8 @@
 #include <atomic>
 
 CConVar<bool> surf_replay_playback_debug("surf_replay_playback_debug", FCVAR_NONE, "Prints debug info about replay playback.", false);
-CConVar<bool> surf_replay_playback_skins_enable("surf_replay_playback_skins_enable", FCVAR_NONE, "Enables applying player skins during replay playback.",
-											  true);
+CConVar<bool> surf_replay_playback_skins_enable("surf_replay_playback_skins_enable", FCVAR_NONE,
+												"Enables applying player skins during replay playback.", true);
 
 static Surf::replaysystem::data::ReplayPlayback g_currentReplay = {};
 static Surf::replaysystem::data::AsyncLoadStatus g_loadStatus = {};

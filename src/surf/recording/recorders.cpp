@@ -46,7 +46,7 @@ i32 CheaterRecorder::WriteHeader(FileHandle_t file)
 }
 
 // RunRecorder Implementation
-RunRecorder::RunRecorder(SurfPlayer *player) : Recorder(player, 5.0f, RP_RUN,  true)
+RunRecorder::RunRecorder(SurfPlayer *player) : Recorder(player, 5.0f, RP_RUN, true)
 {
 	auto *runProto = replayHeader.mutable_run();
 	runProto->set_course_name(player->timerService->GetCourse()->GetName().Get());
@@ -225,7 +225,7 @@ bool Recorder::WriteToFile()
 	V_snprintf(tempFilename, sizeof(tempFilename), "%s/%s.replay.tmp", SURF_REPLAY_PATH, uuidStr.c_str());
 	V_snprintf(finalFilename, sizeof(finalFilename), "%s/%s.replay", SURF_REPLAY_PATH, uuidStr.c_str());
 	g_pFullFileSystem->CreateDirHierarchy(SURF_REPLAY_PATH, "GAME");
-	
+
 	// Write to temporary file first
 	FileHandle_t file = g_pFullFileSystem->Open(tempFilename, "wb", "GAME");
 
@@ -246,7 +246,7 @@ bool Recorder::WriteToFile()
 	bytesWritten += Surf::replaysystem::compression::WriteEventsCompressed(file, this->rpEvents);
 
 	bytesWritten += Surf::replaysystem::compression::WriteCmdDataCompressed(file, this->cmdData, this->cmdSubtickData);
-	
+
 	// Close the file before renaming
 	g_pFullFileSystem->Close(file);
 
@@ -257,7 +257,7 @@ bool Recorder::WriteToFile()
 		g_pFullFileSystem->RemoveFile(tempFilename, "GAME");
 		return false;
 	}
-	
+
 	if (surf_replay_recording_debug.Get())
 	{
 		META_CONPRINTF("surf_replay_recording_debug: Saved replay to %s (%d bytes)\n", finalFilename, bytesWritten);

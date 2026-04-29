@@ -184,7 +184,7 @@ static_function u64 BuildPostChangeFlags(const TickData::MovementData &current, 
 }
 
 i32 Surf::replaysystem::compression::WriteTickDataCompressed(FileHandle_t file, const std::vector<TickData> &tickData,
-														   const std::vector<SubtickData> &subtickData)
+															 const std::vector<SubtickData> &subtickData)
 {
 	i32 bytesWritten = 0;
 	std::vector<char> buffer;
@@ -349,7 +349,7 @@ i32 Surf::replaysystem::compression::WriteTickDataCompressed(FileHandle_t file, 
 }
 
 bool Surf::replaysystem::compression::ReadTickDataCompressed(FileHandle_t file, std::vector<TickData> &outTickData,
-														   std::vector<SubtickData> &outSubtickData, u32 replayVersion)
+															 std::vector<SubtickData> &outSubtickData, u32 replayVersion)
 {
 	// Read section header
 	CompressedSectionHeader header;
@@ -680,7 +680,7 @@ enum CmdDataChangeFlags : u64
 };
 
 bool Surf::replaysystem::compression::ReadCmdDataCompressed(FileHandle_t file, std::vector<CmdData> &outCmdData,
-														  std::vector<SubtickData> &outCmdSubtickData)
+															std::vector<SubtickData> &outCmdSubtickData)
 {
 	// Read cmd data section header
 	CompressedSectionHeader header;
@@ -859,7 +859,7 @@ i32 Surf::replaysystem::compression::WriteWeaponsCompressed(FileHandle_t file, c
 }
 
 i32 Surf::replaysystem::compression::WriteCmdDataCompressed(FileHandle_t file, const std::vector<CmdData> &cmdData,
-														  const std::vector<SubtickData> &cmdSubtickData)
+															const std::vector<SubtickData> &cmdSubtickData)
 {
 	i32 bytesWritten = 0;
 	std::vector<char> buffer;

@@ -1109,7 +1109,6 @@ SCMD(surf_courses, SCFL_MAP)
 	return MRES_SUPERCEDE;
 }
 
-
 SCMD(surf_course, SCFL_MAP)
 {
 	SurfPlayer *player = g_pSurfPlayerManager->ToPlayer(controller);

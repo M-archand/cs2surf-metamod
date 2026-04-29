@@ -71,7 +71,7 @@ void CircularRecorder::TrimOldEvents(u32 currentTick)
 }
 
 void SurfRecordingService::WriteCircularBufferToFileAsync(f32 duration, const char *cheaterReason, SurfPlayer *saver, WriteSuccessCallback onSuccess,
-														WriteFailureCallback onFailure)
+														  WriteFailureCallback onFailure)
 {
 	std::unique_ptr<Recorder> recorder;
 	if (strlen(cheaterReason) > 0)

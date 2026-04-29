@@ -195,7 +195,7 @@ struct CmdData
 	f32 m_pitch {};
 };
 
-//Unified protobuf header type
+// Unified protobuf header type
 using ReplayHeader = cs2surf::replay::ReplayHeader;
 
 #endif // SURF_REPLAY_H
