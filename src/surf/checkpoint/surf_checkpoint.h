@@ -48,7 +48,7 @@ public:
 	void SetCheckpoint();
 
 	void UndoTeleport();
-	void DoTeleport(const Checkpoint cp);
+	void DoTeleport(const Checkpoint cp, bool respawn = false);
 	void DoTeleport(i32 index);
 	void TpHoldPlayerStill();
 	void TpToCheckpoint();

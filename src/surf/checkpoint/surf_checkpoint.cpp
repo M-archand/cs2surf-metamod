@@ -135,14 +135,14 @@ void SurfCheckpointService::DoTeleport(i32 index)
 	{
 		if (SURF_STREQI(Surf::style::GetStyleInfo(this->player->styleServices[i]).shortName, "TAS"))
 		{
-			this->DoTeleport(this->checkpoints[this->currentCpIndex]);
+			this->DoTeleport(this->checkpoints[this->currentCpIndex], false);
 			return;
 		}
 	}
 	this->player->languageService->PrintChat(true, false, "Can't Teleport (Not TAS)");
 }
 
-void SurfCheckpointService::DoTeleport(const Checkpoint cp)
+void SurfCheckpointService::DoTeleport(const Checkpoint cp, bool respawn)
 {
 	CCSPlayerPawn *pawn = this->player->GetPlayerPawn();
 	if (!pawn || !pawn->IsAlive())
@@ -158,7 +158,7 @@ void SurfCheckpointService::DoTeleport(const Checkpoint cp)
 	this->undoTeleportData.teleportOnGround = ((flags & FL_ONGROUND) || (pawn->m_MoveType() == MOVETYPE_LADDER));
 	this->undoTeleportData.origin = currentOrigin;
 	this->player->GetAngles(&this->undoTeleportData.angles);
-	this->undoTeleportData.time = this->player->timerService->GetTime();
+	this->undoTeleportData.time = respawn ? 0.0 : this->player->timerService->GetTime();
 	if (this->player->GetMoveServices())
 	{
 		this->undoTeleportData.ladderNormal = this->player->GetMoveServices()->m_vecLadderNormal();
@@ -171,10 +171,19 @@ void SurfCheckpointService::DoTeleport(const Checkpoint cp)
 	// If we teleport the player to the same origin,
 	// the player ends just a slightly bit off from where they are supposed to be...
 	// If we teleport the player to this origin every tick, they will end up NOT on this origin in the end somehow.
-	// So we only set the player origin if it doesn't match.
+	// So we only set the player origin if it doesn't match
 	if (currentOrigin != cp.origin)
 	{
-		this->player->Teleport(&cp.origin, &cp.angles, &cp.velocity);
+		// Respawn teleport must always have zero velocity
+		// TAS teleports must preserve saved velocity
+		if (respawn)
+		{
+			this->player->Teleport(&cp.origin, &cp.angles, &NULL_VECTOR);
+		}
+		else
+		{
+			this->player->Teleport(&cp.origin, &cp.angles, &cp.velocity);
+		}
 		// Check if player might get stuck and attempt to put the player in duck.
 		if (!utils::IsSpawnValid(cp.origin))
 		{
@@ -182,11 +191,15 @@ void SurfCheckpointService::DoTeleport(const Checkpoint cp)
 			this->player->GetMoveServices()->m_flDuckAmount(1.0f);
 		}
 	}
+	else if (respawn)
+	{
+		this->player->Teleport(NULL, &cp.angles, &NULL_VECTOR);
+	}
 	else
 	{
 		this->player->Teleport(NULL, &cp.angles, &cp.velocity);
+		this->player->timerService->SetTime(cp.time);
 	}
-	this->player->timerService->SetTime(cp.time);
 
 	CBaseEntity *groundEntity = static_cast<CBaseEntity *>(GameEntitySystem()->GetEntityInstance(cp.groundEnt));
 	// Don't attach the player onto moving platform (because they might not be there anymore). World doesn't move
@@ -366,7 +379,7 @@ void SurfCheckpointService::ClearStartPosition()
 
 void SurfCheckpointService::TpToStartPosition()
 {
-	this->DoTeleport(this->customStartPosition);
+	this->DoTeleport(this->customStartPosition, true);
 }
 
 void SurfCheckpointService::PlayCheckpointSound()
