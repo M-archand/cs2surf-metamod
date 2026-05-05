@@ -23,6 +23,8 @@ SurfModeManager *g_pSurfModeManager = &modeManager;
 
 CUtlVector<SurfModeManager::ModePluginInfo> modeInfos;
 
+CConVarRef<float> sv_maxvelocity("sv_maxvelocity");
+
 static_global class SurfDatabaseServiceEventListener_Modes : public SurfDatabaseServiceEventListener
 {
 public:
@@ -125,6 +127,7 @@ void Surf::mode::DisableReplicatedModeCvars()
 		assert(modeCvarRefs[i]->IsValidRef() && modeCvarRefs[i]->IsConVarDataAvailable());
 		modeCvarRefs[i]->GetConVarData()->RemoveFlags(FCVAR_REPLICATED);
 	}
+	sv_maxvelocity.GetConVarData()->RemoveFlags(FCVAR_REPLICATED);
 }
 
 void Surf::mode::EnableReplicatedModeCvars()
@@ -134,6 +137,7 @@ void Surf::mode::EnableReplicatedModeCvars()
 		assert(modeCvarRefs[i]->IsValidRef() && modeCvarRefs[i]->IsConVarDataAvailable());
 		modeCvarRefs[i]->GetConVarData()->AddFlags(FCVAR_REPLICATED);
 	}
+	sv_maxvelocity.GetConVarData()->AddFlags(FCVAR_REPLICATED);
 }
 
 void Surf::mode::ApplyModeSettings(SurfPlayer *player)
@@ -144,6 +148,18 @@ void Surf::mode::ApplyModeSettings(SurfPlayer *player)
 		auto original = modeCvarRefs[i]->GetConVarData()->Value(-1);
 		auto traits = modeCvarRefs[i]->TypeTraits();
 		traits->Copy(original, value);
+	}
+	// Handle course-specific max velocity
+	if (sv_maxvelocity.IsValidRef() && sv_maxvelocity.IsConVarDataAvailable())
+	{
+		const SurfCourseDescriptor *course = player->timerService->GetCourse();
+		if (course)
+		{
+			const CVValue_t &maxVel = (float)course->maxVel;
+			auto original = sv_maxvelocity.GetConVarData()->Value(-1);
+			auto traits = sv_maxvelocity.TypeTraits();
+			traits->Copy(original, maxVel);
+		}
 	}
 	player->enableWaterFix = player->modeService->EnableWaterFix();
 }

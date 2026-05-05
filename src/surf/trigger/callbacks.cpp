@@ -313,10 +313,14 @@ void SurfTriggerService::OnMappingApiTriggerTouchPost(TriggerTouchTracker tracke
 			if (!this->player->timerService->GetCourse())
 			{
 				this->player->timerService->SetCourse(course->guid);
+				const CVValue_t maxVel = (float)course->maxVel;
+				utils::SendConVarValue(player->GetPlayerSlot(), "sv_maxvelocity", &maxVel);
 			}
 			else if (this->player->timerService->GetCourse()->guid != course->guid)
 			{
 				this->player->timerService->SetCourse(course->guid);
+				const CVValue_t maxVel = (float)course->maxVel;
+				utils::SendConVarValue(player->GetPlayerSlot(), "sv_maxvelocity", &maxVel);
 			}
 		}
 		break;

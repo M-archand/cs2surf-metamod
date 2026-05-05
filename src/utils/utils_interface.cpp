@@ -12,6 +12,8 @@
 
 #include "memdbgon.h"
 
+#define MAX_VELOCITY_KEY "sv_maxvelocity "
+
 static_global char currentMapMD5[33];
 static_global bool md5NeedsUpdating {};
 
@@ -215,6 +217,57 @@ u64 SurfUtils::GetCurrentMapSize()
 		}
 	}
 	return size;
+}
+
+CUtlString SurfUtils::GetCurrentMapConfig()
+{
+	CUtlString map = this->GetCurrentMapName();
+	if (map.IsEmpty())
+	{
+		return "";
+	}
+	CUtlVector<CUtlString> paths;
+	char mapName[1024];
+
+	g_SMAPI->PathFormat(mapName, sizeof(mapName), "cfg/maps/%s.cfg", map.Get());
+
+	g_pFullFileSystem->FindFileAbsoluteList(paths, mapName, "GAME");
+
+	if (paths.Count() > 0)
+	{
+		return paths[0];
+	}
+	return "";
+}
+
+u32 SurfUtils::GetCurrentMapMaxVelocity()
+{
+	FileHandle_t fp = g_pFullFileSystem->Open(this->GetCurrentMapConfig().Get(), "r");
+	u32 maxVel = 0;
+	if (fp)
+	{
+		int size = g_pFullFileSystem->Size(fp);
+		char *buffer = new char[size + 1];
+
+		g_pFullFileSystem->Read((void *)buffer, size, fp);
+		buffer[size] = 0;
+		g_pFullFileSystem->Close(fp);
+
+		std::istringstream stream(buffer);
+		std::string lineC;
+
+		while (std::getline(stream, lineC))
+		{
+			CUtlString line(lineC.c_str());
+			if (line.MatchesPattern(CUtlString(MAX_VELOCITY_KEY) + "*") && utils::IsNumeric(line.Get()))
+			{
+				maxVel = atoi(line.Get() + strlen(MAX_VELOCITY_KEY));
+				break;
+			}
+		}
+		delete[] buffer;
+	}
+	return maxVel;
 }
 
 bool SurfUtils::UpdateCurrentMapMD5()

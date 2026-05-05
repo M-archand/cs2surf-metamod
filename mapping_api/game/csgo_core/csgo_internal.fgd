@@ -74,8 +74,8 @@
 
 	// Surf Course Descriptor
 	timer_course_name(string) {group="Surf | Course Descriptor" enabled={variable="timer_course_descriptor" value="1"}} : "Course Name" : : "The name of the course. Every zone trigger must be associated with a course name, which can be a maximum of 64 bytes long (non-english characters take up more bytes)."
-	timer_course_disable_checkpoint(boolean) {group="Surf | Course Descriptor" enabled={variable="timer_course_descriptor" value="1"}} : "Disable Checkpoints" : 0 : "Disable setting checkpoints in this course."
 	timer_course_number(integer) {group="Surf | Course Descriptor" min="1"  enabled={variable="timer_course_descriptor" value="1"}} : "Course Number" : 1 : "Course number to uniquely identify this course."
+	timer_course_max_velocity(integer) {group="Surf | Course Descriptor" min="1"  enabled={variable="timer_course_descriptor" value="1"}} : "Course Max Velocity" : 3500 : "Max velocity for this course."
 ]
 
 @OverrideClass = worldspawn

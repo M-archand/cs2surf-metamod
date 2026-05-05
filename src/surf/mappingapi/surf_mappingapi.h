@@ -17,6 +17,7 @@
 #define INVALID_CHECKPOINT_NUMBER 0
 #define INVALID_STAGE_NUMBER      0
 #define INVALID_COURSE_NUMBER     0
+#define INVALID_MAXVEL_NUMBER     0
 
 struct SurfCourse;
 class SurfPlayer;
@@ -99,8 +100,8 @@ struct SurfCourseDescriptor
 
 {
 	SurfCourseDescriptor(i32 hammerId = -1, const char *targetName = "", u32 guid = 0, i32 courseID = INVALID_COURSE_NUMBER,
-						 const char *courseName = "")
-		: hammerId(hammerId), guid(guid), id(courseID)
+						 const char *courseName = "", u32 courseMaxVelocity = INVALID_MAXVEL_NUMBER)
+		: hammerId(hammerId), guid(guid), id(courseID), maxVel(courseMaxVelocity)
 	{
 		V_snprintf(entityTargetname, sizeof(entityTargetname), "%s", targetName);
 		V_snprintf(name, sizeof(name), "%s", courseName);
@@ -134,6 +135,8 @@ struct SurfCourseDescriptor
 	i32 id;
 	// Mapper assigned course name.
 	char name[SURF_MAX_COURSE_NAME_LENGTH] {};
+	// Mapper assigned course max velocity.
+	u32 maxVel;
 
 	bool HasMatchingIdentifiers(i32 id, const char *name) const
 	{

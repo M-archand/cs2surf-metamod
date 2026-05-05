@@ -111,7 +111,7 @@ static_function f64 Mapi_PrintErrors()
 }
 
 static_function bool Mapi_CreateCourse(i32 courseNumber = 1, const char *courseName = SURF_NO_MAPAPI_COURSE_NAME, i32 hammerId = -1,
-									   const char *targetName = SURF_NO_MAPAPI_COURSE_DESCRIPTOR)
+									   const char *targetName = SURF_NO_MAPAPI_COURSE_DESCRIPTOR, u32 courseMaxVelocity = INVALID_MAXVEL_NUMBER)
 {
 	// Make sure we don't exceed this ridiculous value.
 	// If we do, it is most likely that something went wrong, or it is caused by the mapper.
@@ -138,7 +138,7 @@ static_function bool Mapi_CreateCourse(i32 courseNumber = 1, const char *courseN
 	}
 	u32 guid = (u32)g_mappingApi.courseDescriptors.Count() + 1;
 
-	i32 index = g_mappingApi.courseDescriptors.AddToTail({hammerId, targetName, guid, courseNumber, courseName});
+	i32 index = g_mappingApi.courseDescriptors.AddToTail({hammerId, targetName, guid, courseNumber, courseName, courseMaxVelocity});
 	g_sortedCourses.Insert(&g_mappingApi.courseDescriptors[index]);
 	return true;
 }
@@ -405,6 +405,7 @@ static_function void Mapi_OnInfoTargetSpawn(const CEntityKeyValues *ekv)
 	Vector origin = ekv->GetVector("origin");
 
 	i32 courseNumber = ekv->GetInt("timer_course_number", INVALID_COURSE_NUMBER);
+	u32 courseMaxVelocity = ekv->GetInt("timer_course_max_velocity", INVALID_MAXVEL_NUMBER);
 	const char *courseName = ekv->GetString("timer_course_name");
 	const char *targetName = ekv->GetString("targetname");
 	constexpr static_persist const char *targetNamePrefix = "[PR#]";
@@ -417,6 +418,13 @@ static_function void Mapi_OnInfoTargetSpawn(const CEntityKeyValues *ekv)
 	{
 		Mapi_Error("Course number must be bigger than %i! Course descriptor Hammer ID %i, origin (%.0f %.0f %.0f)", INVALID_COURSE_NUMBER, hammerId,
 				   origin.x, origin.y, origin.z);
+		return;
+	}
+
+	if (courseMaxVelocity <= INVALID_MAXVEL_NUMBER)
+	{
+		Mapi_Error("Course max velocity must be more than %i! Course descriptor Hammer ID %i, origin (%.0f %.0f %.0f)", INVALID_MAXVEL_NUMBER,
+				   hammerId, origin.x, origin.y, origin.z);
 		return;
 	}
 
@@ -434,7 +442,7 @@ static_function void Mapi_OnInfoTargetSpawn(const CEntityKeyValues *ekv)
 		return;
 	}
 
-	Mapi_CreateCourse(courseNumber, courseName, hammerId, targetName);
+	Mapi_CreateCourse(courseNumber, courseName, hammerId, targetName, courseMaxVelocity);
 }
 
 static_function SurfTrigger *Mapi_FindSurfTrigger(CBaseTrigger *trigger)
@@ -852,6 +860,22 @@ void Surf::mapapi::OnRoundStart()
 		{
 			Mapi_Error("Course \"%s\" Too many stage zones! Maximum is %i.", courseDescriptor->name, SURF_MAX_STAGE_ZONES);
 			invalid = true;
+		}
+
+		if (courseDescriptor->maxVel <= INVALID_MAXVEL_NUMBER)
+		{
+			// No maxvel set through mapping api
+			// Try to grab sv_maxvelocity from map cfg.
+			u32 cfgMaxVel = g_pSurfUtils->GetCurrentMapMaxVelocity();
+			if (cfgMaxVel <= INVALID_MAXVEL_NUMBER)
+			{
+				// cfg max velocity doesnt exist, just use 3500.
+				courseDescriptor->maxVel = 3500;
+			}
+			else
+			{
+				courseDescriptor->maxVel = cfgMaxVel;
+			}
 		}
 
 		if (invalid)

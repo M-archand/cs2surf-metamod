@@ -75,7 +75,6 @@ class Surf102tModeService : public SurfModeService
 		(float)1.0f,    // sv_ladder_dampen
 		(float)1.0f,    // sv_ladder_scale_speed
 		(float)320.0f,  // sv_maxspeed
-		(float)4096.0f, // sv_maxvelocity
 		(float)0.0f,    // sv_staminajumpcost
 		(float)0.0f,    // sv_staminalandcost
 		(float)0.0f,    // sv_staminamax

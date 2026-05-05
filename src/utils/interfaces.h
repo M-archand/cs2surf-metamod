@@ -181,6 +181,8 @@ public:
 	virtual CUtlString GetCurrentMapVPK();
 	virtual CUtlString GetCurrentMapDirectory();
 	virtual u64 GetCurrentMapSize();
+	virtual CUtlString GetCurrentMapConfig();
+	virtual u32 GetCurrentMapMaxVelocity();
 	// MD5 calculation is not very fast, avoid doing this too often!
 	virtual bool UpdateCurrentMapMD5();
 	virtual bool GetCurrentMapMD5(char *buffer, i32 size);
