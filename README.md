@@ -1,3 +1,6 @@
+# [This repository is now hosted on Codeberg](https://codeberg.org/rcnoob/cs2surf-metamod)
+## Mirror pushes will remain for visibility, please direct any issues/prs to the new repo
+
 WIP, not ready for release 
 
 # Requirements
