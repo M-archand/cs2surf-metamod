@@ -76,7 +76,7 @@ namespace Surf::replaysystem::bot
 		{
 			return;
 		}
-		CCSPlayerController *bot = g_pSurfUtils->CreateBot(profile, CS_TEAM_T);
+		CCSPlayerController *bot = g_pSurfUtils->CreateBot(profile, CS_TEAM_T, true);
 		if (!bot)
 		{
 			return;
