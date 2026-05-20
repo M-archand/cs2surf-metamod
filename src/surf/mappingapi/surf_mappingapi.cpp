@@ -59,6 +59,7 @@ static_global struct
 	QAngle jumpstatAreaAngles;
 } g_mappingApi;
 
+static_global u32 g_mapCfgMaxVelocity = 0;
 static_global CTimer<> *g_errorTimer;
 static_global const char *g_errorPrefix = "{darkred} ERROR: ";
 static_global const char *g_triggerNames[] = {"Disabled",       "Modifier",        "Start zone", "End zone", "Bonus start zone",
@@ -359,7 +360,7 @@ static_function void Mapi_OnTriggerMultipleSpawn(const EntitySpawnInfo_t *info)
 					bonusName.append(match.str(1));
 
 					snprintf(bonusDescriptor, sizeof(bonusDescriptor), "B%d", bonusNum);
-					Mapi_CreateCourse(bonusNum + 1, bonusName.c_str(), g_mappingApi.courseDescriptors.Count() + 1, bonusDescriptor);
+					Mapi_CreateCourse(bonusNum + 1, bonusName.c_str(), g_mappingApi.courseDescriptors.Count() + 1, bonusDescriptor, g_mapCfgMaxVelocity);
 
 					isBonusStart = true;
 				}
@@ -651,8 +652,14 @@ void Surf::mapapi::OnCreateLoadingSpawnGroupHook(const CUtlVector<const CEntityK
 			{
 				META_CONPRINTF("Warning: Map is not compiled with Mapping API. Reverting to default behavior.\n");
 
+				g_mapCfgMaxVelocity = g_pSurfUtils->GetCurrentMapMaxVelocity();
+				if (g_mapCfgMaxVelocity <= INVALID_MAXVEL_NUMBER)
+				{
+					g_mapCfgMaxVelocity = 3500;
+				}
+
 				// Manually create a SURF_NO_MAPAPI_COURSE_NAME course here because there shouldn't be any info_target_server_only around.
-				Mapi_CreateCourse();
+				Mapi_CreateCourse(1, SURF_NO_MAPAPI_COURSE_NAME, -1, SURF_NO_MAPAPI_COURSE_DESCRIPTOR, g_mapCfgMaxVelocity);
 				break;
 			}
 			if (g_mappingApi.mapApiVersion != SURF_MAPAPI_VERSION)
@@ -860,22 +867,6 @@ void Surf::mapapi::OnRoundStart()
 		{
 			Mapi_Error("Course \"%s\" Too many stage zones! Maximum is %i.", courseDescriptor->name, SURF_MAX_STAGE_ZONES);
 			invalid = true;
-		}
-
-		if (courseDescriptor->maxVel <= INVALID_MAXVEL_NUMBER)
-		{
-			// No maxvel set through mapping api
-			// Try to grab sv_maxvelocity from map cfg.
-			u32 cfgMaxVel = g_pSurfUtils->GetCurrentMapMaxVelocity();
-			if (cfgMaxVel <= INVALID_MAXVEL_NUMBER)
-			{
-				// cfg max velocity doesnt exist, just use 3500.
-				courseDescriptor->maxVel = 3500;
-			}
-			else
-			{
-				courseDescriptor->maxVel = cfgMaxVel;
-			}
 		}
 
 		if (invalid)

@@ -258,8 +258,14 @@ u32 SurfUtils::GetCurrentMapMaxVelocity()
 
 		while (std::getline(stream, lineC))
 		{
+			// strip windows line endings
+			if (!lineC.empty() && lineC.back() == '\r')
+			{
+				lineC.pop_back();
+			}
+			
 			CUtlString line(lineC.c_str());
-			if (line.MatchesPattern(CUtlString(MAX_VELOCITY_KEY) + "*") && utils::IsNumeric(line.Get()))
+			if (line.MatchesPattern(CUtlString(MAX_VELOCITY_KEY) + "*") && utils::IsNumeric(line.Get() + strlen(MAX_VELOCITY_KEY)))
 			{
 				maxVel = atoi(line.Get() + strlen(MAX_VELOCITY_KEY));
 				break;
