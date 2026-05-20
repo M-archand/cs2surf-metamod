@@ -360,7 +360,8 @@ static_function void Mapi_OnTriggerMultipleSpawn(const EntitySpawnInfo_t *info)
 					bonusName.append(match.str(1));
 
 					snprintf(bonusDescriptor, sizeof(bonusDescriptor), "B%d", bonusNum);
-					Mapi_CreateCourse(bonusNum + 1, bonusName.c_str(), g_mappingApi.courseDescriptors.Count() + 1, bonusDescriptor, g_mapCfgMaxVelocity);
+					Mapi_CreateCourse(bonusNum + 1, bonusName.c_str(), g_mappingApi.courseDescriptors.Count() + 1, bonusDescriptor,
+									  g_mapCfgMaxVelocity);
 
 					isBonusStart = true;
 				}

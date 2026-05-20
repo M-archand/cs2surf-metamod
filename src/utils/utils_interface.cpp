@@ -263,7 +263,7 @@ u32 SurfUtils::GetCurrentMapMaxVelocity()
 			{
 				lineC.pop_back();
 			}
-			
+
 			CUtlString line(lineC.c_str());
 			if (line.MatchesPattern(CUtlString(MAX_VELOCITY_KEY) + "*") && utils::IsNumeric(line.Get() + strlen(MAX_VELOCITY_KEY)))
 			{
