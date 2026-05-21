@@ -313,15 +313,26 @@ void SurfTriggerService::OnMappingApiTriggerTouchPost(TriggerTouchTracker tracke
 			if (!this->player->timerService->GetCourse())
 			{
 				this->player->timerService->SetCourse(course->guid);
-				const CVValue_t maxVel = (float)course->maxVel;
-				utils::SendConVarValue(player->GetPlayerSlot(), "sv_maxvelocity", &maxVel);
 			}
 			else if (this->player->timerService->GetCourse()->guid != course->guid)
 			{
 				this->player->timerService->SetCourse(course->guid);
-				const CVValue_t maxVel = (float)course->maxVel;
-				utils::SendConVarValue(player->GetPlayerSlot(), "sv_maxvelocity", &maxVel);
 			}
+
+			// First check for maxvel style
+			for (i32 i = 0; i < player->styleServices.Count(); i++)
+			{
+				CUtlString shortName(Surf::style::GetStyleInfo(player->styleServices[i]).shortName);
+				if (shortName.MatchesPattern("*vel"))
+				{
+					// Maxvel convar is already sent by style
+					break;
+				}
+			}
+
+			// Send course-specific maxvel if no style applied
+			const CVValue_t maxVel = (float)course->maxVel;
+			utils::SendConVarValue(player->GetPlayerSlot(), "sv_maxvelocity", &maxVel);
 		}
 		break;
 	}

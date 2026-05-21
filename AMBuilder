@@ -596,88 +596,6 @@ def configure_ow(sdk, cxx):
   
   return ow_binary
 
-def configure_ff(sdk, cxx):
-  ff_binary = MMSPlugin.HL2Library(builder, cxx, f"{MMSPlugin.metadata['name']}-style-fastforward", sdk)
-
-  if ff_binary.compiler.family == 'gcc' or ff_binary.compiler.family == 'clang':
-    ff_binary.compiler.defines += ['_GLIBCXX_USE_CXX11_ABI=0']
-
-  if ff_binary.compiler.family == 'clang':
-    ff_binary.compiler.cxxflags += ['-Wno-register', '-frtti', '-Wno-invalid-offsetof', '-Wno-parentheses']
-
-  ff_binary.compiler.cxxincludes += [
-      os.path.join(builder.sourcePath, 'src'),
-      os.path.join(builder.sourcePath, 'hl2sdk-cs2'),
-      os.path.join(builder.sourcePath, 'hl2sdk-cs2', 'public', 'entity2'),
-      os.path.join(builder.sourcePath, 'hl2sdk-cs2', 'game', 'server'),
-  ]
-
-  if ff_binary.compiler.target.platform == 'linux':
-    ff_binary.compiler.postlink += [
-      os.path.join(sdk['path'], 'lib', 'linux64', 'mathlib.a'),
-    ] 
-    ff_binary.sources += [
-      'src/utils/plat_linux.cpp'
-      ]
-  elif ff_binary.compiler.target.platform == 'windows':
-    ff_binary.compiler.postlink += [
-      os.path.join(sdk['path'], 'lib', 'public', 'win64', 'mathlib.lib'),
-    ]
-    ff_binary.sources += [
-      'src/utils/plat_win.cpp'
-      ]
-
-  ff_binary.sources += [
-    os.path.join(sdk['path'], 'entity2', 'entityidentity.cpp'),
-    os.path.join(sdk['path'], 'entity2', 'entitysystem.cpp'),
-    os.path.join(builder.sourcePath, 'src', 'utils', 'schema.cpp'),
-    os.path.join(builder.sourcePath, 'src', 'utils', 'gameconfig.cpp'),
-    os.path.join(builder.sourcePath, 'src', 'surf', 'style', 'surf_style_fastforward.cpp'),
-  ]
-  
-  return ff_binary
-
-def configure_sm(sdk, cxx):
-  sm_binary = MMSPlugin.HL2Library(builder, cxx, f"{MMSPlugin.metadata['name']}-style-slowmo", sdk)
-
-  if sm_binary.compiler.family == 'gcc' or sm_binary.compiler.family == 'clang':
-    sm_binary.compiler.defines += ['_GLIBCXX_USE_CXX11_ABI=0']
-
-  if sm_binary.compiler.family == 'clang':
-    sm_binary.compiler.cxxflags += ['-Wno-register', '-frtti', '-Wno-invalid-offsetof', '-Wno-parentheses']
-
-  sm_binary.compiler.cxxincludes += [
-      os.path.join(builder.sourcePath, 'src'),
-      os.path.join(builder.sourcePath, 'hl2sdk-cs2'),
-      os.path.join(builder.sourcePath, 'hl2sdk-cs2', 'public', 'entity2'),
-      os.path.join(builder.sourcePath, 'hl2sdk-cs2', 'game', 'server'),
-  ]
-
-  if sm_binary.compiler.target.platform == 'linux':
-    sm_binary.compiler.postlink += [
-      os.path.join(sdk['path'], 'lib', 'linux64', 'mathlib.a'),
-    ] 
-    sm_binary.sources += [
-      'src/utils/plat_linux.cpp'
-      ]
-  elif sm_binary.compiler.target.platform == 'windows':
-    sm_binary.compiler.postlink += [
-      os.path.join(sdk['path'], 'lib', 'public', 'win64', 'mathlib.lib'),
-    ]
-    sm_binary.sources += [
-      'src/utils/plat_win.cpp'
-      ]
-
-  sm_binary.sources += [
-    os.path.join(sdk['path'], 'entity2', 'entityidentity.cpp'),
-    os.path.join(sdk['path'], 'entity2', 'entitysystem.cpp'),
-    os.path.join(builder.sourcePath, 'src', 'utils', 'schema.cpp'),
-    os.path.join(builder.sourcePath, 'src', 'utils', 'gameconfig.cpp'),
-    os.path.join(builder.sourcePath, 'src', 'surf', 'style', 'surf_style_slowmo.cpp'),
-  ]
-  
-  return sm_binary
-
 def configure_tas(sdk, cxx):
   tas_binary = MMSPlugin.HL2Library(builder, cxx, f"{MMSPlugin.metadata['name']}-style-tas", sdk)
 
@@ -719,6 +637,129 @@ def configure_tas(sdk, cxx):
   
   return tas_binary
 
+def configure_3500vel(sdk, cxx):
+  _3500vel_binary = MMSPlugin.HL2Library(builder, cxx, f"{MMSPlugin.metadata['name']}-style-3500vel", sdk)
+
+  if _3500vel_binary.compiler.family == 'gcc' or _3500vel_binary.compiler.family == 'clang':
+    _3500vel_binary.compiler.defines += ['_GLIBCXX_USE_CXX11_ABI=0']
+
+  if _3500vel_binary.compiler.family == 'clang':
+    _3500vel_binary.compiler.cxxflags += ['-Wno-register', '-frtti', '-Wno-invalid-offsetof', '-Wno-parentheses']
+
+  _3500vel_binary.compiler.cxxincludes += [
+      os.path.join(builder.sourcePath, 'src'),
+      os.path.join(builder.sourcePath, 'hl2sdk-cs2'),
+      os.path.join(builder.sourcePath, 'hl2sdk-cs2', 'public', 'entity2'),
+      os.path.join(builder.sourcePath, 'hl2sdk-cs2', 'game', 'server'),
+  ]
+
+  if _3500vel_binary.compiler.target.platform == 'linux':
+    _3500vel_binary.compiler.postlink += [
+      os.path.join(sdk['path'], 'lib', 'linux64', 'mathlib.a'),
+    ] 
+    _3500vel_binary.sources += [
+      'src/utils/plat_linux.cpp'
+      ]
+  elif _3500vel_binary.compiler.target.platform == 'windows':
+    _3500vel_binary.compiler.postlink += [
+      os.path.join(sdk['path'], 'lib', 'public', 'win64', 'mathlib.lib'),
+    ]
+    _3500vel_binary.sources += [
+      'src/utils/plat_win.cpp'
+      ]
+
+  _3500vel_binary.sources += [
+    os.path.join(sdk['path'], 'entity2', 'entityidentity.cpp'),
+    os.path.join(sdk['path'], 'entity2', 'entitysystem.cpp'),
+    os.path.join(builder.sourcePath, 'src', 'utils', 'schema.cpp'),
+    os.path.join(builder.sourcePath, 'src', 'utils', 'gameconfig.cpp'),
+    os.path.join(builder.sourcePath, 'src', 'surf', 'style', 'surf_style_3500vel.cpp'),
+  ]
+  
+  return _3500vel_binary
+
+def configure_5000vel(sdk, cxx):
+  _5000vel_binary = MMSPlugin.HL2Library(builder, cxx, f"{MMSPlugin.metadata['name']}-style-5000vel", sdk)
+
+  if _5000vel_binary.compiler.family == 'gcc' or _5000vel_binary.compiler.family == 'clang':
+    _5000vel_binary.compiler.defines += ['_GLIBCXX_USE_CXX11_ABI=0']
+
+  if _5000vel_binary.compiler.family == 'clang':
+    _5000vel_binary.compiler.cxxflags += ['-Wno-register', '-frtti', '-Wno-invalid-offsetof', '-Wno-parentheses']
+
+  _5000vel_binary.compiler.cxxincludes += [
+      os.path.join(builder.sourcePath, 'src'),
+      os.path.join(builder.sourcePath, 'hl2sdk-cs2'),
+      os.path.join(builder.sourcePath, 'hl2sdk-cs2', 'public', 'entity2'),
+      os.path.join(builder.sourcePath, 'hl2sdk-cs2', 'game', 'server'),
+  ]
+
+  if _5000vel_binary.compiler.target.platform == 'linux':
+    _5000vel_binary.compiler.postlink += [
+      os.path.join(sdk['path'], 'lib', 'linux64', 'mathlib.a'),
+    ] 
+    _5000vel_binary.sources += [
+      'src/utils/plat_linux.cpp'
+      ]
+  elif _5000vel_binary.compiler.target.platform == 'windows':
+    _5000vel_binary.compiler.postlink += [
+      os.path.join(sdk['path'], 'lib', 'public', 'win64', 'mathlib.lib'),
+    ]
+    _5000vel_binary.sources += [
+      'src/utils/plat_win.cpp'
+      ]
+
+  _5000vel_binary.sources += [
+    os.path.join(sdk['path'], 'entity2', 'entityidentity.cpp'),
+    os.path.join(sdk['path'], 'entity2', 'entitysystem.cpp'),
+    os.path.join(builder.sourcePath, 'src', 'utils', 'schema.cpp'),
+    os.path.join(builder.sourcePath, 'src', 'utils', 'gameconfig.cpp'),
+    os.path.join(builder.sourcePath, 'src', 'surf', 'style', 'surf_style_5000vel.cpp'),
+  ]
+  
+  return _5000vel_binary
+
+def configure_10000vel(sdk, cxx):
+  _10000vel_binary = MMSPlugin.HL2Library(builder, cxx, f"{MMSPlugin.metadata['name']}-style-10000vel", sdk)
+
+  if _10000vel_binary.compiler.family == 'gcc' or _10000vel_binary.compiler.family == 'clang':
+    _10000vel_binary.compiler.defines += ['_GLIBCXX_USE_CXX11_ABI=0']
+
+  if _10000vel_binary.compiler.family == 'clang':
+    _10000vel_binary.compiler.cxxflags += ['-Wno-register', '-frtti', '-Wno-invalid-offsetof', '-Wno-parentheses']
+
+  _10000vel_binary.compiler.cxxincludes += [
+      os.path.join(builder.sourcePath, 'src'),
+      os.path.join(builder.sourcePath, 'hl2sdk-cs2'),
+      os.path.join(builder.sourcePath, 'hl2sdk-cs2', 'public', 'entity2'),
+      os.path.join(builder.sourcePath, 'hl2sdk-cs2', 'game', 'server'),
+  ]
+
+  if _10000vel_binary.compiler.target.platform == 'linux':
+    _10000vel_binary.compiler.postlink += [
+      os.path.join(sdk['path'], 'lib', 'linux64', 'mathlib.a'),
+    ] 
+    _10000vel_binary.sources += [
+      'src/utils/plat_linux.cpp'
+      ]
+  elif _10000vel_binary.compiler.target.platform == 'windows':
+    _10000vel_binary.compiler.postlink += [
+      os.path.join(sdk['path'], 'lib', 'public', 'win64', 'mathlib.lib'),
+    ]
+    _10000vel_binary.sources += [
+      'src/utils/plat_win.cpp'
+      ]
+
+  _10000vel_binary.sources += [
+    os.path.join(sdk['path'], 'entity2', 'entityidentity.cpp'),
+    os.path.join(sdk['path'], 'entity2', 'entitysystem.cpp'),
+    os.path.join(builder.sourcePath, 'src', 'utils', 'schema.cpp'),
+    os.path.join(builder.sourcePath, 'src', 'utils', 'gameconfig.cpp'),
+    os.path.join(builder.sourcePath, 'src', 'surf', 'style', 'surf_style_10000vel.cpp'),
+  ]
+  
+  return _10000vel_binary
+
 sdk_target = MMSPlugin.sdk_target
 sdk = MMSPlugin.sdk_target.sdk
 cxx = MMSPlugin.sdk_target.cxx
@@ -736,9 +777,10 @@ hg_binary = configure_hg(sdk, cxx)
 sw_binary = configure_sw(sdk, cxx)
 hsw_binary = configure_hsw(sdk, cxx)
 ow_binary = configure_ow(sdk, cxx)
-ff_binary = configure_ff(sdk, cxx)
-sm_binary = configure_sm(sdk, cxx)
 tas_binary = configure_tas(sdk, cxx)
+_3500vel_binary = configure_3500vel(sdk, cxx)
+_5000vel_binary = configure_5000vel(sdk, cxx)
+_10000vel_binary = configure_10000vel(sdk, cxx)
 
 protoc_builder = get_proto_builder(builder, sdk_target, sdk)
 
@@ -752,9 +794,10 @@ hg_binary.custom = [protoc_builder]
 sw_binary.custom = [protoc_builder]
 hsw_binary.custom = [protoc_builder]
 ow_binary.custom = [protoc_builder]
-ff_binary.custom = [protoc_builder]
-sm_binary.custom = [protoc_builder]
 tas_binary.custom = [protoc_builder]
+_3500vel_binary.custom = [protoc_builder]
+_5000vel_binary.custom = [protoc_builder]
+_10000vel_binary.custom = [protoc_builder]
 
 # We have to split nodes here because they will be put into different folders.
 # Main
@@ -775,9 +818,10 @@ style_nodes = [
   builder.Add(sw_binary),
   builder.Add(hsw_binary),
   builder.Add(ow_binary),
-  builder.Add(ff_binary),
-  builder.Add(sm_binary),
-  builder.Add(tas_binary)
+  builder.Add(tas_binary),
+  builder.Add(_3500vel_binary),
+  builder.Add(_5000vel_binary),
+  builder.Add(_10000vel_binary)
 ]
 
 # If we are generating a VS project, make sure to add the modes in, and the build folder for linter.
@@ -794,6 +838,9 @@ if builder.options.generator == 'vs':
   binary.sources += ff_binary.sources
   binary.sources += sm_binary.sources
   binary.sources += tas_binary.sources
+  binary.sources += _3500vel_binary.sources
+  binary.sources += _5000vel_binary.sources
+  binary.sources += _10000vel_binary.sources
   binary.compiler.cxxincludes += [os.path.join(builder.buildPath, MMSPlugin.metadata['name'], f'{binary.compiler.target.platform}-{cxx.target.arch}')]
 
 MMSPlugin.binaries += [nodes]

@@ -1,20 +1,21 @@
-#include "surf_style_slowmo.h"
+#include "surf_style_3500vel.h"
 
 #include "utils/addresses.h"
 #include "utils/interfaces.h"
 #include "utils/gameconfig.h"
 
-SurfSlowMoStylePlugin g_SurfSlowMoStylePlugin;
+Surf3500VelStylePlugin g_Surf3500VelStylePlugin;
 
 CGameConfig *g_pGameConfig = NULL;
 SurfUtils *g_pSurfUtils = NULL;
 SurfStyleManager *g_pStyleManager = NULL;
-StyleServiceFactory g_StyleFactory = [](SurfPlayer *player) -> SurfStyleService * { return new SurfSlowMoStyleService(player); };
-PLUGIN_EXPOSE(SurfSlowMoStylePlugin, g_SurfSlowMoStylePlugin);
+StyleServiceFactory g_StyleFactory = [](SurfPlayer *player) -> SurfStyleService * { return new Surf3500VelStyleService(player); };
+PLUGIN_EXPOSE(Surf3500VelStylePlugin, g_Surf3500VelStylePlugin);
 
-const char *incompatibleStyles[] = {"FF"};
+CConVarRef<float> sv_maxvelocity("sv_maxvelocity");
+const char *incompatibleStyles[] = {"5000vel", "10000vel"};
 
-bool SurfSlowMoStylePlugin::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool late)
+bool Surf3500VelStylePlugin::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool late)
 {
 	PLUGIN_SAVEVARS();
 	// Load mode
@@ -55,19 +56,19 @@ bool SurfSlowMoStylePlugin::Load(PluginId id, ISmmAPI *ismm, char *error, size_t
 	return true;
 }
 
-bool SurfSlowMoStylePlugin::Unload(char *error, size_t maxlen)
+bool Surf3500VelStylePlugin::Unload(char *error, size_t maxlen)
 {
 	g_pStyleManager->UnregisterStyle(g_PLID);
 	return true;
 }
 
-bool SurfSlowMoStylePlugin::Pause(char *error, size_t maxlen)
+bool Surf3500VelStylePlugin::Pause(char *error, size_t maxlen)
 {
 	g_pStyleManager->UnregisterStyle(g_PLID);
 	return true;
 }
 
-bool SurfSlowMoStylePlugin::Unpause(char *error, size_t maxlen)
+bool Surf3500VelStylePlugin::Unpause(char *error, size_t maxlen)
 {
 	if (!g_pStyleManager->RegisterStyle(g_PLID, STYLE_NAME_SHORT, STYLE_NAME, g_StyleFactory))
 	{
@@ -81,28 +82,28 @@ CGameEntitySystem *GameEntitySystem()
 	return g_pSurfUtils->GetGameEntitySystem();
 }
 
-void SurfSlowMoStyleService::Init() {}
-
-const CVValue_t *SurfSlowMoStyleService::GetTweakedConvarValue(const char *name)
+void Surf3500VelStyleService::Init()
 {
+	g_pSurfUtils->SendConVarValue(this->player->GetPlayerSlot(), sv_maxvelocity, "3500");
+}
+
+const CVValue_t *Surf3500VelStyleService::GetTweakedConvarValue(const char *name)
+{
+	static_persist const CVValue_t sv_maxvelocity_desiredValue = 3500.f;
+	if (!V_stricmp(name, "sv_maxvelocity"))
+	{
+		return &sv_maxvelocity_desiredValue;
+	}
 	return nullptr;
 }
 
-void SurfSlowMoStyleService::Cleanup() {}
-
-void SurfSlowMoStyleService::OnProcessMovement()
+void Surf3500VelStyleService::Cleanup()
 {
-	// from CS2Fixes
-	// Yes, this is what source1 does to scale player speed
-	// Scale frametime during the entire movement processing step and revert right after
-	CGlobalVars *globals = g_pSurfUtils->GetGlobals();
-
-	this->initialFrametime = globals->frametime;
-	globals->frametime *= 0.5f;
+	// Send default 3500 maxvel, course entry will replace with map maxvel if exists
+	g_pSurfUtils->SendConVarValue(this->player->GetPlayerSlot(), sv_maxvelocity, "3500");
 }
 
-void SurfSlowMoStyleService::OnProcessMovementPost()
+void Surf3500VelStyleService::OnProcessMovement()
 {
-	CGlobalVars *globals = g_pSurfUtils->GetGlobals();
-	globals->frametime = this->initialFrametime;
+	sv_maxvelocity.Set(3500.f);
 }

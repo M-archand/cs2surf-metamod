@@ -1,10 +1,10 @@
 #include "surf_style.h"
 #include "version_gen.h"
 
-#define STYLE_NAME       "SlowMo"
-#define STYLE_NAME_SHORT "SM"
+#define STYLE_NAME       "5000vel"
+#define STYLE_NAME_SHORT "5kvel"
 
-class SurfSlowMoStylePlugin : public ISmmPlugin, public IMetamodListener
+class Surf5000VelStylePlugin : public ISmmPlugin, public IMetamodListener
 {
 public:
 	bool Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool late);
@@ -20,12 +20,12 @@ public:
 
 	const char *GetName()
 	{
-		return "CS2Surf-Style-SlowMo";
+		return "CS2Surf-Style-5000vel";
 	}
 
 	const char *GetDescription()
 	{
-		return "Slow Motion style plugin for CS2Surf";
+		return "5000vel style plugin for CS2Surf";
 	}
 
 	const char *GetURL()
@@ -54,27 +54,23 @@ public:
 	}
 };
 
-class SurfSlowMoStyleService : public SurfStyleService
+class Surf5000VelStyleService : public SurfStyleService
 {
 	using SurfStyleService::SurfStyleService;
-
-private:
-	float initialFrametime;
 
 public:
 	virtual const char *GetStyleName() override
 	{
-		return "SlowMo";
+		return "5000vel";
 	}
 
 	virtual const char *GetStyleShortName() override
 	{
-		return "SM";
+		return "5kvel";
 	}
 
 	virtual const CVValue_t *GetTweakedConvarValue(const char *name) override;
 	virtual void Init() override;
 	virtual void Cleanup() override;
 	virtual void OnProcessMovement() override;
-	virtual void OnProcessMovementPost() override;
 };

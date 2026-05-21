@@ -7,6 +7,7 @@
 #include "interfaces/interfaces.h"
 
 #include "../timer/surf_timer.h"
+#include "../style/surf_style.h"
 #include "../language/surf_language.h"
 #include "../db/surf_db.h"
 #include "../option/surf_option.h"
@@ -149,9 +150,21 @@ void Surf::mode::ApplyModeSettings(SurfPlayer *player)
 		auto traits = modeCvarRefs[i]->TypeTraits();
 		traits->Copy(original, value);
 	}
-	// Handle course-specific max velocity
+	player->enableWaterFix = player->modeService->EnableWaterFix();
+
+	// Handle max velocity
 	if (sv_maxvelocity.IsValidRef() && sv_maxvelocity.IsConVarDataAvailable())
 	{
+		// First check for maxvel style
+		for (i32 i = 0; i < player->styleServices.Count(); i++)
+		{
+			CUtlString shortName(Surf::style::GetStyleInfo(player->styleServices[i]).shortName);
+			if (shortName.MatchesPattern("*vel"))
+			{
+				// Maxvel enforce will be handled by the style
+				return;
+			}
+		}
 		const SurfCourseDescriptor *course = player->timerService->GetCourse();
 		if (course)
 		{
@@ -161,7 +174,6 @@ void Surf::mode::ApplyModeSettings(SurfPlayer *player)
 			traits->Copy(original, maxVel);
 		}
 	}
-	player->enableWaterFix = player->modeService->EnableWaterFix();
 }
 
 bool SurfModeManager::RegisterMode(PluginId id, const char *shortModeName, const char *longModeName, ModeServiceFactory factory)

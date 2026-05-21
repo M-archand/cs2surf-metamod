@@ -1,10 +1,10 @@
 #include "surf_style.h"
 #include "version_gen.h"
 
-#define STYLE_NAME       "FastForward"
-#define STYLE_NAME_SHORT "FF"
+#define STYLE_NAME       "3500vel"
+#define STYLE_NAME_SHORT "3500vel"
 
-class SurfFastForwardStylePlugin : public ISmmPlugin, public IMetamodListener
+class Surf3500VelStylePlugin : public ISmmPlugin, public IMetamodListener
 {
 public:
 	bool Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool late);
@@ -20,12 +20,12 @@ public:
 
 	const char *GetName()
 	{
-		return "CS2Surf-Style-FastForward";
+		return "CS2Surf-Style-3500vel";
 	}
 
 	const char *GetDescription()
 	{
-		return "Fast Forward style plugin for CS2Surf";
+		return "3500vel style plugin for CS2Surf";
 	}
 
 	const char *GetURL()
@@ -54,27 +54,23 @@ public:
 	}
 };
 
-class SurfFastForwardStyleService : public SurfStyleService
+class Surf3500VelStyleService : public SurfStyleService
 {
 	using SurfStyleService::SurfStyleService;
-
-private:
-	float initialFrametime;
 
 public:
 	virtual const char *GetStyleName() override
 	{
-		return "FastForward";
+		return "3500vel";
 	}
 
 	virtual const char *GetStyleShortName() override
 	{
-		return "FF";
+		return "3500vel";
 	}
 
 	virtual const CVValue_t *GetTweakedConvarValue(const char *name) override;
 	virtual void Init() override;
 	virtual void Cleanup() override;
 	virtual void OnProcessMovement() override;
-	virtual void OnProcessMovementPost() override;
 };
