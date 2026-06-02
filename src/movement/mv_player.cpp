@@ -2,6 +2,7 @@
 #include "utils/utils.h"
 #include "utils/detours.h"
 #include "sdk/tracefilter.h"
+#include "sdk/navphysicsinterface.h"
 #include "tier0/memdbgon.h"
 
 void MovementPlayer::OnProcessMovement()
@@ -282,7 +283,7 @@ f32 MovementPlayer::GetGroundPosition()
 
 	trace_t trace;
 
-	g_pSurfUtils->TracePlayerBBox(mv->m_vecAbsOrigin, ground, bounds, &filter, trace);
+	INavPhysicsInterface::TraceShape(Ray_t(bounds.mins, bounds.maxs), mv->m_vecAbsOrigin, ground, &filter, &trace);
 
 	// Doesn't hit anything, fall back to the original ground
 	if (trace.m_bStartInSolid || trace.m_flFraction == 1.0f)
@@ -435,10 +436,15 @@ void MovementPlayer::Reset()
 	this->previousOnGround = false;
 }
 
-void MovementPlayer::GetBBoxBounds(bbox_t *bounds)
+void MovementPlayer::GetBBoxBounds(bbox_t *bounds, bbox_t *offset)
 {
 	bounds->mins = {-16.0f, -16.0f, 0.0f};
 	bounds->maxs = {16.0f, 16.0f, 72.0f};
+	if (offset)
+	{
+		bounds->mins += offset->mins;
+		bounds->maxs += offset->maxs;
+	}
 	if (this->GetMoveServices() && this->GetMoveServices()->m_bDucked())
 	{
 		bounds->maxs.z = 54.0f;

@@ -1,6 +1,7 @@
 #include "cs2surf.h"
 #include "surf_recording.h"
 #include "surf/timer/surf_timer.h"
+#include "surf/timer/submission.h"
 #include "surf/checkpoint/surf_checkpoint.h"
 #include "surf/replays/surf_replaysystem.h"
 #include "surf/language/surf_language.h"
@@ -19,7 +20,7 @@
 CConVar<bool> surf_replay_recording_debug("surf_replay_recording_debug", FCVAR_NONE, "Debug replay recording", false);
 extern CSteamGameServerAPIContext g_steamAPI;
 
-ReplayFileWriter *SurfRecordingService::s_fileWriter = nullptr;
+ReplayFileWriter *SurfRecordingService::fileWriter = nullptr;
 
 // Not sure what's the best place to put this, so putting it here for now.
 void SubtickData::RpSubtickMove::FromMove(const CSubtickMoveStep &move)
@@ -141,7 +142,7 @@ void SurfRecordingService::RecordTickData_SetupMove(PlayerCommand *pc)
 	this->currentTickData.leftHanded = this->player->GetPlayerPawn()->m_bLeftHanded() || pc->left_hand_desired();
 
 	this->currentSubtickData.numSubtickMoves = pc->base().subtick_moves_size();
-	for (u32 i = 0; i < this->currentSubtickData.numSubtickMoves && i < 64; i++)
+	for (u32 i = 0; i < this->currentSubtickData.numSubtickMoves && i < MAX_SUBTICK_MOVES; i++)
 	{
 		this->currentSubtickData.subtickMoves[i].FromMove(pc->base().subtick_moves(i));
 	}
@@ -224,7 +225,7 @@ void SurfRecordingService::RecordCommand(PlayerCommand *cmds, i32 numCmds)
 
 		SubtickData subtickData;
 		subtickData.numSubtickMoves = pc.base().subtick_moves_size();
-		for (u32 j = 0; j < subtickData.numSubtickMoves && j < 64; j++)
+		for (u32 j = 0; j < subtickData.numSubtickMoves && j < MAX_SUBTICK_MOVES; j++)
 		{
 			subtickData.subtickMoves[j].FromMove(pc.base().subtick_moves(j));
 		}
@@ -241,36 +242,38 @@ void SurfRecordingService::CheckRecorders()
 		auto &recorder = *it;
 		if (recorder.ShouldStopAndSave(g_pSurfUtils->GetServerGlobals()->curtime))
 		{
-			// Stop this recorder and queue for async write
 			if (surf_replay_recording_debug.Get())
 			{
 				META_CONPRINTF("surf_replay_recording_debug: Run recorder stopped\n");
 			}
-			if (s_fileWriter)
+			if (SurfRecordingService::fileWriter)
 			{
-				CPlayerUserId userID = this->player->GetClient()->GetUserID();
 				auto recorderPtr = std::make_unique<RunRecorder>(std::move(recorder));
 				this->CopyWeaponsToRecorder(recorderPtr.get());
-				s_fileWriter->QueueWrite(
+				UUID_t localUUID = recorderPtr->uuid; // capture before move
+				SurfRecordingService::fileWriter->QueueWrite(
 					std::move(recorderPtr),
-					// Success callback
-					[userID](const UUID_t &uuid, f32 replayDuration)
+					// Success: deliver buffer to RunSubmission state machine
+					[localUUID](const UUID_t &, f32, std::vector<char> &&buffer)
 					{
-						SurfPlayer *callbackPlayer = g_pSurfPlayerManager->ToPlayer(userID);
-						if (callbackPlayer)
+						RunSubmission *sub = RunSubmission::GetByUUID(localUUID);
+						if (sub)
 						{
-							callbackPlayer->languageService->PrintChat(true, false, "Replay - Run Replay Saved", uuid.ToString().c_str());
-							callbackPlayer->languageService->PrintConsole(false, false, "Replay - Run Replay Saved (Console)",
-																		  uuid.ToString().c_str());
+							sub->OnReplayReady(std::move(buffer));
 						}
 					},
-					// Failure callback
-					[userID](const char *error)
+					// Failure: notify the player and log
+					[localUUID](const char *error)
 					{
-						SurfPlayer *callbackPlayer = g_pSurfPlayerManager->ToPlayer(userID);
-						if (callbackPlayer)
+						META_CONPRINTF("[Surf] Run replay serialization failed for UUID %s: %s\n", localUUID.ToString().c_str(), error);
+						RunSubmission *sub = RunSubmission::GetByUUID(localUUID);
+						if (sub)
 						{
-							callbackPlayer->languageService->PrintChat(true, false, "Replay - Run Replay Failed");
+							SurfPlayer *callbackPlayer = g_pSurfPlayerManager->ToPlayer(sub->userID);
+							if (callbackPlayer)
+							{
+								callbackPlayer->languageService->PrintChat(true, false, "Replay - Run Replay Failed");
+							}
 						}
 					});
 			}
@@ -314,12 +317,7 @@ void SurfRecordingService::CheckModeStyles()
 	if (this->lastKnownMode.shortModeName != currentModeInfo.shortModeName || !SURF_STREQI(this->lastKnownMode.md5, currentModeInfo.md5))
 	{
 		this->lastKnownMode = currentModeInfo;
-		RpEvent event;
-		event.serverTick = this->currentTickData.serverTick;
-		event.type = RpEventType::RPEVENT_MODE_CHANGE;
-		V_strncpy(event.data.modeChange.name, currentModeInfo.longModeName.Get(), sizeof(event.data.modeChange.name));
-		V_strncpy(event.data.modeChange.md5, currentModeInfo.md5, sizeof(event.data.modeChange.md5));
-		this->InsertEvent(event);
+		this->InsertModeChangeEvent(currentModeInfo.longModeName.Get(), currentModeInfo.md5);
 		if (surf_replay_recording_debug.Get())
 		{
 			META_CONPRINTF("surf_replay_recording_debug: Mode change event: %s\n", currentModeInfo.longModeName.Get());
@@ -352,11 +350,7 @@ void SurfRecordingService::CheckModeStyles()
 		for (auto &style : this->lastKnownStyles)
 		{
 			RpEvent event;
-			event.serverTick = this->currentTickData.serverTick;
-			event.type = RpEventType::RPEVENT_STYLE_CHANGE;
-			V_strncpy(event.data.styleChange.name, style.shortName, sizeof(event.data.styleChange.name));
-			V_strncpy(event.data.styleChange.md5, style.md5, sizeof(event.data.styleChange.md5));
-			event.data.styleChange.clearStyles = refreshStyles;
+			this->InsertStyleChangeEvent(style.longName, style.md5, refreshStyles);
 			refreshStyles = false; // only the first styleChange needs to have clearStyles = true
 			this->InsertEvent(event);
 		}

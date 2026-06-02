@@ -147,13 +147,13 @@ void SurfModeService::UpdateAngleHistory()
 	if (forward[2] != 0)
 	{
 		forward[2] = 0;
-		VectorNormalize(forward);
+		forward = g_pSurfUtils->NormalizeVector(forward);
 	}
 
 	if (right[2] != 0)
 	{
 		right[2] = 0;
-		VectorNormalize(right);
+		right = g_pSurfUtils->NormalizeVector(right);
 	}
 
 	Vector wishdir;
@@ -163,7 +163,7 @@ void SurfModeService::UpdateAngleHistory()
 	}
 	wishdir[2] = 0;
 
-	VectorNormalize(wishdir);
+	wishdir = g_pSurfUtils->NormalizeVector(wishdir);
 
 	if (wishdir.Length() == 0)
 	{
@@ -173,7 +173,7 @@ void SurfModeService::UpdateAngleHistory()
 
 	Vector velocity = mv->m_vecVelocity;
 	velocity[2] = 0;
-	VectorNormalize(velocity);
+	velocity = g_pSurfUtils->NormalizeVector(velocity);
 	QAngle accelAngle;
 	QAngle velAngle;
 	VectorAngles(wishdir, accelAngle);
@@ -214,7 +214,7 @@ void SurfModeService::SlopeFix()
 	this->player->GetBBoxBounds(&bounds);
 	trace_t trace;
 
-	g_pSurfUtils->TracePlayerBBox(this->player->currentMoveData->m_vecAbsOrigin, ground, bounds, &filter, trace);
+	INavPhysicsInterface::TraceShape(Ray_t(bounds.mins, bounds.maxs), this->player->currentMoveData->m_vecAbsOrigin, ground, &filter, &trace);
 
 	// Doesn't hit anything, fall back to the original ground
 	if (trace.m_bStartInSolid || trace.m_flFraction == 1.0f)
@@ -290,13 +290,13 @@ bool SurfModeService::IsValidMovementTrace(trace_t &tr, bbox_t bounds, CTraceFil
 	}
 
 	// Do an unswept trace and a backward trace just to be sure.
-	g_pSurfUtils->TracePlayerBBox(tr.m_vEndPos, tr.m_vEndPos, bounds, filter, stuck);
+	INavPhysicsInterface::TraceShape(Ray_t(bounds.mins, bounds.maxs), tr.m_vEndPos, tr.m_vEndPos, filter, &stuck);
 	if (stuck.m_bStartInSolid || stuck.m_flFraction < 1.0f - FLT_EPSILON)
 	{
 		return false;
 	}
 
-	g_pSurfUtils->TracePlayerBBox(tr.m_vEndPos, tr.m_vStartPos, bounds, filter, stuck);
+	INavPhysicsInterface::TraceShape(Ray_t(bounds.mins, bounds.maxs), tr.m_vEndPos, tr.m_vStartPos, filter, &stuck);
 	// For whatever reason if you can hit something in only one direction and not the other way around.
 	// Only happens since Call to Arms update, so this fraction check is commented out until it is fixed.
 	if (stuck.m_bStartInSolid /*|| stuck.m_flFraction < 1.0f - FLT_EPSILON*/)
@@ -356,7 +356,7 @@ void SurfModeService::OnTryPlayerMove(Vector *pFirstDest, trace_t *pFirstTrace, 
 		}
 		else
 		{
-			g_pSurfUtils->TracePlayerBBox(start, end, bounds, &filter, pm);
+			INavPhysicsInterface::TraceShape(Ray_t(bounds.mins, bounds.maxs), start, end, &filter, &pm);
 			if (end == start)
 			{
 				continue;
@@ -372,7 +372,7 @@ void SurfModeService::OnTryPlayerMove(Vector *pFirstDest, trace_t *pFirstTrace, 
 			{
 				// We hit a plane that will significantly change our velocity. Make sure that this plane is significant
 				// enough.
-				Vector direction = velocity.Normalized();
+				Vector direction = g_pSurfUtils->NormalizeVector(velocity);
 				Vector offsetDirection;
 				f32 offsets[] = {0.0f, -1.0f, 1.0f};
 				bool success {};
@@ -395,7 +395,8 @@ void SurfModeService::OnTryPlayerMove(Vector *pFirstDest, trace_t *pFirstTrace, 
 									continue;
 								}
 								trace_t test;
-								g_pSurfUtils->TracePlayerBBox(start + offsetDirection * RAMP_PIERCE_DISTANCE, start, bounds, &filter, test);
+								INavPhysicsInterface::TraceShape(Ray_t(bounds.mins, bounds.maxs), start + offsetDirection * RAMP_PIERCE_DISTANCE,
+																 start, &filter, &test);
 								if (!IsValidMovementTrace(test, bounds, &filter))
 								{
 									continue;
@@ -406,8 +407,9 @@ void SurfModeService::OnTryPlayerMove(Vector *pFirstDest, trace_t *pFirstTrace, 
 							bool hitNewPlane {};
 							for (ratio = 0.25f; ratio <= 1.0f; ratio += 0.25f)
 							{
-								g_pSurfUtils->TracePlayerBBox(start + offsetDirection * RAMP_PIERCE_DISTANCE * ratio,
-															  end + offsetDirection * RAMP_PIERCE_DISTANCE * ratio, bounds, &filter, pierce);
+								INavPhysicsInterface::TraceShape(Ray_t(bounds.mins, bounds.maxs),
+																 start + offsetDirection * RAMP_PIERCE_DISTANCE * ratio,
+																 end + offsetDirection * RAMP_PIERCE_DISTANCE * ratio, &filter, &pierce);
 								if (!IsValidMovementTrace(pierce, bounds, &filter))
 								{
 									continue;
@@ -430,7 +432,7 @@ void SurfModeService::OnTryPlayerMove(Vector *pFirstDest, trace_t *pFirstTrace, 
 							{
 								// Trace back to the original end point to find its normal.
 								trace_t test;
-								g_pSurfUtils->TracePlayerBBox(pierce.m_vEndPos, end, bounds, &filter, test);
+								INavPhysicsInterface::TraceShape(Ray_t(bounds.mins, bounds.maxs), pierce.m_vEndPos, end, &filter, &test);
 								pm = pierce;
 								pm.m_vStartPos = start;
 								pm.m_flFraction = Clamp((pierce.m_vEndPos - pierce.m_vStartPos).Length() / (end - start).Length(), 0.0f, 1.0f);
@@ -527,9 +529,7 @@ void SurfModeService::OnTryPlayerMove(Vector *pFirstDest, trace_t *pFirstTrace, 
 				Vector dir;
 				f32 d;
 				CrossProduct(planes[0], planes[1], dir);
-				// Yes, that's right, you need to do this twice because running it once won't ensure that this will be fully normalized.
-				dir.NormalizeInPlace();
-				dir.NormalizeInPlace();
+				dir = g_pSurfUtils->NormalizeVector(dir);
 				d = dir.Dot(velocity);
 				VectorScale(dir, d, velocity);
 
@@ -550,7 +550,7 @@ void SurfModeService::OnTryPlayerMovePost(Vector *pFirstDest, trace_t *pFirstTra
 	Vector velocity;
 	this->player->GetVelocity(&velocity);
 	bool velocityHeavilyModified =
-		this->tpmVelocity.Normalized().Dot(velocity.Normalized()) < RAMP_BUG_THRESHOLD
+		g_pSurfUtils->NormalizeVector(this->tpmVelocity).Dot(g_pSurfUtils->NormalizeVector(this->tpmVelocity)) < RAMP_BUG_THRESHOLD
 		|| (this->tpmVelocity.Length() > 50.0f && velocity.Length() / this->tpmVelocity.Length() < RAMP_BUG_VELOCITY_THRESHOLD);
 	if (this->overrideTPM && velocityHeavilyModified && this->tpmOrigin != vec3_invalid && this->tpmVelocity != vec3_invalid)
 	{
@@ -562,7 +562,9 @@ void SurfModeService::OnTryPlayerMovePost(Vector *pFirstDest, trace_t *pFirstTra
 		if (this->tpmTriggerFixOrigins.Count() > 1)
 		{
 			bbox_t bounds;
-			this->player->GetBBoxBounds(&bounds);
+			// We need to shrink the bounds a bit to prevent touching triggers that we shouldn't be touching when doing triggerfix.
+			bbox_t offset = {{0.03125f, 0.03125f, 0.0f}, {-0.03125f, -0.03125f, 0.0f}};
+			this->player->GetBBoxBounds(&bounds, &offset);
 			for (int i = 0; i < this->tpmTriggerFixOrigins.Count() - 1; i++)
 			{
 				this->player->TouchTriggersAlongPath(this->tpmTriggerFixOrigins[i], this->tpmTriggerFixOrigins[i + 1], bounds);
@@ -597,7 +599,7 @@ void SurfModeService::OnCategorizePosition(bool bStayOnGround)
 	groundOrigin = origin;
 	groundOrigin.z -= 2.0f;
 
-	g_pSurfUtils->TracePlayerBBox(origin, groundOrigin, bounds, &filter, trace);
+	INavPhysicsInterface::TraceShape(Ray_t(bounds.mins, bounds.maxs), origin, groundOrigin, &filter, &trace);
 
 	if (trace.m_flFraction == 1.0f)
 	{
@@ -609,7 +611,7 @@ void SurfModeService::OnCategorizePosition(bool bStayOnGround)
 		origin += this->lastValidPlane * 0.0625f;
 		groundOrigin = origin;
 		groundOrigin.z -= 2.0f;
-		g_pSurfUtils->TracePlayerBBox(origin, groundOrigin, bounds, &filter, trace);
+		INavPhysicsInterface::TraceShape(Ray_t(bounds.mins, bounds.maxs), origin, groundOrigin, &filter, &trace);
 		if (trace.m_bStartInSolid)
 		{
 			return;

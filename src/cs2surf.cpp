@@ -7,6 +7,7 @@
 #include "utils/utils.h"
 #include "utils/hooks.h"
 #include "utils/gameconfig.h"
+#include "utils/async_file_io.h"
 
 #include "movement/movement.h"
 #include "surf/surf.h"
@@ -61,6 +62,7 @@ bool SurfPlugin::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bo
 	SurfZoneBeamService::Init();
 	Surf::misc::Init();
 	SurfQuietService::Init();
+	AsyncFileIO::Init();
 	SurfRecordingService::Init();
 	if (!Surf::mode::CheckModeCvars())
 	{
@@ -98,6 +100,7 @@ bool SurfPlugin::Unload(char *error, size_t maxlen)
 	this->unloading = true;
 	Surf::misc::UnrestrictTimeLimit();
 	SurfRecordingService::Shutdown();
+	AsyncFileIO::Cleanup();
 	hooks::Cleanup();
 	Surf::mode::EnableReplicatedModeCvars();
 	utils::Cleanup();

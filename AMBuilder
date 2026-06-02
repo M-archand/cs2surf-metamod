@@ -69,6 +69,7 @@ def configure_main(sdk_target, sdk, cxx):
     os.path.join(builder.sourcePath, 'src', 'utils', 'simplecmds.cpp'),
     os.path.join(builder.sourcePath, 'src', 'utils', 'ctimer.cpp'),
     os.path.join(builder.sourcePath, 'src', 'utils', 'http.cpp'),
+    os.path.join(builder.sourcePath, 'src', 'utils', 'async_file_io.cpp'),
     
     os.path.join(builder.sourcePath, 'src', 'player', 'player_manager.cpp'),
     os.path.join(builder.sourcePath, 'src', 'player', 'player.cpp'),
@@ -147,7 +148,7 @@ def configure_main(sdk_target, sdk, cxx):
     os.path.join(builder.sourcePath, 'src', 'surf', 'telemetry', 'surf_telemetry.cpp'),
     
     os.path.join(builder.sourcePath, 'src', 'surf', 'timer', 'surf_timer.cpp'),
-    os.path.join(builder.sourcePath, 'src', 'surf', 'timer', 'announce.cpp'),
+    os.path.join(builder.sourcePath, 'src', 'surf', 'timer', 'submission.cpp'),
 
     os.path.join(builder.sourcePath, 'src', 'surf', 'timer', 'queries', 'base_request.cpp'),
     os.path.join(builder.sourcePath, 'src', 'surf', 'timer', 'queries', 'course_top.cpp'),

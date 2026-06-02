@@ -2,10 +2,13 @@
 
 #include <optional>
 #include <unordered_map>
+#include <atomic>
 #include <thread>
 #include <mutex>
 #include <condition_variable>
 #include <queue>
+#include <deque>
+#include <functional>
 #include "surf/surf.h"
 #include "surf/mode/surf_mode.h"
 #include "surf/style/surf_style.h"
@@ -70,15 +73,44 @@ struct Recorder
 	f32 desiredStopTime = -1;
 	ReplayHeader replayHeader; // Unified protobuf header
 	std::vector<TickData> tickData;
-	std::vector<SubtickData> subtickData;
+
+	std::vector<u8> subtickCounts;
+	std::vector<SubtickData::RpSubtickMove> subtickMoves;
+
 	std::vector<RpEvent> rpEvents;
 
 	// Empty until the replay is queued for writing
 	std::vector<std::pair<i32, EconInfo>> weaponTable;
+
 	std::vector<CmdData> cmdData;
-	std::vector<SubtickData> cmdSubtickData;
+
+	std::vector<u8> cmdSubtickCounts;
+	std::vector<SubtickData::RpSubtickMove> cmdSubtickMoves;
+
+	// --- Incremental disk flushing for long runs ---
+	// Every 15 minutes, in-memory data is written to a temp file on disk to keep memory bounded during long runs.
+	static constexpr u32 FLUSH_INTERVAL_TICKS = 57600;
+	u32 numFlushedChunks = 0;
+	u32 totalTicksRecorded = 0; // Total across all flushed chunks + in-memory
+	std::string tempFileBase;   // Set on first flush; empty means to flushing has occurred
+
+	// Flush in-memory recording data to a temp chunk file on disk, then clear in-memory vectors.
+	void FlushChunkToDisk();
+
+	// Read all flushed chunks from disk back into vectors, appending the current in-memory remainder.
+	void LoadFlushedChunks(std::vector<TickData> &outTick, std::vector<u8> &outSubtickCounts,
+						   std::vector<SubtickData::RpSubtickMove> &outSubtickMoves, std::vector<RpEvent> &outEvents, std::vector<CmdData> &outCmd,
+						   std::vector<u8> &outCmdSubtickCounts, std::vector<SubtickData::RpSubtickMove> &outCmdSubtickMoves);
+	void CleanupTempFiles();
+
 	// Copy the last numSeconds seconds of data from the circular recorder.
 	Recorder(SurfPlayer *player, f32 numSeconds, ReplayType type, bool copyTimerEvents);
+	~Recorder();
+
+	// Explicitly re-enable move operations.
+	// This ensures std::move() transfers ownership rather than copying.
+	Recorder(Recorder &&) = default;
+	Recorder &operator=(Recorder &&) = default;
 
 	bool ShouldStopAndSave(f32 currentTime)
 	{
@@ -86,11 +118,8 @@ struct Recorder
 	}
 
 	bool WriteToFile();
-	virtual i32 WriteHeader(FileHandle_t file);
-	virtual i32 WriteTickData(FileHandle_t file);
-	virtual i32 WriteWeapons(FileHandle_t file);
-	virtual i32 WriteEvents(FileHandle_t file);
-	virtual i32 WriteCmdData(FileHandle_t file);
+	bool WriteToMemory(std::vector<char> &outBuffer);
+	i32 WriteHeader(std::vector<char> &outBuffer);
 
 	template<typename T>
 	void PushData(const T &data)
@@ -98,6 +127,11 @@ struct Recorder
 		if constexpr (std::is_same<T, TickData>::value)
 		{
 			tickData.push_back(data);
+			totalTicksRecorded++;
+			if (tickData.size() >= FLUSH_INTERVAL_TICKS)
+			{
+				FlushChunkToDisk();
+			}
 		}
 		else if constexpr (std::is_same<T, RpEvent>::value)
 		{
@@ -123,13 +157,36 @@ struct Recorder
 	template<Vec V>
 	void PushData(const SubtickData &data)
 	{
+		u8 count = (u8)MIN(data.numSubtickMoves, MAX_SUBTICK_MOVES);
 		if constexpr (V == Vec::Tick)
 		{
-			subtickData.push_back(data);
+			subtickCounts.push_back(count);
+			for (u8 i = 0; i < count; i++)
+			{
+				subtickMoves.push_back(data.subtickMoves[i]);
+			}
 		}
 		else
 		{
-			cmdSubtickData.push_back(data);
+			cmdSubtickCounts.push_back(count);
+			for (u8 i = 0; i < count; i++)
+			{
+				cmdSubtickMoves.push_back(data.subtickMoves[i]);
+			}
+		}
+	}
+
+	void UnpackSubtickData(std::vector<SubtickData> &out, const std::vector<u8> &counts, const std::vector<SubtickData::RpSubtickMove> &moves) const
+	{
+		out.resize(counts.size());
+		u32 offset = 0;
+		for (size_t i = 0; i < counts.size(); i++)
+		{
+			out[i].numSubtickMoves = counts[i];
+			for (u8 j = 0; j < counts[i]; j++)
+			{
+				out[i].subtickMoves[j] = moves[offset++];
+			}
 		}
 	}
 
@@ -140,77 +197,60 @@ struct Recorder
 class SurfRecordingService;
 class SurfPlayer;
 
-// Callback types for write completion
-using WriteSuccessCallback = std::function<void(const UUID_t &uuid, f32 duration)>;
+// Callback types for file writer operations.
+// All callbacks are invoked on the main thread via ReplayFileWriter::RunFrame().
+// Buffer path: recorder is serialized to memory and the buffer is delivered to the callback.
+using BufferSuccessCallback = std::function<void(const UUID_t &uuid, f32 duration, std::vector<char> &&buffer)>;
+// Disk path: recorder is written to disk; callback receives only uuid and duration.
+using DiskWriteSuccessCallback = std::function<void(const UUID_t &uuid, f32 duration)>;
 using WriteFailureCallback = std::function<void(const char *error)>;
 
-// Write task with optional callbacks
-struct WriteTask
-{
-	std::unique_ptr<Recorder> recorder;
-	WriteSuccessCallback onSuccess;
-	WriteFailureCallback onFailure;
-};
-
-// Completed write result
-struct WriteResult
-{
-	bool success;
-	UUID_t uuid;
-	f32 duration;
-	std::string errorMessage;
-	WriteSuccessCallback onSuccess;
-	WriteFailureCallback onFailure;
-};
-
-// Thread-safe file writer for async replay file writing
+// Serializes/writes replays on per-task threads.
+// Callbacks are marshalled back to the main thread via RunFrame().
 class ReplayFileWriter
 {
 public:
 	ReplayFileWriter();
 	~ReplayFileWriter();
 
-	void Start();
+	// Drain active threads - blocks until all in-flight serializations finish.
 	void Stop();
 
-	// Queue a recorder for async file writing (fire-and-forget)
-	void QueueWrite(std::unique_ptr<Recorder> recorder);
+	// Spawn a thread to serialize recorder to memory; delivers a buffer to onSuccess on the main thread.
+	void QueueWrite(std::unique_ptr<Recorder> recorder, BufferSuccessCallback onSuccess, WriteFailureCallback onFailure);
 
-	// Queue a recorder with callbacks
-	void QueueWrite(std::unique_ptr<Recorder> recorder, WriteSuccessCallback onSuccess, WriteFailureCallback onFailure);
+	// Spawn a thread to write recorder to disk; calls onSuccess/onFailure on the main thread (both optional).
+	void QueueWriteToFile(std::unique_ptr<Recorder> recorder, DiskWriteSuccessCallback onSuccess = nullptr, WriteFailureCallback onFailure = nullptr);
 
-	// Run frame - process any completed writes and invoke callbacks on main thread
+	// Invoke pending callbacks - call once per game frame from the main thread.
 	void RunFrame();
 
 private:
-	void ThreadRun();
+	template<typename F>
+	void SpawnThread(F &&work);
 
-	std::unique_ptr<std::thread> m_thread;
-	std::queue<WriteTask> m_writeQueue;
-	std::queue<WriteResult> m_completedWrites;
-	std::mutex m_queueLock;
+	std::atomic<int> m_activeThreads {0};
+	std::mutex m_shutdownMutex;
+	std::condition_variable m_shutdownCV;
+
+	std::queue<std::function<void()>> m_completedCallbacks;
 	std::mutex m_completedLock;
-	std::condition_variable m_queueCV;
-	bool m_terminate = false;
 };
 
 struct RunRecorder : public Recorder
 {
 	RunRecorder(SurfPlayer *player);
 	void End(f32 time, i32 numTeleports);
-	virtual i32 WriteHeader(FileHandle_t file) override;
 };
 
 struct CheaterRecorder : public Recorder
 {
 	CheaterRecorder(SurfPlayer *player, const char *reason, SurfPlayer *savedBy);
-	virtual i32 WriteHeader(FileHandle_t file) override;
 };
 
 struct ManualRecorder : public Recorder
 {
 	ManualRecorder(SurfPlayer *player, f32 duration, SurfPlayer *savedBy);
-	virtual i32 WriteHeader(FileHandle_t file) override;
 };
 
 class SurfRecordingService : public SurfBaseService
@@ -284,7 +324,7 @@ private:
 
 public:
 	// Write a replay file with completion callbacks
-	void WriteCircularBufferToFileAsync(f32 duration, const char *cheaterReason, SurfPlayer *saver, WriteSuccessCallback onSuccess,
+	void WriteCircularBufferToFileAsync(f32 duration, const char *cheaterReason, SurfPlayer *saver, DiskWriteSuccessCallback onSuccess,
 										WriteFailureCallback onFailure);
 
 public:
@@ -313,10 +353,10 @@ public:
 		Run
 	};
 
-private:
 	// Helper function to copy weapons from recording service to recorder before queuing
 	void CopyWeaponsToRecorder(Recorder *recorder);
 
+private:
 	template<typename Func>
 	void ApplyToTarget(Func &&func, RecorderType target)
 	{
@@ -343,5 +383,5 @@ public:
 	}
 
 private:
-	static ReplayFileWriter *s_fileWriter;
+	static ReplayFileWriter *fileWriter;
 };

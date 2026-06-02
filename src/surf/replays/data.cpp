@@ -141,12 +141,12 @@ namespace Surf::replaysystem::data
 		return g_currentReplay.paused;
 	}
 
-	static_function void UpdateProgress(FileHandle_t file, size_t fileSize, std::atomic<f32> &progress)
+	static_function void UpdateProgress(const char *cursor, const char *dataStart, size_t totalSize, std::atomic<f32> &progress)
 	{
-		if (fileSize > 0)
+		if (totalSize > 0)
 		{
-			size_t bytesRead = g_pFullFileSystem->Tell(file);
-			progress = static_cast<f32>(bytesRead) / static_cast<f32>(fileSize);
+			size_t bytesRead = static_cast<size_t>(cursor - dataStart);
+			progress = static_cast<f32>(bytesRead) / static_cast<f32>(totalSize);
 			if (surf_replay_playback_debug.Get())
 			{
 				META_CONPRINTF("Replay load progress: %zu bytes, %.2f%%\n", bytesRead, progress.load() * 100.0f);
@@ -154,66 +154,61 @@ namespace Surf::replaysystem::data
 		}
 	}
 
-	// Helper function to load replay data with progress reporting
-	static_function ReplayPlayback LoadReplayWithProgress(const char *path, std::atomic<f32> &progress, std::atomic<bool> &shouldCancel)
+	// Parses replay data from an in-memory byte array
+	static_function ReplayPlayback LoadReplayFromMemory(const char *data, size_t size, UUID_t uuid, std::atomic<f32> &progress,
+														std::atomic<bool> &shouldCancel)
 	{
 		ReplayPlayback result = {};
 		progress = 0.0f;
 
-		FileHandle_t file = g_pFullFileSystem->Open(path, "rb");
-		if (!file)
-		{
-			return result;
-		}
-
-		// Get file size for progress calculation
-		size_t fileSize = g_pFullFileSystem->Size(file);
+		const char *cursor = data;
+		const char *end = data + size;
 
 		// Read length-prefixed protobuf header
 		if (shouldCancel)
 		{
-			g_pFullFileSystem->Close(file);
 			return result;
 		}
 		if (surf_replay_playback_debug.Get())
 		{
 			META_CONPRINTF("Loading replay protobuf header...\n");
 		}
-		u32 headerSize = 0;
-		if (g_pFullFileSystem->Read(&headerSize, sizeof(headerSize), file) != sizeof(headerSize))
+
+		// Try to read header size (u32). If this fails, the data is invalid or corrupted.
+		if (cursor + (ptrdiff_t)sizeof(u32) > end)
 		{
-			g_pFullFileSystem->Close(file);
 			return result;
 		}
+		u32 headerSize = 0;
+		memcpy(&headerSize, cursor, sizeof(headerSize));
+		cursor += sizeof(headerSize);
+
 		if (headerSize == 0 || headerSize > 5 * 1024 * 1024) // sanity limit 5MB
 		{
-			g_pFullFileSystem->Close(file);
 			return result;
 		}
-		std::string serialized;
-		serialized.resize(headerSize);
-		if (g_pFullFileSystem->Read(serialized.data(), headerSize, file) != headerSize)
+		if (cursor + (ptrdiff_t)headerSize > end)
 		{
-			g_pFullFileSystem->Close(file);
 			return result;
 		}
+
+		std::string serialized(cursor, cursor + headerSize);
+		cursor += headerSize;
+
 		if (!result.header.ParseFromString(serialized))
 		{
-			g_pFullFileSystem->Close(file);
 			return result;
 		}
-		UpdateProgress(file, fileSize, progress);
+		UpdateProgress(cursor, data, size, progress);
 
 		if (result.header.version() < 1 || result.header.version() > SURF_REPLAY_VERSION)
 		{
-			g_pFullFileSystem->Close(file);
 			return result;
 		}
 
 		// Load tick data
 		if (shouldCancel)
 		{
-			g_pFullFileSystem->Close(file);
 			return result;
 		}
 		if (surf_replay_playback_debug.Get())
@@ -224,34 +219,29 @@ namespace Surf::replaysystem::data
 		std::vector<TickData> tickDataVec;
 		std::vector<SubtickData> subtickDataVec;
 
-		if (!Surf::replaysystem::compression::ReadTickDataCompressed(file, tickDataVec, subtickDataVec, result.header.version()))
+		if (!Surf::replaysystem::compression::ReadTickDataCompressed(cursor, end, tickDataVec, subtickDataVec, result.header.version()))
 		{
-			g_pFullFileSystem->Close(file);
 			return result;
 		}
 
 		result.tickCount = tickDataVec.size();
 
-		// Shrink to fit to ensure contiguous allocation
 		tickDataVec.shrink_to_fit();
 		subtickDataVec.shrink_to_fit();
 
-		// Transfer ownership - extract pointer and prevent deallocation
 		result.tickData = tickDataVec.data();
 		result.subtickData = subtickDataVec.data();
 
-		// Null out the vector's internal pointers so it doesn't free the memory
 		new (&tickDataVec) std::vector<TickData>();
 		new (&subtickDataVec) std::vector<SubtickData>();
 
-		UpdateProgress(file, fileSize, progress);
+		UpdateProgress(cursor, data, size, progress);
 
 		// Load weapon data
 		if (shouldCancel)
 		{
 			delete[] result.tickData;
 			delete[] result.subtickData;
-			g_pFullFileSystem->Close(file);
 			return {};
 		}
 		if (surf_replay_playback_debug.Get())
@@ -261,15 +251,13 @@ namespace Surf::replaysystem::data
 
 		std::vector<std::pair<i32, EconInfo>> weaponTableVec;
 
-		if (!Surf::replaysystem::compression::ReadWeaponsCompressed(file, weaponTableVec))
+		if (!Surf::replaysystem::compression::ReadWeaponsCompressed(cursor, end, weaponTableVec))
 		{
 			delete[] result.tickData;
 			delete[] result.subtickData;
-			g_pFullFileSystem->Close(file);
 			return {};
 		}
 
-		// Store weapon table
 		result.weaponTableSize = weaponTableVec.size();
 		assert(result.weaponTableSize > 0);
 		result.weaponIndices = new i32[result.weaponTableSize];
@@ -280,7 +268,7 @@ namespace Surf::replaysystem::data
 			result.weapons[i] = weaponTableVec[i].second;
 		}
 
-		UpdateProgress(file, fileSize, progress);
+		UpdateProgress(cursor, data, size, progress);
 
 		// Load events
 		if (shouldCancel)
@@ -289,7 +277,6 @@ namespace Surf::replaysystem::data
 			delete[] result.subtickData;
 			delete[] result.weaponIndices;
 			delete[] result.weapons;
-			g_pFullFileSystem->Close(file);
 			return {};
 		}
 		if (surf_replay_playback_debug.Get())
@@ -299,50 +286,76 @@ namespace Surf::replaysystem::data
 
 		std::vector<RpEvent> eventsVec;
 
-		if (!Surf::replaysystem::compression::ReadEventsCompressed(file, eventsVec))
+		if (!Surf::replaysystem::compression::ReadEventsCompressed(cursor, end, eventsVec))
 		{
 			delete[] result.tickData;
 			delete[] result.subtickData;
 			delete[] result.weaponIndices;
 			delete[] result.weapons;
-			g_pFullFileSystem->Close(file);
 			return {};
 		}
 
 		result.numEvents = eventsVec.size();
 
-		// Shrink and extract
 		eventsVec.shrink_to_fit();
 		result.events = eventsVec.data();
 		new (&eventsVec) std::vector<RpEvent>();
 
-		UpdateProgress(file, fileSize, progress);
+		UpdateProgress(cursor, data, size, progress);
 
-		result.valid = UUID_t::FromString(CUtlString(path).GetBaseFilename().StripExtension().Get(), &result.uuid);
-		assert(result.valid);
-		g_pFullFileSystem->Close(file);
+		result.uuid = uuid;
+		result.valid = true;
 		progress = 1.0f;
 		return result;
 	}
 
-	void LoadReplayAsync(std::string path, LoadSuccessCallback onSuccess, LoadFailureCallback onFailure)
+	// File-based entry point: reads the entire file into memory then parses.
+	static_function ReplayPlayback LoadReplayWithProgress(const char *path, std::atomic<f32> &progress, std::atomic<bool> &shouldCancel)
 	{
-		// Cancel any existing load
-		CancelAsyncLoad();
+		ReplayPlayback result = {};
 
-		// Reset load status
+		FileHandle_t file = g_pFullFileSystem->Open(path, "rb");
+		if (!file)
+		{
+			return result;
+		}
+
+		size_t fileSize = g_pFullFileSystem->Size(file);
+		std::vector<char> fileData(fileSize);
+		if (g_pFullFileSystem->Read(fileData.data(), (int)fileSize, file) != (int)fileSize)
+		{
+			g_pFullFileSystem->Close(file);
+			return result;
+		}
+		g_pFullFileSystem->Close(file);
+
+		UUID_t uuid = {};
+		if (!UUID_t::FromString(CUtlString(path).GetBaseFilename().StripExtension().Get(), &uuid))
+		{
+			return result;
+		}
+
+		return LoadReplayFromMemory(fileData.data(), fileSize, uuid, progress, shouldCancel);
+	}
+
+	// Memory-based entry point: parse directly from a provided buffer.
+	static_function ReplayPlayback LoadReplayWithProgress(const char *data, size_t size, UUID_t uuid, std::atomic<f32> &progress,
+														  std::atomic<bool> &shouldCancel)
+	{
+		return LoadReplayFromMemory(data, size, uuid, progress, shouldCancel);
+	}
+
+	static_function void PrepareAsyncLoad(LoadSuccessCallback onSuccess, LoadFailureCallback onFailure)
+	{
+		CancelAsyncLoad();
 		g_loadStatus.state = LoadingState::Loading;
 		g_loadStatus.progress = 0.0f;
 		g_cancelLoad = false;
-
-		// Store callbacks safely
 		{
 			std::lock_guard<std::mutex> lock(g_loadStatus.callbackMutex);
 			g_loadStatus.successCallback = onSuccess;
 			g_loadStatus.failureCallback = onFailure;
 		}
-
-		// Clear any previous error message and completed replay
 		{
 			std::lock_guard<std::mutex> lock(g_loadStatus.errorMutex);
 			g_loadStatus.errorMessage.clear();
@@ -352,47 +365,60 @@ namespace Surf::replaysystem::data
 			FreeReplayData(&g_loadStatus.completedReplay);
 			g_loadStatus.completedReplay = {};
 		}
+	}
 
-		// Start loading thread
-		g_loadThread = std::thread(
-			[=]()
+	static_function void HandleAsyncResult(ReplayPlayback &result)
+	{
+		if (g_cancelLoad)
+		{
+			FreeReplayData(&result);
+			g_loadStatus.state = LoadingState::Failed;
 			{
-				// Copy path to avoid potential lifetime issues
-				std::string pathCopy(path);
+				std::lock_guard<std::mutex> lock(g_loadStatus.errorMutex);
+				g_loadStatus.errorMessage = "Replay - Load Cancelled";
+			}
+			return;
+		}
 
-				ReplayPlayback result = LoadReplayWithProgress(pathCopy.c_str(), g_loadStatus.progress, g_cancelLoad);
+		if (!result.valid)
+		{
+			g_loadStatus.state = LoadingState::Failed;
+			{
+				std::lock_guard<std::mutex> lock(g_loadStatus.errorMutex);
+				g_loadStatus.errorMessage = "Replay - Invalid File Format";
+			}
+			return;
+		}
 
-				if (g_cancelLoad)
-				{
-					// Load was cancelled, cleanup and exit
-					FreeReplayData(&result);
-					g_loadStatus.state = LoadingState::Failed;
-					{
-						std::lock_guard<std::mutex> lock(g_loadStatus.errorMutex);
-						g_loadStatus.errorMessage = "Replay - Load Cancelled";
-					}
-					return;
-				}
+		// Success - store result for main thread to process
+		{
+			std::lock_guard<std::mutex> lock(g_loadStatus.replayMutex);
+			g_loadStatus.completedReplay = result;
+		}
+		g_loadStatus.state = LoadingState::Completed;
+	}
 
-				if (!result.valid)
-				{
-					g_loadStatus.state = LoadingState::Failed;
-					{
-						std::lock_guard<std::mutex> lock(g_loadStatus.errorMutex);
-						g_loadStatus.errorMessage = "Replay - Invalid File Format";
-					}
-					return;
-				}
-
-				// Success - store result for main thread to process
-				{
-					std::lock_guard<std::mutex> lock(g_loadStatus.replayMutex);
-					g_loadStatus.completedReplay = result;
-				}
-				g_loadStatus.state = LoadingState::Completed;
+	void LoadReplayAsync(std::string path, LoadSuccessCallback onSuccess, LoadFailureCallback onFailure)
+	{
+		PrepareAsyncLoad(onSuccess, onFailure);
+		g_loadThread = std::thread(
+			[path = std::move(path)]()
+			{
+				ReplayPlayback result = LoadReplayWithProgress(path.c_str(), g_loadStatus.progress, g_cancelLoad);
+				HandleAsyncResult(result);
 			});
+		g_loadThread.detach();
+	}
 
-		// Detach the thread so it can run independently
+	void LoadReplayMemoryAsync(std::vector<char> data, UUID_t uuid, LoadSuccessCallback onSuccess, LoadFailureCallback onFailure)
+	{
+		PrepareAsyncLoad(onSuccess, onFailure);
+		g_loadThread = std::thread(
+			[data = std::move(data), uuid]() mutable
+			{
+				ReplayPlayback result = LoadReplayWithProgress(data.data(), data.size(), uuid, g_loadStatus.progress, g_cancelLoad);
+				HandleAsyncResult(result);
+			});
 		g_loadThread.detach();
 	}
 

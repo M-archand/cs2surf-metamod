@@ -11,6 +11,7 @@
 #include "interfaces/interfaces.h"
 #include "igameeventsystem.h"
 #include "sdk/recipientfilters.h"
+#include "sdk/navphysicsinterface.h"
 #include "public/networksystem/inetworkmessages.h"
 #include "gametrace.h"
 
@@ -22,6 +23,7 @@
 #include "filesystem.h"
 
 #include "tier0/memdbgon.h"
+#include <filesystem>
 
 #define FCVAR_FLAGS_TO_REMOVE (FCVAR_HIDDEN | FCVAR_DEVELOPMENTONLY | FCVAR_DEFENSIVE)
 
@@ -70,7 +72,6 @@ bool utils::Initialize(ISmmAPI *ismm, char *error, size_t maxlen)
 	}
 
 	bool sigResolved = true;
-	RESOLVE_SIG(g_pGameConfig, "TracePlayerBBox", TracePlayerBBox_t, TracePlayerBBox, sigResolved);
 	RESOLVE_SIG(g_pGameConfig, "GetLegacyGameEventListener", GetLegacyGameEventListener_t, GetLegacyGameEventListener, sigResolved);
 	RESOLVE_SIG(g_pGameConfig, "SnapViewAngles", SnapViewAngles_t, SnapViewAngles, sigResolved);
 	RESOLVE_SIG(g_pGameConfig, "EmitSound", EmitSoundFunc_t, EmitSound, sigResolved);
@@ -98,8 +99,8 @@ bool utils::Initialize(ISmmAPI *ismm, char *error, size_t maxlen)
 		return false;
 	}
 
-	g_pSurfUtils = new SurfUtils(TracePlayerBBox, GetLegacyGameEventListener, SnapViewAngles, EmitSound, SwitchTeam, SetPawn, CreateEntityByName,
-								 DispatchSpawn, RemoveEntity, DebugDrawMesh, CreateBot, SetOrAddAttributeValueByName, SetModel);
+	g_pSurfUtils = new SurfUtils(GetLegacyGameEventListener, SnapViewAngles, EmitSound, SwitchTeam, SetPawn, CreateEntityByName, DispatchSpawn,
+								 RemoveEntity, DebugDrawMesh, CreateBot, SetOrAddAttributeValueByName, SetModel);
 
 	utils::UnlockConVars();
 	utils::UnlockConCommands();
@@ -484,7 +485,7 @@ bool utils::IsSpawnValid(const Vector &origin)
 	filter.m_nObjectSetMask = RNQUERY_OBJECTS_ALL;
 	filter.m_nInteractsAs = 0x40000;
 	trace_t tr;
-	g_pSurfUtils->TracePlayerBBox(origin, origin, bounds, &filter, tr);
+	INavPhysicsInterface::TraceShape(Ray_t(bounds.mins, bounds.maxs), origin, origin, &filter, &tr);
 	if (tr.m_flFraction != 1.0 || tr.m_bStartInSolid)
 	{
 		return false;
@@ -543,10 +544,9 @@ bool utils::CanSeeBox(Vector origin, Vector mins, Vector maxs)
 		maxs[i] -= 0.03125;
 		traceDest[i] = Clamp(origin[i], mins[i], maxs[i]);
 	}
-	bbox_t bounds {};
 	CTraceFilter filter(MASK_PLAYERSOLID, COLLISION_GROUP_PLAYER_MOVEMENT, false);
 	trace_t trace;
-	g_pSurfUtils->TracePlayerBBox(origin, traceDest, bounds, &filter, trace);
+	INavPhysicsInterface::TraceLine(origin, traceDest, &filter, &trace);
 
 	return !trace.DidHit();
 }
@@ -623,7 +623,7 @@ bool utils::FindValidPositionForTrigger(CBaseTrigger *trigger, Vector &originDes
 		filter.m_nObjectSetMask = RNQUERY_OBJECTS_ALL;
 		filter.m_nInteractsAs = 0x40000;
 		trace_t tr;
-		g_pSurfUtils->TracePlayerBBox(center, bottomCenter, bounds, &filter, tr);
+		INavPhysicsInterface::TraceShape(Ray_t(bounds.mins, bounds.maxs), center, bottomCenter, &filter, &tr);
 		originDest = tr.m_vEndPos;
 		anglesDest = vec3_angle;
 		return true;
@@ -719,6 +719,91 @@ void utils::UpdateServerVersion()
 u32 utils::GetServerVersion()
 {
 	return serverVersion;
+}
+
+bool utils::WriteBufferToFile(const char *relativePath, const std::vector<char> &buffer)
+{
+	char absPath[1024];
+	V_snprintf(absPath, sizeof(absPath), "%s/csgo/%s", Plat_GetGameDirectory(), relativePath);
+
+	// Ensure directory exists
+	char dir[1024];
+	V_ExtractFilePath(absPath, dir, sizeof(dir));
+	if (dir[0])
+	{
+		std::filesystem::create_directories(dir);
+	}
+
+	char tmpPath[1024];
+	V_snprintf(tmpPath, sizeof(tmpPath), "%s.tmp", absPath);
+
+	FILE *fp = fopen(tmpPath, "wb");
+	if (!fp)
+	{
+		META_CONPRINTF("[Surf] Failed to open file for writing: %s\n", tmpPath);
+		return false;
+	}
+	fwrite(buffer.data(), 1, buffer.size(), fp);
+	fclose(fp);
+
+#ifdef _WIN32
+	if (!MoveFileExA(tmpPath, absPath, MOVEFILE_REPLACE_EXISTING))
+#else
+	if (rename(tmpPath, absPath) != 0)
+#endif
+	{
+		remove(tmpPath);
+		return false;
+	}
+	return true;
+}
+
+bool utils::ReadBufferFromFile(const char *relativePath, std::vector<char> &outBuffer)
+{
+	char absPath[1024];
+	V_snprintf(absPath, sizeof(absPath), "%s/csgo/%s", Plat_GetGameDirectory(), relativePath);
+
+	FILE *fp = fopen(absPath, "rb");
+	if (!fp)
+	{
+		META_CONPRINTF("[Surf] Failed to open file for reading: %s\n", absPath);
+		return false;
+	}
+
+	fseek(fp, 0, SEEK_END);
+	long size = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
+	outBuffer.resize(size);
+	fread(outBuffer.data(), 1, size, fp);
+	fclose(fp);
+	return true;
+}
+
+void utils::RemoveFile(const char *relativePath)
+{
+	char absPath[1024];
+	V_snprintf(absPath, sizeof(absPath), "%s/csgo/%s", Plat_GetGameDirectory(), relativePath);
+	if (remove(absPath) != 0)
+	{
+		META_CONPRINTF("[Surf] Failed to remove %s\n", absPath);
+	}
+}
+
+bool utils::RenameFile(const char *oldRelativePath, const char *newRelativePath)
+{
+	char absOld[1024], absNew[1024];
+	V_snprintf(absOld, sizeof(absOld), "%s/csgo/%s", Plat_GetGameDirectory(), oldRelativePath);
+	V_snprintf(absNew, sizeof(absNew), "%s/csgo/%s", Plat_GetGameDirectory(), newRelativePath);
+#ifdef _WIN32
+	if (!MoveFileExA(absOld, absNew, MOVEFILE_REPLACE_EXISTING))
+#else
+	if (rename(absOld, absNew) != 0)
+#endif
+	{
+		META_CONPRINTF("[Surf] Failed to rename %s to %s\n", absOld, absNew);
+		return false;
+	}
+	return true;
 }
 
 bool utils::ParseSteamID2(std::string_view steamID, u64 &out)

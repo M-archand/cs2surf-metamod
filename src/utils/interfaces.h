@@ -76,7 +76,6 @@ typedef IGameEventListener2 *GetLegacyGameEventListener_t(CPlayerSlot slot);
 typedef void SnapViewAngles_t(CBasePlayerPawn *pawn, const QAngle &angle);
 typedef CBaseEntity *FindEntityByClassname_t(CEntitySystem *, CEntityInstance *, const char *);
 typedef SndOpEventGuid_t EmitSoundFunc_t(IRecipientFilter &filter, CEntityIndex ent, const EmitSound_t &params);
-typedef void TracePlayerBBox_t(const Vector &start, const Vector &end, const bbox_t &bounds, CTraceFilter *filter, trace_t &pm);
 typedef void SwitchTeam_t(CCSPlayerController *controller, int team);
 typedef void SetPawn_t(CBasePlayerController *controller, CCSPlayerPawn *pawn, bool, bool, bool, bool);
 typedef CBaseEntity *CreateEntityByName_t(const char *className, int iForceEdictIndex);
@@ -120,18 +119,16 @@ namespace interfaces
 class SurfUtils
 {
 public:
-	SurfUtils(TracePlayerBBox_t *TracePlayerBBox, GetLegacyGameEventListener_t *GetLegacyGameEventListener, SnapViewAngles_t *SnapViewAngles,
-			  EmitSoundFunc_t *EmitSound, SwitchTeam_t *SwitchTeam, SetPawn_t *SetPawn, CreateEntityByName_t *CreateEntityByName,
-			  DispatchSpawn_t *DispatchSpawn, RemoveEntity_t *RemoveEntity, DebugDrawMesh_t *DebugDrawMesh, CreateBot_t *CreateBot,
+	SurfUtils(GetLegacyGameEventListener_t *GetLegacyGameEventListener, SnapViewAngles_t *SnapViewAngles, EmitSoundFunc_t *EmitSound,
+			  SwitchTeam_t *SwitchTeam, SetPawn_t *SetPawn, CreateEntityByName_t *CreateEntityByName, DispatchSpawn_t *DispatchSpawn,
+			  RemoveEntity_t *RemoveEntity, DebugDrawMesh_t *DebugDrawMesh, CreateBot_t *CreateBot,
 			  SetOrAddAttributeValueByName_t *SetOrAddAttributeValueByName, SetModel_t *SetModel)
-		: TracePlayerBBox(TracePlayerBBox), GetLegacyGameEventListener(GetLegacyGameEventListener), SnapViewAngles(SnapViewAngles),
-		  EmitSound(EmitSound), SwitchTeam(SwitchTeam), SetPawn(SetPawn), CreateEntityByName(CreateEntityByName), DispatchSpawn(DispatchSpawn),
-		  RemoveEntity(RemoveEntity), DebugDrawMesh(DebugDrawMesh), CreateBot(CreateBot), SetOrAddAttributeValueByName(SetOrAddAttributeValueByName),
-		  SetModel(SetModel)
+		: GetLegacyGameEventListener(GetLegacyGameEventListener), SnapViewAngles(SnapViewAngles), EmitSound(EmitSound), SwitchTeam(SwitchTeam),
+		  SetPawn(SetPawn), CreateEntityByName(CreateEntityByName), DispatchSpawn(DispatchSpawn), RemoveEntity(RemoveEntity),
+		  DebugDrawMesh(DebugDrawMesh), CreateBot(CreateBot), SetOrAddAttributeValueByName(SetOrAddAttributeValueByName), SetModel(SetModel)
 	{
 	}
 
-	TracePlayerBBox_t *const TracePlayerBBox;
 	GetLegacyGameEventListener_t *const GetLegacyGameEventListener;
 	SnapViewAngles_t *const SnapViewAngles;
 	EmitSoundFunc_t *const EmitSound;
@@ -198,6 +195,18 @@ public:
 	// Draw debug overlays. Listen server only.
 	virtual void AddTriangleOverlay(Vector const &p1, Vector const &p2, Vector const &p3, u8 r, u8 g, u8 b, u8 a, bool noDepthTest, f64 flDuration);
 	virtual void ClearOverlays();
+
+	virtual Vector NormalizeVector(Vector vec)
+	{
+		f32 m = Max(Max(fabs(vec.x), fabs(vec.y)), fabs(vec.z));
+		Vector result = vec;
+		if (m > 0)
+		{
+			Vector u = vec / m;
+			result = u / sqrtf(u.x * u.x + u.y * u.y + u.z * u.z);
+		}
+		return result;
+	}
 };
 
 extern SurfUtils *g_pSurfUtils;

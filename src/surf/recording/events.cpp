@@ -54,21 +54,15 @@ public:
 void SurfRecordingService::Init()
 {
 	SurfTimerService::RegisterEventListener(&timerEventListener);
-	if (!s_fileWriter)
-	{
-		s_fileWriter = new ReplayFileWriter();
-		s_fileWriter->Start();
-	}
+	fileWriter = new ReplayFileWriter();
 }
 
 void SurfRecordingService::Shutdown()
 {
-	if (s_fileWriter)
-	{
-		s_fileWriter->Stop();
-		delete s_fileWriter;
-		s_fileWriter = nullptr;
-	}
+	SurfTimerService::UnregisterEventListener(&timerEventListener);
+	fileWriter->Stop();
+	delete fileWriter;
+	fileWriter = nullptr;
 }
 
 void SurfRecordingService::OnActivateServer()
@@ -85,9 +79,9 @@ void SurfRecordingService::OnActivateServer()
 
 void SurfRecordingService::ProcessFileWriteCompletion()
 {
-	if (s_fileWriter)
+	if (SurfRecordingService::fileWriter)
 	{
-		s_fileWriter->RunFrame();
+		SurfRecordingService::fileWriter->RunFrame();
 	}
 }
 
@@ -265,11 +259,11 @@ void SurfRecordingService::OnClientDisconnect()
 {
 	for (auto &recorder : this->runRecorders)
 	{
-		if (recorder.desiredStopTime > 0.0f && s_fileWriter)
+		if (recorder.desiredStopTime > 0.0f && fileWriter)
 		{
 			auto recorderPtr = std::make_unique<RunRecorder>(std::move(recorder));
 			this->CopyWeaponsToRecorder(recorderPtr.get());
-			s_fileWriter->QueueWrite(std::move(recorderPtr));
+			fileWriter->QueueWriteToFile(std::move(recorderPtr));
 		}
 	}
 	this->runRecorders.clear();

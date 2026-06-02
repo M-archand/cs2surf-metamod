@@ -9,13 +9,14 @@
 #include "utils/gameconfig.h"
 #include "sdk/usercmd.h"
 #include "sdk/tracefilter.h"
+#include "sdk/navphysicsinterface.h"
 #include "sdk/entity/cbasetrigger.h"
 
 #define SURF_MODE_MANAGER_INTERFACE "SurfModeManagerInterface"
 
 // Rampbug fix related
 #define MAX_BUMPS                   4
-#define RAMP_PIERCE_DISTANCE        0.15f
+#define RAMP_PIERCE_DISTANCE        0.0625f
 #define RAMP_BUG_THRESHOLD          0.98f
 #define RAMP_BUG_VELOCITY_THRESHOLD 0.95f
 #define NEW_RAMP_THRESHOLD          0.95f

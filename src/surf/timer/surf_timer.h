@@ -31,7 +31,9 @@ struct PBData
 	void Reset()
 	{
 		overall.pbTime = {};
+		overall.pbCpZoneTimes.SetCount(SURF_MAX_CHECKPOINT_ZONES);
 		overall.pbCpZoneTimes.FillWithValue(-1.0);
+		overall.pbStageZoneTimes.SetCount(SURF_MAX_STAGE_ZONES);
 		overall.pbStageZoneTimes.FillWithValue(-1.0);
 	}
 

@@ -13,8 +13,11 @@ class SurfPlayer;
 
 enum : u32
 {
-	SURF_REPLAY_VERSION = 1,
+	SURF_REPLAY_VERSION = 2,
 };
+
+// Maximum subtick moves per tick. The theoretical engine maximum is 64, but 36 is a much more reasonable amount.
+static constexpr u32 MAX_SUBTICK_MOVES = 36;
 
 enum ReplayType : u32
 {
@@ -122,7 +125,7 @@ struct SubtickData
 		}
 
 		void FromMove(const CSubtickMoveStep &step);
-	} subtickMoves[64];
+	} subtickMoves[MAX_SUBTICK_MOVES];
 };
 
 static_assert(std::is_trivial<SubtickData>::value, "SubtickData must be a trivial type");

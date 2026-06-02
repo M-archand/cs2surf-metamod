@@ -119,8 +119,7 @@ void SurfTriggerService::CleanupPushEvents()
 		{
 			continue;
 		}
-		if (curtime - frametime >= this->pushEvents[i].pushTime + this->pushEvents[i].source->push.cooldown
-			|| curtime < this->pushEvents[i].pushTime + this->pushEvents[i].source->push.cooldown)
+		if (curtime - frametime >= this->pushEvents[i].pushTime + this->pushEvents[i].source->push.cooldown)
 		{
 			this->pushEvents.Remove(i);
 		}

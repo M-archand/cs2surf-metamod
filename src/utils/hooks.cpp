@@ -7,6 +7,7 @@
 #include "gamesystems/spawngroup_manager.h"
 #include "utils/simplecmds.h"
 #include "utils/gamesystem.h"
+#include "utils/async_file_io.h"
 #include "steam/steam_gameserver.h"
 
 #include "cs2surf.h"
@@ -16,7 +17,7 @@
 #include "surf/option/surf_option.h"
 #include "surf/quiet/surf_quiet.h"
 #include "surf/timer/surf_timer.h"
-#include "surf/timer/announce.h"
+#include "surf/timer/submission.h"
 #include "surf/timer/queries/base_request.h"
 #include "surf/telemetry/surf_telemetry.h"
 #include "surf/trigger/surf_trigger.h"
@@ -499,7 +500,7 @@ static_function void Hook_GameFrame(bool simulating, bool bFirstTick, bool bLast
 {
 	VPROF_BUDGET(__func__, "CS2Surf");
 	g_SurfPlugin.serverGlobals = *(g_pSurfUtils->GetGlobals());
-	RecordAnnounce::Check();
+	RunSubmission::CheckAll();
 	BaseRequest::CheckRequests();
 	SurfTelemetryService::ActiveCheck();
 	SurfBeamService::UpdateBeams();
@@ -705,7 +706,7 @@ static_function bool Hook_ActivateServer()
 
 	META_CONPRINTF("[Surf] Loading map %s, workshop ID %llu, size %llu\n", g_pSurfUtils->GetCurrentMapVPK().Get(), id, size);
 
-	RecordAnnounce::Clear();
+	RunSubmission::Clear();
 	Surf::misc::OnActivateServer();
 	SurfDatabaseService::SetupMap();
 	SurfGlobalService::OnActivateServer();
@@ -742,6 +743,10 @@ static_function void Hook_ServerGamePostSimulate(const EventServerGamePostSimula
 {
 	ProcessTimers();
 	SurfRecordingService::ProcessFileWriteCompletion();
+	if (g_asyncFileIO)
+	{
+		g_asyncFileIO->RunFrame();
+	}
 	SurfGlobalService::OnServerGamePostSimulate();
 }
 

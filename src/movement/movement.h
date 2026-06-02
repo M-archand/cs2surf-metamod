@@ -93,7 +93,7 @@ public:
 	virtual void SetAngles(const QAngle &angles);
 	virtual void SetGravityScale(const float scale);
 
-	virtual void GetBBoxBounds(bbox_t *bounds);
+	virtual void GetBBoxBounds(bbox_t *bounds, bbox_t *offset = nullptr);
 
 	virtual TurnState GetTurning();
 

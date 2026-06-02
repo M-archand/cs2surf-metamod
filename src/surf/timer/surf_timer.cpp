@@ -10,7 +10,7 @@
 #include "surf/trigger/surf_trigger.h"
 #include "surf/spec/surf_spec.h"
 #include "surf/recording/surf_recording.h"
-#include "announce.h"
+#include "submission.h"
 
 #include "utils/utils.h"
 #include "utils/simplecmds.h"
@@ -329,7 +329,7 @@ bool SurfTimerService::TimerEnd(const SurfCourseDescriptor *courseDesc)
 	// This must be called after OnTimerEndPost so that the run UUID is set correctly.
 	if (!this->player->GetPlayerPawn()->IsBot())
 	{
-		RecordAnnounce::Create(this->player);
+		RunSubmission::Create(this->player);
 	}
 
 	// Reset current stage immediately to remove HUD element

@@ -100,6 +100,13 @@ namespace utils
 
 	bool ParseSteamID2(std::string_view steamID, u64 &out);
 
+	// File I/O operations. All paths are relative to the game directory (game/csgo)
+	bool WriteBufferToFile(const char *relativePath, const std::vector<char> &buffer);
+	// Note: This function does NOT work with internal VPK content. Use IFileSystem directly instead for that.
+	bool ReadBufferFromFile(const char *relativePath, std::vector<char> &outBuffer);
+	void RemoveFile(const char *relativePath);
+	bool RenameFile(const char *oldRelativePath, const char *newRelativePath);
+
 	inline u32 GetPaddingForWideString(const char *string)
 	{
 		return MAX(0, strlen(string) - mbstowcs(NULL, string, 0));

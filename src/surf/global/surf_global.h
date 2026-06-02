@@ -15,7 +15,7 @@
 #include "surf/global/api.h"
 #include "surf/global/handshake.h"
 #include "surf/global/events.h"
-#include "surf/timer/announce.h"
+#include "surf/timer/submission.h"
 
 class SurfGlobalService : public SurfBaseService
 {
@@ -161,7 +161,7 @@ public:
 		data.playerID = this->player->GetSteamId64();
 		data.filterID = filterID;
 		data.modeChecksum = modeMD5;
-		for (const auto &style : *(std::vector<RecordAnnounce::StyleInfo> *)styles)
+		for (const auto &style : *(std::vector<RunSubmission::StyleInfo> *)styles)
 		{
 			data.styles.push_back({style.name, style.md5});
 		}

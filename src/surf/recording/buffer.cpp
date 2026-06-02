@@ -70,8 +70,8 @@ void CircularRecorder::TrimOldEvents(u32 currentTick)
 	this->rpEvents->Advance(numToRemove);
 }
 
-void SurfRecordingService::WriteCircularBufferToFileAsync(f32 duration, const char *cheaterReason, SurfPlayer *saver, WriteSuccessCallback onSuccess,
-														  WriteFailureCallback onFailure)
+void SurfRecordingService::WriteCircularBufferToFileAsync(f32 duration, const char *cheaterReason, SurfPlayer *saver,
+														  DiskWriteSuccessCallback onSuccess, WriteFailureCallback onFailure)
 {
 	std::unique_ptr<Recorder> recorder;
 	if (strlen(cheaterReason) > 0)
@@ -86,10 +86,10 @@ void SurfRecordingService::WriteCircularBufferToFileAsync(f32 duration, const ch
 	// Copy weapons before queuing to another thread
 	this->CopyWeaponsToRecorder(recorder.get());
 
-	// Queue for async write with callbacks
-	if (s_fileWriter)
+	// Queue for async write to disk with callbacks
+	if (fileWriter)
 	{
-		s_fileWriter->QueueWrite(std::move(recorder), onSuccess, onFailure);
+		fileWriter->QueueWriteToFile(std::move(recorder), onSuccess, onFailure);
 	}
 	else if (onFailure)
 	{
