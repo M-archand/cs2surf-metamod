@@ -7,7 +7,7 @@
 
 #define SURF_MAX_MODE_NAME_LENGTH 128
 
-#define SURF_TIMER_MIN_GROUND_TIME 0.05f
+#define SURF_TIMER_MIN_GROUND_TIME 0.5f
 
 #define SURF_TIMER_SOUND_COOLDOWN       0.15f
 #define SURF_TIMER_SND_START            "Buttons.snd9"

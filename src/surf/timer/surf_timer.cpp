@@ -160,15 +160,15 @@ bool SurfTimerService::TimerStart(const SurfCourseDescriptor *courseDesc, bool p
 		|| this->player->JustTeleported()
 		|| this->player->noclipService->JustNoclipped()
 		|| !this->HasValidMoveType()
-		|| this->JustLanded()
 		|| (this->GetTimerRunning() && courseDesc->guid == this->currentCourseGUID)
 		|| (!(this->player->GetPlayerPawn()->m_fFlags & FL_ONGROUND) && !this->GetValidJump()))
 	// clang-format on
 	{
 		return false;
 	}
-	if (this->player->inPerf)
+	if (this->player->inPerf || this->JustLanded())
 	{
+		// Have a .5s landing time cooldown to ensure no speed from recent perfs can be used to start
 		this->player->languageService->PrintChat(true, false, "Can't Bhop Start");
 		return false;
 	}
