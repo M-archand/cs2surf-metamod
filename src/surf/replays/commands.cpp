@@ -119,7 +119,7 @@ namespace Surf::replaysystem::commands
 						}
 						case RPEVENT_STYLE_CHANGE:
 						{
-							if (Surf::style::GetStyleInfo(CUtlString(event.data.styleChange.name)).id < 0)
+							if (event.data.styleChange.name[0] != '\0' && Surf::style::GetStyleInfo(CUtlString(event.data.styleChange.name)).id < 0)
 							{
 								player->languageService->PrintChat(true, false, "Replay - Unknown Style", event.data.styleChange.name);
 							}

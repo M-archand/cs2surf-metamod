@@ -346,13 +346,20 @@ void SurfRecordingService::CheckModeStyles()
 			this->lastKnownStyles.push_back(styleInfo);
 		}
 
-		// We just send all styles again.
-		for (auto &style : this->lastKnownStyles)
+		// Rebuild style state from scratch for replay consumers.
+		bool clearStyles = true;
+		if (this->lastKnownStyles.empty())
 		{
-			RpEvent event;
-			this->InsertStyleChangeEvent(style.longName, style.md5, refreshStyles);
-			refreshStyles = false; // only the first styleChange needs to have clearStyles = true
-			this->InsertEvent(event);
+			// Clear-only event represents transition to no active styles.
+			this->InsertStyleChangeEvent("", "", true);
+		}
+		else
+		{
+			for (auto &style : this->lastKnownStyles)
+			{
+				this->InsertStyleChangeEvent(style.longName, style.md5, clearStyles);
+				clearStyles = false;
+			}
 		}
 		if (surf_replay_recording_debug.Get())
 		{

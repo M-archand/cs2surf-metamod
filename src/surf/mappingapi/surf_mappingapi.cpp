@@ -776,14 +776,18 @@ void Surf::mapapi::OnRoundStart()
 	g_mappingApi.roundIsStarting = false;
 	FOR_EACH_VEC(g_mappingApi.courseDescriptors, courseInd)
 	{
-		// Find the number of split/checkpoint/stage zones that a course has
-		//  and make sure that they all start from 1 and are consecutive by
+		//  Find the number of stage zones that a course has
+		//  and make sure that they start from 1 and are consecutive by
 		//  XORing the values with a consecutive 1...n sequence.
 		//  https://florian.github.io/xor-trick/
-		i32 cpXor = 0;
+		//  Handle checkpoints seperately to support route splits
 		i32 stageXor = 0;
-		i32 cpCount = 0;
 		i32 stageCount = 0;
+		bool seenCp[SURF_MAX_CHECKPOINT_ZONES] = {};
+		i32 maxCpNum = 0;
+		i32 cpTriggerCount = 0;
+		bool invalid = false;
+		
 		SurfCourseDescriptor *courseDescriptor = &g_mappingApi.courseDescriptors[courseInd];
 		FOR_EACH_VEC(g_mappingApi.triggers, i)
 		{
@@ -845,20 +849,36 @@ void Surf::mapapi::OnRoundStart()
 					break;
 				}
 				case SURFTRIGGER_ZONE_CHECKPOINT:
-					cpXor ^= (++cpCount) ^ trigger->zone.number;
+				{
+					i32 num = trigger->zone.number;
+					cpTriggerCount++;
+					if (num < 1 || num > SURF_MAX_CHECKPOINT_ZONES)
+					{
+						Mapi_Error("Course \"%s\" Checkpoint zone has invalid number %d!", courseDescriptor->name, num);
+						invalid = true;
+						break;
+					}
+					seenCp[num] = true;
+					if (num > maxCpNum)
+					{
+						maxCpNum = num;
+					}
 					break;
+				}
 			}
 		}
 
-		bool invalid = false;
-
-		if (cpXor != 0)
+		for (i32 n = 1; n <= maxCpNum; n++)
 		{
-			Mapi_Error("Course \"%s\" Checkpoint zones aren't consecutive or don't start at 1!", courseDescriptor->name);
-			invalid = true;
+			if (!seenCp[n])
+			{
+				Mapi_Error("Course \"%s\" Checkpoint zones aren't consecutive, missing checkpoint %d!", courseDescriptor->name, n);
+				invalid = true;
+				break;
+			}
 		}
 
-		if (cpCount > SURF_MAX_CHECKPOINT_ZONES)
+		if (maxCpNum > SURF_MAX_CHECKPOINT_ZONES)
 		{
 			Mapi_Error("Course \"%s\" Too many checkpoint zones! Maximum is %i.", courseDescriptor->name, SURF_MAX_CHECKPOINT_ZONES);
 			invalid = true;
@@ -876,7 +896,7 @@ void Surf::mapapi::OnRoundStart()
 			courseInd--;
 			break;
 		}
-		courseDescriptor->checkpointCount = cpCount;
+		courseDescriptor->checkpointCount = maxCpNum;
 		courseDescriptor->stageCount = stageCount;
 	}
 }
