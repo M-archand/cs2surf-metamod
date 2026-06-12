@@ -787,7 +787,7 @@ void Surf::mapapi::OnRoundStart()
 		i32 maxCpNum = 0;
 		i32 cpTriggerCount = 0;
 		bool invalid = false;
-		
+
 		SurfCourseDescriptor *courseDescriptor = &g_mappingApi.courseDescriptors[courseInd];
 		FOR_EACH_VEC(g_mappingApi.triggers, i)
 		{
