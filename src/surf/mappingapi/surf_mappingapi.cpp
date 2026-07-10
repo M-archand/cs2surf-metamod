@@ -784,8 +784,7 @@ void Surf::mapapi::OnRoundStart()
 		i32 stageXor = 0;
 		i32 stageCount = 0;
 		bool seenCp[SURF_MAX_CHECKPOINT_ZONES] = {};
-		i32 maxCpNum = 0;
-		i32 cpTriggerCount = 0;
+		i32 cpCount = 0;
 		bool invalid = false;
 
 		SurfCourseDescriptor *courseDescriptor = &g_mappingApi.courseDescriptors[courseInd];
@@ -851,7 +850,6 @@ void Surf::mapapi::OnRoundStart()
 				case SURFTRIGGER_ZONE_CHECKPOINT:
 				{
 					i32 num = trigger->zone.number;
-					cpTriggerCount++;
 					if (num < 1 || num > SURF_MAX_CHECKPOINT_ZONES)
 					{
 						Mapi_Error("Course \"%s\" Checkpoint zone has invalid number %d!", courseDescriptor->name, num);
@@ -859,16 +857,16 @@ void Surf::mapapi::OnRoundStart()
 						break;
 					}
 					seenCp[num] = true;
-					if (num > maxCpNum)
+					if (num > cpCount)
 					{
-						maxCpNum = num;
+						cpCount = num;
 					}
 					break;
 				}
 			}
 		}
 
-		for (i32 n = 1; n <= maxCpNum; n++)
+		for (i32 n = 1; n <= cpCount; n++)
 		{
 			if (!seenCp[n])
 			{
@@ -878,7 +876,7 @@ void Surf::mapapi::OnRoundStart()
 			}
 		}
 
-		if (maxCpNum > SURF_MAX_CHECKPOINT_ZONES)
+		if (cpCount > SURF_MAX_CHECKPOINT_ZONES)
 		{
 			Mapi_Error("Course \"%s\" Too many checkpoint zones! Maximum is %i.", courseDescriptor->name, SURF_MAX_CHECKPOINT_ZONES);
 			invalid = true;
@@ -896,7 +894,7 @@ void Surf::mapapi::OnRoundStart()
 			courseInd--;
 			break;
 		}
-		courseDescriptor->checkpointCount = maxCpNum;
+		courseDescriptor->checkpointCount = cpCount;
 		courseDescriptor->stageCount = stageCount;
 	}
 }
