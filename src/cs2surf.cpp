@@ -51,6 +51,8 @@ bool SurfPlugin::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bo
 
 	META_CONVAR_REGISTER(FCVAR_NONE);
 	SurfOptionService::InitOptions();
+	InitSurfLogging();
+	surf_log_to_file.Set((bool)SurfOptionService::GetOptionInt("logToFile", true));
 
 	if (!utils::Initialize(ismm, error, maxlen))
 	{
@@ -97,7 +99,7 @@ bool SurfPlugin::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bo
 
 	// We don't need command filtering for surf maps.
 	CommandLine()->AppendParm("-disable_workshop_command_filtering", "");
-
+	SURF_LOG_DEBUG(LogChannel::General, "Plugin loaded successfully. (late load: %s)", late ? "true" : "false");
 	Surf::replaysystem::InitWatcher();
 	loading = false;
 	return true;
@@ -123,6 +125,9 @@ bool SurfPlugin::Unload(char *error, size_t maxlen)
 	hooks::Cleanup();
 	utils::Cleanup();
 	ConVar_Unregister();
+	LoggingSystem_UnregisterLoggingListener(&g_SurfLoggingListener);
+	surf_log_to_file.Set(false);
+	g_SurfLoggingListener.CheckFile();
 	return true;
 }
 

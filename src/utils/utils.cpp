@@ -5,6 +5,7 @@
 #include "sdk/recipientfilters.h"
 #include "sdk/navphysicsinterface.h"
 #include "addresses.h"
+#include "logging.h"
 #include "patches.h"
 #include "gameconfig.h"
 
@@ -298,7 +299,7 @@ bool utils::SetConVarValue(CPlayerSlot slot, const char *name, const char *value
 	if (!cvarRef.IsValidRef() || !cvarRef.IsConVarDataAvailable())
 	{
 		assert(0);
-		META_CONPRINTF("Failed to find %s!\n", name);
+		SURF_LOG_WARN(LogChannel::General, "Failed to find %s!\n", name);
 		return false;
 	}
 
@@ -659,7 +660,7 @@ void utils::ResetMapIfEmpty()
 		return;
 	}
 
-	META_CONPRINTF("[Surf] Server is empty, triggering map reload...\n");
+	SURF_LOG_INFO(LogChannel::General, "Server is empty, triggering map reload...\n");
 	utils::ResetMap();
 }
 
@@ -670,7 +671,7 @@ void utils::ResetMap()
 	{
 		if (!g_pSurfUtils->GetGlobals() || !g_pSurfUtils->GetGlobals()->mapname.ToCStr() || g_pSurfUtils->GetGlobals()->mapname.ToCStr()[0] == 0)
 		{
-			META_CONPRINTF("[Surf] Warning: Map name is empty, cannot reload the current map! Defaulting to de_dust2...\n");
+			SURF_LOG_WARN(LogChannel::General, "Warning: Map name is empty, cannot reload the current map! Defaulting to de_dust2...\n");
 			V_snprintf(cmd, sizeof(cmd), "changelevel de_dust2");
 		}
 		else
@@ -738,7 +739,7 @@ bool utils::WriteBufferToFile(const char *relativePath, const std::vector<char> 
 	FILE *fp = fopen(tmpPath, "wb");
 	if (!fp)
 	{
-		META_CONPRINTF("[Surf] Failed to open file for writing: %s\n", tmpPath);
+		SURF_LOG_WARN(LogChannel::General, "Failed to open file for writing: %s\n", tmpPath);
 		return false;
 	}
 	fwrite(buffer.data(), 1, buffer.size(), fp);
@@ -764,7 +765,7 @@ bool utils::ReadBufferFromFile(const char *relativePath, std::vector<char> &outB
 	FILE *fp = fopen(absPath, "rb");
 	if (!fp)
 	{
-		META_CONPRINTF("[Surf] Failed to open file for reading: %s\n", absPath);
+		SURF_LOG_WARN(LogChannel::General, "Failed to open file for reading: %s\n", absPath);
 		return false;
 	}
 
@@ -783,7 +784,7 @@ void utils::RemoveFile(const char *relativePath)
 	V_snprintf(absPath, sizeof(absPath), "%s/csgo/%s", Plat_GetGameDirectory(), relativePath);
 	if (remove(absPath) != 0)
 	{
-		META_CONPRINTF("[Surf] Failed to remove %s\n", absPath);
+		SURF_LOG_WARN(LogChannel::General, "Failed to remove %s\n", absPath);
 	}
 }
 
@@ -798,7 +799,7 @@ bool utils::RenameFile(const char *oldRelativePath, const char *newRelativePath)
 	if (rename(absOld, absNew) != 0)
 #endif
 	{
-		META_CONPRINTF("[Surf] Failed to rename %s to %s\n", absOld, absNew);
+		SURF_LOG_WARN(LogChannel::General, "Failed to rename %s to %s\n", absOld, absNew);
 		return false;
 	}
 	return true;

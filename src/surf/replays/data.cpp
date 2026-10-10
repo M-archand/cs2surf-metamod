@@ -8,7 +8,6 @@
 #include <mutex>
 #include <atomic>
 
-CConVar<bool> surf_replay_playback_debug("surf_replay_playback_debug", FCVAR_NONE, "Prints debug info about replay playback.", false);
 CConVar<bool> surf_replay_playback_skins_enable("surf_replay_playback_skins_enable", FCVAR_NONE,
 												"Enables applying player skins during replay playback.", true);
 
@@ -132,10 +131,7 @@ namespace Surf::replaysystem::data
 		{
 			size_t bytesRead = static_cast<size_t>(cursor - dataStart);
 			progress = static_cast<f32>(bytesRead) / static_cast<f32>(totalSize);
-			if (surf_replay_playback_debug.Get())
-			{
-				META_CONPRINTF("Replay load progress: %zu bytes, %.2f%%\n", bytesRead, progress.load() * 100.0f);
-			}
+			SURF_LOG_DEBUG(LogChannel::Replays, "Replay load progress: %zu bytes, %.2f%%\n", bytesRead, progress.load() * 100.0f);
 		}
 	}
 
@@ -154,10 +150,7 @@ namespace Surf::replaysystem::data
 		{
 			return result;
 		}
-		if (surf_replay_playback_debug.Get())
-		{
-			META_CONPRINTF("Loading replay protobuf header...\n");
-		}
+		SURF_LOG_DEBUG(LogChannel::Replays, "Loading replay protobuf header...\n");
 
 		// Try to read header size (u32). If this fails, the data is invalid or corrupted.
 		if (cursor + (ptrdiff_t)sizeof(u32) > end)
@@ -196,10 +189,7 @@ namespace Surf::replaysystem::data
 		{
 			return result;
 		}
-		if (surf_replay_playback_debug.Get())
-		{
-			META_CONPRINTF("Loading compressed tick data...\n");
-		}
+		SURF_LOG_DEBUG(LogChannel::Replays, "Loading compressed tick data...\n");
 
 		std::vector<TickData> tickDataVec;
 		std::vector<SubtickData> subtickDataVec;
@@ -229,10 +219,7 @@ namespace Surf::replaysystem::data
 			delete[] result.subtickData;
 			return {};
 		}
-		if (surf_replay_playback_debug.Get())
-		{
-			META_CONPRINTF("Loading weapons...\n");
-		}
+		SURF_LOG_DEBUG(LogChannel::Replays, "Loading weapons...\n");
 
 		std::vector<std::pair<i32, EconInfo>> weaponTableVec;
 
@@ -264,10 +251,7 @@ namespace Surf::replaysystem::data
 			delete[] result.weapons;
 			return {};
 		}
-		if (surf_replay_playback_debug.Get())
-		{
-			META_CONPRINTF("Loading compressed events...\n");
-		}
+		SURF_LOG_DEBUG(LogChannel::Replays, "Loading compressed events...\n");
 
 		std::vector<RpEvent> eventsVec;
 

@@ -17,7 +17,6 @@
 
 #include <set>
 
-CConVar<bool> surf_replay_recording_debug("surf_replay_recording_debug", FCVAR_NONE, "Debug replay recording", false);
 extern CSteamGameServerAPIContext g_steamAPI;
 
 ReplayFileWriter *SurfRecordingService::fileWriter = nullptr;
@@ -245,10 +244,7 @@ void SurfRecordingService::CheckRecorders()
 		auto &recorder = *it;
 		if (recorder.ShouldStopAndSave(g_pSurfUtils->GetServerGlobals()->curtime))
 		{
-			if (surf_replay_recording_debug.Get())
-			{
-				META_CONPRINTF("surf_replay_recording_debug: Run recorder stopped\n");
-			}
+			SURF_LOG_DEBUG(LogChannel::Recording, "Run recorder stopped\n");
 			if (SurfRecordingService::fileWriter)
 			{
 				auto recorderPtr = std::make_unique<RunRecorder>(std::move(recorder));
@@ -268,7 +264,8 @@ void SurfRecordingService::CheckRecorders()
 					// Failure: notify the player and log
 					[localUUID](const char *error)
 					{
-						META_CONPRINTF("[Surf] Run replay serialization failed for UUID %s: %s\n", localUUID.ToString().c_str(), error);
+						SURF_LOG_WARN(LogChannel::Recording, "Run replay serialization failed for UUID %s: %s\n", localUUID.ToString().c_str(),
+									  error);
 						RunSubmission *sub = RunSubmission::GetByUUID(localUUID);
 						if (sub)
 						{
@@ -321,10 +318,7 @@ void SurfRecordingService::CheckModeStyles()
 	{
 		this->lastKnownMode = currentModeInfo;
 		this->InsertModeChangeEvent(currentModeInfo.longModeName.Get(), currentModeInfo.md5);
-		if (surf_replay_recording_debug.Get())
-		{
-			META_CONPRINTF("surf_replay_recording_debug: Mode change event: %s\n", currentModeInfo.longModeName.Get());
-		}
+		SURF_LOG_DEBUG(LogChannel::Recording, "Mode change event: %s\n", currentModeInfo.longModeName.Get());
 	}
 	bool refreshStyles = this->player->styleServices.Count() != this->lastKnownStyles.size();
 	if (!refreshStyles)
@@ -364,10 +358,7 @@ void SurfRecordingService::CheckModeStyles()
 				clearStyles = false;
 			}
 		}
-		if (surf_replay_recording_debug.Get())
-		{
-			META_CONPRINTF("surf_replay_recording_debug: Style change event: %u styles\n", (unsigned int)this->lastKnownStyles.size());
-		}
+		SURF_LOG_DEBUG(LogChannel::Recording, "Style change event: %u styles\n", (unsigned int)this->lastKnownStyles.size());
 	}
 
 	if (!this->circularRecording->earliestMode.has_value())
@@ -405,7 +396,7 @@ void SurfRecordingService::EnsureCircularRecorderInitialized()
 	if (!this->circularRecording)
 	{
 		this->circularRecording = new CircularRecorder();
-		META_CONPRINTF("[Surf] Initialized circular recorder for player %s\n", this->player->GetName());
+		SURF_LOG_INFO(LogChannel::Recording, "Initialized circular recorder for player %s\n", this->player->GetName());
 	}
 }
 
@@ -496,15 +487,11 @@ void SurfRecordingService::CopyWeaponsToRecorder(Recorder *recorder)
 			referencedWeaponIndices.insert(tick.weapon);
 		}
 	}
-
-	if (surf_replay_recording_debug.Get())
-	{
-		META_CONPRINTF("surf_replay_recording_debug: Copying %u referenced weapons to recorder\n", referencedWeaponIndices.size());
-	}
+	SURF_LOG_DEBUG(LogChannel::Recording, "Copying %lu referenced weapons to recorder\n", referencedWeaponIndices.size());
 
 	for (i32 weaponIndex : referencedWeaponIndices)
 	{
-		META_CONPRINTF("Pushing weapon index %d to recorder\n", weaponIndex);
+		SURF_LOG_INFO(LogChannel::Recording, "Pushing weapon index %d to recorder\n", weaponIndex);
 		auto weapon = this->weapons[weaponIndex];
 		recorder->weaponTable.push_back({weaponIndex, weapon});
 	}

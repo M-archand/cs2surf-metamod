@@ -1051,7 +1051,7 @@ void SurfTimerService::InsertRecordToCache(f64 time, const SurfCourseDescriptor 
 	LoadKV3FromJSON(&kv, &error, metadata.Get(), "");
 	if (!error.IsEmpty())
 	{
-		META_CONPRINTF("[Surf::Timer] Failed to insert PB to cache due to metadata error: %s\n", error.Get());
+		SURF_LOG_WARN(LogChannel::Timer, "Failed to insert PB to cache due to metadata error: %s\n", error.Get());
 		return;
 	}
 
@@ -1118,7 +1118,7 @@ void SurfTimerService::InsertPBToCache(f64 time, const SurfCourseDescriptor *cou
 	LoadKV3FromJSON(&kv, &error, metadata.Get(), "");
 	if (!error.IsEmpty())
 	{
-		META_CONPRINTF("[Surf::Timer] Failed to insert server record to cache due to metadata error: %s\n", error.Get());
+		SURF_LOG_WARN(LogChannel::Timer, "Failed to insert server record to cache due to metadata error: %s\n", error.Get());
 		return;
 	}
 
@@ -1294,7 +1294,7 @@ CUtlString SurfTimerService::GetCurrentRunMetadata()
 	{
 		return result;
 	}
-	META_CONPRINTF("[Surf::Timer] Failed to obtain current run's metadata! (%s)\n", error.Get());
+	SURF_LOG_WARN(LogChannel::Timer, "Failed to obtain current run's metadata! (%s)\n", error.Get());
 	return "";
 }
 

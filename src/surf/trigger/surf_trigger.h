@@ -65,7 +65,7 @@ public:
 			// This should never happen but we make the check anyway just to be sure.
 			if (!startedTouch)
 			{
-				META_CONPRINTF("[Surf::Trigger] EndTouch check is called before the start touch interaction even finished!\n");
+				SURF_LOG_WARN(LogChannel::Trigger, "EndTouch check is called before the start touch interaction even finished!\n");
 				return false;
 			}
 			return true;

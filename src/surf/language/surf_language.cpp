@@ -134,12 +134,12 @@ void SurfLanguageService::LoadLanguages()
 	g_SMAPI->PathFormat(fullPath, sizeof(fullPath), "%s/addons/cs2surf/translations/config.txt", g_SMAPI->GetBaseDir());
 	if (!languagesKV->LoadFromFile(g_pFullFileSystem, fullPath, nullptr))
 	{
-		META_CONPRINT("Failed to load translation config file.\n");
+		SURF_LOG_WARN(LogChannel::Language, "Failed to load translation config file.\n");
 	}
 	g_SMAPI->PathFormat(fullPath, sizeof(fullPath), "%s/addons/cs2surf/translations/menu-addons.txt", g_SMAPI->GetBaseDir());
 	if (!addonsKV->LoadFromFile(g_pFullFileSystem, fullPath, nullptr))
 	{
-		META_CONPRINT("Failed to load addon config file.\n");
+		SURF_LOG_WARN(LogChannel::Language, "Failed to load addon config file.\n");
 	}
 }
 
@@ -157,7 +157,7 @@ void SurfLanguageService::LoadTranslations()
 			g_SMAPI->PathFormat(fullPath, sizeof(fullPath), "%s/addons/cs2surf/translations/%s", g_SMAPI->GetBaseDir(), fileName);
 			if (!translationKV->LoadFromFile(g_pFullFileSystem, fullPath, nullptr))
 			{
-				META_CONPRINTF("Failed to load %s\n", fileName);
+				SURF_LOG_WARN(LogChannel::Language, "Failed to load %s\n", fileName);
 			}
 			fileName = g_pFullFileSystem->FindNext(findHandle);
 		} while (fileName);
@@ -219,11 +219,11 @@ void SurfLanguageService::UpdateLanguage(u64 xuid, const char *langKey, Language
 	{
 		if (SURF_STREQI(langInfo.lastAddon, SURF_WORKSHOP_ADDON_ID))
 		{
-			META_CONPRINTF("[Surf::Language] Adding %s for client %lli\n", addon, xuid);
+			SURF_LOG_INFO(LogChannel::Language, "Adding %s for client %lli\n", addon, xuid);
 		}
 		else
 		{
-			META_CONPRINTF("[Surf::Language] Adding %s and removing %s for client %lli\n", addon, langInfo.lastAddon, xuid);
+			SURF_LOG_INFO(LogChannel::Language, "Adding %s and removing %s for client %lli\n", addon, langInfo.lastAddon, xuid);
 		}
 		if (g_pMultiAddonManager)
 		{
@@ -251,7 +251,7 @@ void SurfLanguageService::OnPlayerConnect(u64 steamID64)
 				if (eStatus == cvarquery::Status::ValueIntact)
 				{
 					const char* langKey = languagesKV->GetString(pszCvarValue, pszCvarValue);
-					META_CONPRINTF("[Surf::Language] Received client convar value: %s\n", langKey);
+					SURF_LOG_INFO(LogChannel::Language, "Received client convar value: %s\n", langKey);
 					SurfLanguageService::UpdateLanguage(steamID64, langKey, LanguageInfo::CacheLevel::CACHE_CVAR, true);
 				}
 		});

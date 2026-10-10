@@ -30,8 +30,8 @@ bool SurfTriggerService::TouchTeleportTrigger(TriggerTouchTracker tracker)
 	CBaseEntity *destination = dynamic_cast<CBaseEntity *>(GameEntitySystem()->GetEntityInstance(destinationHandle));
 	if (!destinationHandle.IsValid() || !destination)
 	{
-		META_CONPRINTF("Invalid teleport destination \"%s\" on trigger with hammerID %i.\n", tracker.surfTrigger->teleport.destination,
-					   tracker.surfTrigger->hammerId);
+		SURF_LOG_WARN(LogChannel::Trigger, "Invalid teleport destination \"%s\" on trigger with hammerID %i.\n",
+					  tracker.surfTrigger->teleport.destination, tracker.surfTrigger->hammerId);
 		if (strcmp(tracker.surfTrigger->teleport.destination, "!self") == 0)
 		{
 			// very very rare edgecase but shouldnt cause issue?

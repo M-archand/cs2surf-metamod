@@ -230,7 +230,7 @@ public:
 
 		if (!this->inner[key].is_boolean())
 		{
-			META_CONPRINTF("[JSON] Key `%s` is not a boolean.\n", key.c_str());
+			SURF_LOG_WARN(LogChannel::General, "[JSON] Key `%s` is not a boolean.\n", key.c_str());
 			return false;
 		}
 
@@ -247,7 +247,7 @@ public:
 
 		if (!this->inner[key].is_number_unsigned())
 		{
-			META_CONPRINTF("[JSON] Key `%s` is not an unsigned integer.\n", key.c_str());
+			SURF_LOG_WARN(LogChannel::General, "[JSON] Key `%s` is not an unsigned integer.\n", key.c_str());
 			return false;
 		}
 
@@ -264,7 +264,7 @@ public:
 
 		if (!this->inner[key].is_number_unsigned())
 		{
-			META_CONPRINTF("[JSON] Key `%s` is not an unsigned integer.\n", key.c_str());
+			SURF_LOG_WARN(LogChannel::General, "[JSON] Key `%s` is not an unsigned integer.\n", key.c_str());
 			return false;
 		}
 
@@ -281,7 +281,7 @@ public:
 
 		if (!this->inner[key].is_number_unsigned())
 		{
-			META_CONPRINTF("[JSON] Key `%s` is not an unsigned integer.\n", key.c_str());
+			SURF_LOG_WARN(LogChannel::General, "[JSON] Key `%s` is not an unsigned integer.\n", key.c_str());
 			return false;
 		}
 
@@ -298,7 +298,7 @@ public:
 
 		if (!this->inner[key].is_number_float())
 		{
-			META_CONPRINTF("[JSON] Key `%s` is not a float.\n", key.c_str());
+			SURF_LOG_WARN(LogChannel::General, "[JSON] Key `%s` is not a float.\n", key.c_str());
 			return false;
 		}
 
@@ -315,7 +315,7 @@ public:
 
 		if (!this->inner[key].is_string())
 		{
-			META_CONPRINTF("[JSON] Key `%s` is not a string.\n", key.c_str());
+			SURF_LOG_WARN(LogChannel::General, "[JSON] Key `%s` is not a string.\n", key.c_str());
 			return false;
 		}
 
@@ -353,7 +353,7 @@ public:
 
 		if (!this->inner[key].is_array())
 		{
-			META_CONPRINTF("[JSON] Key `%s` is not an array.\n", key.c_str());
+			SURF_LOG_WARN(LogChannel::General, "[JSON] Key `%s` is not an array.\n", key.c_str());
 			return false;
 		}
 
@@ -394,19 +394,19 @@ private:
 	{
 		if (!this->inner.is_object())
 		{
-			META_CONPRINTF("[JSON] Cannot extract value from non-object.\n");
+			SURF_LOG_WARN(LogChannel::General, "[JSON] Cannot extract value from non-object.\n");
 			return false;
 		}
 
 		if (!this->inner.contains(key))
 		{
-			META_CONPRINTF("[JSON] Key `%s` does not exist.\n", key.c_str());
+			SURF_LOG_WARN(LogChannel::General, "[JSON] Key `%s` does not exist.\n", key.c_str());
 			return false;
 		}
 
 		if (this->inner[key].is_null())
 		{
-			META_CONPRINTF("[JSON] Key `%s` is null.\n", key.c_str());
+			SURF_LOG_WARN(LogChannel::General, "[JSON] Key `%s` is null.\n", key.c_str());
 			return false;
 		}
 

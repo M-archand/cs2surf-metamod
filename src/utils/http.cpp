@@ -29,14 +29,14 @@ namespace HTTP
 	{
 		if (!g_pHTTP)
 		{
-			META_CONPRINTF("[HTTP] Initializing HTTP client...\n");
+			SURF_LOG_INFO(LogChannel::General, "[HTTP] Initializing HTTP client...\n");
 			if (g_steamAPI.Init())
 			{
 				g_pHTTP = g_steamAPI.SteamHTTP();
 			}
 			else
 			{
-				META_CONPRINTF("[HTTP] Failed to send HTTP request as the steam API is not yet initialized.\n");
+				SURF_LOG_WARN(LogChannel::General, "[HTTP] Failed to send HTTP request as the steam API is not yet initialized.\n");
 				return;
 			}
 		}
@@ -65,7 +65,7 @@ namespace HTTP
 		{
 			if (!g_pHTTP->SetHTTPRequestRawPostBody(handle, "application/json", (u8 *)body.data(), body.size()))
 			{
-				META_CONPRINTF("[HTTP] Failed to set request body.\n");
+				SURF_LOG_WARN(LogChannel::General, "[HTTP] Failed to set request body.\n");
 				return;
 			}
 		}
@@ -79,7 +79,7 @@ namespace HTTP
 
 		if (!g_pHTTP->SendHTTPRequest(handle, &steamCallHandle))
 		{
-			META_CONPRINTF("[HTTP] Failed to send HTTP request.\n");
+			SURF_LOG_WARN(LogChannel::General, "[HTTP] Failed to send HTTP request.\n");
 		}
 
 		new InFlightRequest(handle, steamCallHandle, url, body, onResponse);
@@ -139,7 +139,7 @@ namespace HTTP
 	{
 		if (failed)
 		{
-			META_CONPRINTF("[HTTP] request to `%s` failed with code %d\n", url.c_str(), completedRequest->m_eStatusCode);
+			SURF_LOG_WARN(LogChannel::General, "[HTTP] request to `%s` failed with code %d\n", url.c_str(), completedRequest->m_eStatusCode);
 			delete this;
 			return;
 		}

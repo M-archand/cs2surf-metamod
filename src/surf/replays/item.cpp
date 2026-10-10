@@ -269,7 +269,7 @@ void Surf::replaysystem::item::ApplyModelAttributesToPawn(CCSPlayerPawn *pawn, c
 	}
 	else
 	{
-		META_CONPRINTF("[Surf] Model '%s' does not exist, skipping model application.\n", modelName);
+		SURF_LOG_INFO(LogChannel::Replays, "Model '%s' does not exist, skipping model application.\n", modelName);
 	}
 	// This might not work with custom models, but oh well.
 	if (setGloves)

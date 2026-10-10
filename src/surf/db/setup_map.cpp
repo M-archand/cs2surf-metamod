@@ -22,7 +22,7 @@ void SurfDatabaseService::SetupMap()
 	mapSetUp = false;
 	if (!SurfDatabaseService::IsReady())
 	{
-		META_CONPRINTF("[Surf::DB] Warning: SetupMap called too early.\n");
+		SURF_LOG_INFO(LogChannel::DB, "Warning: SetupMap called too early.\n");
 		return;
 	}
 
@@ -65,7 +65,7 @@ void SurfDatabaseService::SetupMap()
 			CUtlString currentMapName = g_pSurfUtils->GetCurrentMapName();
 			if (!SURF_STREQ(currentMapName.Get(), mapName.Get()))
 			{
-				META_CONPRINTF("[Surf::DB] Failed to setup map, current map name %s doesn't match %s!\n", currentMapName.Get(), mapName.Get());
+				SURF_LOG_WARN(LogChannel::DB, "Failed to setup map, current map name %s doesn't match %s!\n", currentMapName.Get(), mapName.Get());
 				return;
 			}
 			switch (databaseType)
@@ -95,7 +95,7 @@ void SurfDatabaseService::SetupMap()
 				}
 			}
 			mapSetUp = true;
-			META_CONPRINTF("[Surf::DB] Map setup successful for %s, current map ID: %i\n", currentMapName.Get(), SurfDatabaseService::currentMapID);
+			SURF_LOG_INFO(LogChannel::DB, "Map setup successful for %s, current map ID: %i\n", currentMapName.Get(), SurfDatabaseService::currentMapID);
 			CALL_FORWARD(eventListeners, OnMapSetup);
 		},
 		OnGenericTxnFailure);

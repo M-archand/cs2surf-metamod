@@ -11,13 +11,13 @@ void SurfDatabaseService::SetupDatabase()
 	KeyValues *config = SurfOptionService::GetOptionKV("db");
 	if (!config)
 	{
-		META_CONPRINT("[Surf::DB] No database config detected.\n");
+		SURF_LOG_INFO(LogChannel::DB, "No database config detected.\n");
 		return;
 	}
 	ISQLInterface *sqlInterface = (ISQLInterface *)g_SMAPI->MetaFactory(SQLMM_INTERFACE, nullptr, nullptr);
 	if (!sqlInterface)
 	{
-		META_CONPRINT("[Surf::DB] Database plugin not found. Local database is disabled.\n");
+		SURF_LOG_INFO(LogChannel::DB, "Database plugin not found. Local database is disabled.\n");
 		return;
 	}
 	const char *driver = config->GetString("driver");
@@ -39,7 +39,7 @@ void SurfDatabaseService::SetupDatabase()
 	}
 	else
 	{
-		META_CONPRINT("[Surf::DB] No database config detected.\n");
+		SURF_LOG_INFO(LogChannel::DB, "No database config detected.\n");
 	}
 	databaseConnection->Connect(OnDatabaseConnected);
 }
@@ -48,12 +48,12 @@ void SurfDatabaseService::OnDatabaseConnected(bool connect)
 {
 	if (connect)
 	{
-		META_CONPRINT("[Surf::DB] LocalDB connected.\n");
+		SURF_LOG_INFO(LogChannel::DB, "LocalDB connected.\n");
 		SurfDatabaseService::RunMigrations();
 	}
 	else
 	{
-		META_CONPRINT("[Surf::DB] Failed to connect\n");
+		SURF_LOG_WARN(LogChannel::DB, "Failed to connect\n");
 		// make sure to properly destroy the connection
 		databaseConnection->Destroy();
 		databaseConnection = nullptr;

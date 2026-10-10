@@ -38,11 +38,11 @@ RunSubmission::RunSubmission(SurfPlayer *player)
 	{
 		if (!player->hasPrime)
 		{
-			META_CONPRINTF("[Surf::Global - %u] Player %s does not have Prime, will not submit globally.\n", uid, player->GetName());
+			SURF_LOG_INFO(LogChannel::Global, "[%u] Player %s does not have Prime, will not submit globally.\n", uid, player->GetName());
 		}
 		if (!SurfGlobalService::IsAvailable())
 		{
-			META_CONPRINTF("[Surf::Global - %u] Global service is not available, will not submit globally.\n", uid);
+			SURF_LOG_INFO(LogChannel::Global, "[%u] Global service is not available, will not submit globally.\n", uid);
 		}
 	}
 	// Setup player snapshot
@@ -58,7 +58,7 @@ RunSubmission::RunSubmission(SurfPlayer *player)
 	{
 		if (surf_debug_announce_global.Get())
 		{
-			META_CONPRINTF("[Surf::Global - %u] Mode '%s' is not a valid global mode, will not submit globally.\n", uid, this->mode.name.c_str());
+			SURF_LOG_INFO(LogChannel::Global, "[%u] Mode '%s' is not a valid global mode, will not submit globally.\n", uid, this->mode.name.c_str());
 		}
 	}
 	this->mode.md5 = mode.md5;
@@ -109,12 +109,12 @@ RunSubmission::RunSubmission(SurfPlayer *player)
 		{
 			if (surf_debug_announce_global.Get())
 			{
-				META_CONPRINTF("[Surf::Global - %u] Course '%s' not found on global map '%s', will not submit globally.\n", uid, this->course.name.c_str(),
+				SURF_LOG_INFO(LogChannel::Global, "[%u] Course '%s' not found on global map '%s', will not submit globally.\n", uid, this->course.name.c_str(),
 							   currentMap->name.c_str());
-				META_CONPRINTF("[Surf::Global - %u] Available courses:\n", uid);
+				SURF_LOG_INFO(LogChannel::Global, "[%u] Available courses:\n", uid);
 				for (const Surf::API::Map::Course &c : currentMap->courses)
 				{
-					META_CONPRINTF(" - %s\n", c.name.c_str());
+					SURF_LOG_INFO(LogChannel::Global, " - %s\n", c.name.c_str());
 				}
 			}
 			global = false;

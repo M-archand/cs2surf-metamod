@@ -8,8 +8,6 @@
 #include "events.h"
 #include "sdk/usercmd.h"
 
-extern CConVar<bool> surf_replay_playback_debug;
-
 namespace Surf::replaysystem::playback
 {
 
@@ -275,10 +273,7 @@ namespace Surf::replaysystem::playback
 				}
 			}
 		}
-		if (surf_replay_playback_debug.Get())
-		{
-			META_CONPRINTF("%s\n", command->DebugString().c_str());
-		}
+		SURF_LOG_DEBUG(LogChannel::Replays, "%s\n", command->DebugString().c_str());
 		CheckWeapon(*player, *command);
 	}
 

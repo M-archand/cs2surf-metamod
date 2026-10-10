@@ -604,7 +604,7 @@ bool Surf::replaysystem::compression::ReadWeaponsCompressed(const char *&cursor,
 			memcpy(&econInfo.attributes[j], readPtr, sizeof(EconInfo::attributes[0]));
 			readPtr += sizeof(EconInfo::attributes[0]);
 		}
-		META_CONPRINTF("Read weapon ID %d with %d attributes\n", weaponID, econInfo.mainInfo.numAttributes);
+		SURF_LOG_DEBUG(LogChannel::Replays, "Read weapon ID %d with %d attributes\n", weaponID, econInfo.mainInfo.numAttributes);
 		outWeaponTable.emplace_back(weaponID, econInfo);
 	}
 

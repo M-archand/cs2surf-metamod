@@ -48,12 +48,12 @@ bool Surf::mode::CheckModeCvars()
 	{
 		if (!modeCvarRefs[i]->IsValidRef())
 		{
-			META_CONPRINTF("Failed to find %s reference!\n", Surf::mode::modeCvarNames[i]);
+			SURF_LOG_WARN(LogChannel::Mode, "Failed to find %s reference!\n", Surf::mode::modeCvarNames[i]);
 			return false;
 		}
 		if (!modeCvarRefs[i]->IsConVarDataAvailable())
 		{
-			META_CONPRINTF("Failed to find %s cvarData!\n", Surf::mode::modeCvarNames[i]);
+			SURF_LOG_WARN(LogChannel::Mode, "Failed to find %s cvarData!\n", Surf::mode::modeCvarNames[i]);
 		}
 	}
 	return true;
@@ -406,7 +406,7 @@ SurfModeManager::ModePluginInfo Surf::mode::GetModeInfo(SurfModeService *mode)
 	SurfModeManager::ModePluginInfo emptyInfo;
 	if (!mode)
 	{
-		META_CONPRINTF("[Surf] Warning: Getting mode info from a nullptr!\n");
+		SURF_LOG_WARN(LogChannel::Mode, "Warning: Getting mode info from a nullptr!\n");
 		return emptyInfo;
 	}
 	FOR_EACH_VEC(modeInfos, i)
@@ -452,7 +452,7 @@ SurfModeManager::ModePluginInfo Surf::mode::GetModeInfo(CUtlString modeName)
 	SurfModeManager::ModePluginInfo emptyInfo;
 	if (modeName.IsEmpty())
 	{
-		META_CONPRINTF("[Surf] Warning: Getting mode info from an empty string!\n");
+		SURF_LOG_WARN(LogChannel::Mode, "Warning: Getting mode info from an empty string!\n");
 		return emptyInfo;
 	}
 	FOR_EACH_VEC(modeInfos, i)

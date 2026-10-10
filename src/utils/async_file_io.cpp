@@ -144,7 +144,7 @@ void AsyncFileIO::ThreadRun()
 					bool ok = utils::RenameFile(task.oldPath.c_str(), task.newPath.c_str());
 					if (!ok)
 					{
-						META_CONPRINTF("[Surf] Failed to rename file from %s to %s\n", task.oldPath.c_str(), task.newPath.c_str());
+						SURF_LOG_WARN(LogChannel::General, "Failed to rename file from %s to %s\n", task.oldPath.c_str(), task.newPath.c_str());
 					}
 					if (task.onDone)
 					{

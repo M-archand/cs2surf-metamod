@@ -56,11 +56,11 @@ void SurfDatabaseService::SetupCourses(CUtlVector<SurfCourseDescriptor *> &cours
 				const char* name = resultSet->GetString(0);
 				if (Surf::course::UpdateCourseLocalID(name, resultSet->GetInt(1)))
 				{
-					META_CONPRINTF("[Surf::DB] Course '%s' registered with ID %i\n", name, resultSet->GetInt(1));
+					SURF_LOG_INFO(LogChannel::DB, "Course '%s' registered with ID %i\n", name, resultSet->GetInt(1));
 				}
 				else
 				{
-					META_CONPRINTF("[Surf::DB] Warning: Course '%s' with ID %i has no ingame course registered!\n", name, resultSet->GetInt(1));
+					SURF_LOG_INFO(LogChannel::DB, "Warning: Course '%s' with ID %i has no ingame course registered!\n", name, resultSet->GetInt(1));
 				}
 			}
 			coursesSetUp = true;

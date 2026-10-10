@@ -553,7 +553,7 @@ static_function void Mapi_OnTriggerTeleportSpawn(const EntitySpawnInfo_t *info)
 
 	if (!destination || !destination[0])
 	{
-		META_CONPRINTF("Warning: Teleport trigger (hammerID %i) has no target specified!\n", hammerId);
+		SURF_LOG_WARN(LogChannel::MappingAPI, "Teleport trigger (hammerID %i) has no target specified!\n", hammerId);
 		return;
 	}
 	snprintf(trigger.teleport.destination, sizeof(trigger.teleport.destination), "%s", destination);
@@ -651,7 +651,7 @@ void Surf::mapapi::OnCreateLoadingSpawnGroupHook(const CUtlVector<const CEntityK
 			//  for backwards compatibility.
 			if (g_mappingApi.mapApiVersion == SURF_NO_MAPAPI_VERSION)
 			{
-				META_CONPRINTF("Warning: Map is not compiled with Mapping API. Reverting to default behavior.\n");
+				SURF_LOG_INFO(LogChannel::MappingAPI, "Map is not compiled with Mapping API. Reverting to default behavior.\n");
 
 				g_mapCfgMaxVelocity = g_pSurfUtils->GetCurrentMapMaxVelocity();
 				if (g_mapCfgMaxVelocity <= INVALID_MAXVEL_NUMBER)

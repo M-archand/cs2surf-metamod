@@ -24,6 +24,15 @@
 	// Whether we override chat processing or not.
 	"overridePlayerChat"			"true"
 
+	// Whether to mirror CS2Surf log output to a file in addons/cs2surf/logs.
+	"logToFile"							"true"
+
+	// Whether to create a new log file on plugin startup, named with the startup datetime.
+	"logNewFileOnStartup"				"true"
+
+	// Number of days to keep log files before deletion on plugin startup (0 = keep forever, default 30 days).
+	"logRetentionDays"					"30"
+
 	// Default FOV for players.
 	"defaultFOV"						"90"
 	

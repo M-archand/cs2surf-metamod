@@ -40,7 +40,7 @@ bool Surf::API::PlayerInfo::FromJson(const Json &json)
 
 		if (!utils::ParseSteamID2(id, this->id))
 		{
-			META_CONPRINTF("[Surf::Global] Failed to parse SteamID2.\n");
+			SURF_LOG_WARN(LogChannel::Global, "Failed to parse SteamID2.\n");
 			return false;
 		}
 	}
@@ -63,7 +63,7 @@ bool Surf::API::Player::FromJson(const Json &json)
 
 		if (!utils::ParseSteamID2(id, this->id))
 		{
-			META_CONPRINTF("[Surf::Global] Failed to parse SteamID2.\n");
+			SURF_LOG_WARN(LogChannel::Global, "Failed to parse SteamID2.\n");
 			return false;
 		}
 	}
@@ -147,7 +147,7 @@ bool Surf::API::Map::DecodeStateString(std::string_view stateString, State &stat
 	}
 	else
 	{
-		META_CONPRINTF("[Surf::Global] `state` field has an unknown value.\n");
+		SURF_LOG_WARN(LogChannel::Global, "`state` field has an unknown value.\n");
 		return false;
 	}
 
@@ -253,7 +253,7 @@ bool Surf::API::Map::Course::Filter::DecodeTierString(std::string_view tierStrin
 	}
 	else
 	{
-		META_CONPRINTF("[Surf::Global] `tier` field has an unknown tierString.\n");
+		SURF_LOG_WARN(LogChannel::Global, "`tier` field has an unknown tierString.\n");
 		return false;
 	}
 

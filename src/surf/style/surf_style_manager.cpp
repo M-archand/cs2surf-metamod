@@ -93,7 +93,7 @@ SurfStyleManager::StylePluginInfo Surf::style::GetStyleInfo(SurfStyleService *st
 	SurfStyleManager::StylePluginInfo emptyInfo;
 	if (!style)
 	{
-		META_CONPRINTF("[Surf] Warning: Getting style info from a nullptr!\n");
+		SURF_LOG_WARN(LogChannel::Style, "Warning: Getting style info from a nullptr!\n");
 		return emptyInfo;
 	}
 	FOR_EACH_VEC(styleInfos, i)
@@ -111,7 +111,7 @@ SurfStyleManager::StylePluginInfo Surf::style::GetStyleInfo(CUtlString styleName
 	SurfStyleManager::StylePluginInfo emptyInfo;
 	if (styleName.IsEmpty())
 	{
-		META_CONPRINTF("[Surf] Warning: Getting style info from an empty string!\n");
+		SURF_LOG_WARN(LogChannel::Style, "Warning: Getting style info from an empty string!\n");
 		return emptyInfo;
 	}
 	FOR_EACH_VEC(styleInfos, i)

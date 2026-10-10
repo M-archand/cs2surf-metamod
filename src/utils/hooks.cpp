@@ -523,7 +523,7 @@ static KHook::Return<bool> ActivateServerPost(CNetworkGameServerBase *pThis)
 	u64 id = g_pSurfUtils->GetCurrentMapWorkshopID();
 	u64 size = g_pSurfUtils->GetCurrentMapSize();
 
-	META_CONPRINTF("[Surf] Loading map %s, workshop ID %llu, size %llu\n", g_pSurfUtils->GetCurrentMapVPK().Get(), id, size);
+	SURF_LOG_INFO(LogChannel::General, "Loading map %s, workshop ID %llu, size %llu\n", g_pSurfUtils->GetCurrentMapVPK().Get(), id, size);
 
 	RunSubmission::Clear();
 	Surf::misc::OnActivateServer();
@@ -533,7 +533,7 @@ static KHook::Return<bool> ActivateServerPost(CNetworkGameServerBase *pThis)
 
 	char md5[33];
 	g_pSurfUtils->GetCurrentMapMD5(md5, sizeof(md5));
-	META_CONPRINTF("[Surf] Map file md5: %s\n", md5);
+	SURF_LOG_INFO(LogChannel::General, "Map file md5: %s\n", md5);
 
 	return {KHook::Action::Ignore, true};
 }
@@ -1141,34 +1141,34 @@ static KHook::Return<void> TryPlayerMovePre(CCSPlayer_MovementServices *ms, CMov
 		{
 			if (traceHistory[i].end != traceHistory[i + count].end)
 			{
-				META_CONPRINTF("Trace not matching! Previous traces (initial error %f, initial velocity %s):\n", initialError,
+				SURF_LOG_DEBUG(LogChannel::Movement, "Trace not matching! Previous traces (initial error %f, initial velocity %s):\n", initialError,
 							   VecToString(initialVelocity));
 				for (i32 j = 0; j <= i; j++)
 				{
-					META_CONPRINTF("Pred %f %f %f -> %f %f %f, error %f, velocity %s ", traceHistory[j].start.x, traceHistory[j].start.y,
-								   traceHistory[j].start.z, traceHistory[j].end.x, traceHistory[j].end.y, traceHistory[j].end.z,
-								   traceHistory[j].error, VecToString(traceHistory[j].velocity));
+					SURF_LOG_DEBUG(LogChannel::Movement, "Pred %f %f %f -> %f %f %f, error %f, velocity %s ", traceHistory[j].start.x,
+								   traceHistory[j].start.y, traceHistory[j].start.z, traceHistory[j].end.x, traceHistory[j].end.y,
+								   traceHistory[j].end.z, traceHistory[j].error, VecToString(traceHistory[j].velocity));
 					if (traceHistory[j].didHit)
 					{
-						META_CONPRINTF("hit %s (normal %s, hitpoint %s)\n", VecToString(traceHistory[j].m_vEndPos),
+						SURF_LOG_DEBUG(LogChannel::Movement, "hit %s (normal %s, hitpoint %s)\n", VecToString(traceHistory[j].m_vEndPos),
 									   VecToString(traceHistory[j].m_vHitNormal), VecToString(traceHistory[j].m_vHitPoint));
 					}
 					else
 					{
-						META_CONPRINTF("missed\n");
+						SURF_LOG_DEBUG(LogChannel::Movement, "missed\n");
 					}
-					META_CONPRINTF("Real %f %f %f -> %f %f %f, error %f, velocity %s ", traceHistory[j + count].start.x,
+					SURF_LOG_DEBUG(LogChannel::Movement, "Real %f %f %f -> %f %f %f, error %f, velocity %s ", traceHistory[j + count].start.x,
 								   traceHistory[j + count].start.y, traceHistory[j + count].start.z, traceHistory[j + count].end.x,
 								   traceHistory[j + count].end.y, traceHistory[j + count].end.z, traceHistory[j + count].error,
 								   VecToString(traceHistory[j + count].velocity));
 					if (traceHistory[j + count].didHit)
 					{
-						META_CONPRINTF("hit %s (normal %s, hitpoint %s)\n", VecToString(traceHistory[j + count].m_vEndPos),
+						SURF_LOG_DEBUG(LogChannel::Movement, "hit %s (normal %s, hitpoint %s)\n", VecToString(traceHistory[j + count].m_vEndPos),
 									   VecToString(traceHistory[j + count].m_vHitNormal), VecToString(traceHistory[j + count].m_vHitPoint));
 					}
 					else
 					{
-						META_CONPRINTF("missed\n");
+						SURF_LOG_DEBUG(LogChannel::Movement, "missed\n");
 					}
 				}
 				break;

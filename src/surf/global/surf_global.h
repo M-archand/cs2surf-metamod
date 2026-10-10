@@ -153,7 +153,7 @@ public:
 			std::unique_lock currentMapLock(SurfGlobalService::currentMap.mutex);
 			if (!SurfGlobalService::currentMap.data.has_value())
 			{
-				META_CONPRINTF("[Surf::Global] Cannot submit record on non-global map.\n");
+				SURF_LOG_INFO(LogChannel::Global, "Cannot submit record on non-global map.\n");
 				return SubmitRecordResult::MapNotGlobal;
 			}
 		}
@@ -415,8 +415,8 @@ private:
 	{
 		if (SurfGlobalService::state.load() != State::Connected)
 		{
-			META_CONPRINTF("[Surf::Global] WARN: called `SendMessage()` before connection was established (state=%i)\n",
-						   SurfGlobalService::state.load());
+			SURF_LOG_WARN(LogChannel::Global, "called `SendMessage()` before connection was established (state=%i)\n",
+						  SurfGlobalService::state.load());
 			return false;
 		}
 
@@ -431,8 +431,7 @@ private:
 	{
 		if (SurfGlobalService::state.load() != State::HandshakeCompleted)
 		{
-			META_CONPRINTF("[Surf::Global] WARN: called `SendMessage()` before handshake has completed (state=%i)\n",
-						   SurfGlobalService::state.load());
+			SURF_LOG_WARN(LogChannel::Global, "called `SendMessage()` before handshake has completed (state=%i)\n", SurfGlobalService::state.load());
 			return false;
 		}
 
@@ -441,11 +440,6 @@ private:
 			&& payload.Set("event", event)
 			&& payload.Set("data", data);
 		// clang-format on
-
-		if (!success)
-		{
-			META_CONPRINTF("[Surf::Global] Failed to serialize message for event `%s`.\n", event);
-		}
 
 		return success;
 	}
@@ -486,7 +480,7 @@ private:
 		{
 			if (!payload.IsValid())
 			{
-				META_CONPRINTF("[Surf::Global] WebSocket message is not valid JSON.\n");
+				SURF_LOG_INFO(LogChannel::Global, "WebSocket message is not valid JSON.\n");
 				return;
 			}
 
@@ -494,7 +488,7 @@ private:
 
 			if (!payload.Get("data", decoded))
 			{
-				META_CONPRINTF("[Surf::Global] WebSocket message does not contain a valid `data` field.\n");
+				SURF_LOG_INFO(LogChannel::Global, "WebSocket message does not contain a valid `data` field.\n");
 				return;
 			}
 

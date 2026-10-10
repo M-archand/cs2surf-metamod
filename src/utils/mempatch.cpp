@@ -74,7 +74,7 @@ bool CMemPatch::PerformPatch(CGameConfig *g_GameConfig)
 
 	Plat_WriteMemory((void *)m_pPatchAddress, (byte *)m_pPatch, m_iPatchLength);
 
-	META_CONPRINTF("Patched %s at %p\n", m_pszName, m_pPatchAddress);
+	SURF_LOG_DEBUG(LogChannel::General, "Patched %s at %lu\n", m_pszName, m_pPatchAddress);
 	return true;
 }
 
@@ -85,7 +85,7 @@ void CMemPatch::UndoPatch()
 		return;
 	}
 
-	META_CONPRINTF("Undoing patch %s at %p\n", m_pszName, m_pPatchAddress);
+	SURF_LOG_DEBUG(LogChannel::General, "Undoing patch %s at %lu\n", m_pszName, m_pPatchAddress);
 
 	Plat_WriteMemory((void *)m_pPatchAddress, m_pOriginalBytes, m_iPatchLength);
 

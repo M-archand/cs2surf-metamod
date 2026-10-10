@@ -101,7 +101,7 @@ void SurfDatabaseService::CheckMigrations(std::vector<ISQLQuery *> queries)
 	}
 	if (current > max)
 	{
-		META_CONPRINTF("[Surf::DB] Fatal error: Number of current migrations are higher than the maximum!\n");
+		SURF_LOG_WARN(LogChannel::DB, "Fatal error: Number of current migrations are higher than the maximum!\n");
 		return;
 	}
 
@@ -126,12 +126,12 @@ void SurfDatabaseService::CheckMigrations(std::vector<ISQLQuery *> queries)
 		}
 
 		u32 crc = CRC32_ProcessSingleBuffer(migrationQuery.c_str(), migrationQuery.length());
-		META_CONPRINTF("crc = %lu, currentCRC = %lu\n", crc, currentCRC);
+		SURF_LOG_DEBUG(LogChannel::DB, "crc = %u, currentCRC = %u\n", crc, currentCRC);
 		if (currentCRC != crc)
 		{
-			META_CONPRINTF("[Surf::DB] Fatal error: Migration query %s with CRC %lu does not match the database's %lu!\n", migrationQuery.c_str(),
-						   crc, currentCRC);
-			META_CONPRINT("[Surf::DB] Database migration failed. LocalDB will not be available.");
+			SURF_LOG_WARN(LogChannel::DB, "Fatal error: Migration query %s with CRC %u does not match the database's %u!\n", migrationQuery.c_str(),
+						  crc, currentCRC);
+			SURF_LOG_WARN(LogChannel::DB, "Database migration failed. LocalDB will not be available.");
 			databaseConnection->Destroy();
 			databaseConnection = nullptr;
 			return;
@@ -140,7 +140,7 @@ void SurfDatabaseService::CheckMigrations(std::vector<ISQLQuery *> queries)
 
 	auto onSuccess = []()
 	{
-		META_CONPRINT("[Surf::DB] Database migration successful.\n");
+		SURF_LOG_INFO(LogChannel::DB, "Database migration successful.\n");
 		localDBConnected = true;
 		SurfDatabaseService::SetupMap();
 		CALL_FORWARD(eventListeners, OnDatabaseSetup);
@@ -148,7 +148,7 @@ void SurfDatabaseService::CheckMigrations(std::vector<ISQLQuery *> queries)
 
 	auto onFailure = []()
 	{
-		META_CONPRINT("[Surf::DB] Database migration failed. LocalDB will not be available.\n");
+		SURF_LOG_WARN(LogChannel::DB, "Database migration failed. LocalDB will not be available.\n");
 		databaseConnection->Destroy();
 		databaseConnection = nullptr;
 	};

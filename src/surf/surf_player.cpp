@@ -843,7 +843,7 @@ const CVValue_t *SurfPlayer::GetCvarValueFromModeStyles(const char *name)
 	if (!cvarRef.IsValidRef() || !cvarRef.IsConVarDataAvailable())
 	{
 		assert(0);
-		META_CONPRINTF("Failed to find %s!\n", name);
+		SURF_LOG_WARN(LogChannel::Player, "Failed to find %s!\n", name);
 		return CVValue_t::InvalidValue();
 	}
 

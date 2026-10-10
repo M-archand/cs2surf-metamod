@@ -53,7 +53,7 @@ void SurfGlobalService::UpdateRecordCache()
 
 			if (course == nullptr)
 			{
-				META_CONPRINTF("[Surf::Global] Could not find current course?\n");
+				SURF_LOG_WARN(LogChannel::Global, "Could not find current course?\n");
 				continue;
 			}
 
@@ -84,28 +84,28 @@ void SurfGlobalService::Init()
 		return;
 	}
 
-	META_CONPRINTF("[Surf::Global] Initializing GlobalService...\n");
+	SURF_LOG_INFO(LogChannel::Global, "Initializing GlobalService...\n");
 
 	std::string url = SurfOptionService::GetOptionStr("apiUrl", SurfOptionService::GetOptionStr("apiUrl", "https://api.placeholder.org"));
 	std::string_view key = SurfOptionService::GetOptionStr("apiKey");
 
 	if (url.empty())
 	{
-		META_CONPRINTF("[Surf::Global] `apiUrl` is empty. GlobalService will be disabled.\n");
+		SURF_LOG_INFO(LogChannel::Global, "`apiUrl` is empty. GlobalService will be disabled.\n");
 		SurfGlobalService::state.store(SurfGlobalService::State::Disconnected);
 		return;
 	}
 
 	if (url.size() < 4 || url.substr(0, 4) != "http")
 	{
-		META_CONPRINTF("[Surf::Global] `apiUrl` is invalid. GlobalService will be disabled.\n");
+		SURF_LOG_INFO(LogChannel::Global, "`apiUrl` is invalid. GlobalService will be disabled.\n");
 		SurfGlobalService::state.store(SurfGlobalService::State::Disconnected);
 		return;
 	}
 
 	if (key.empty())
 	{
-		META_CONPRINTF("[Surf::Global] `apiKey` is empty. GlobalService will be disabled.\n");
+		SURF_LOG_INFO(LogChannel::Global, "`apiKey` is empty. GlobalService will be disabled.\n");
 		SurfGlobalService::state.store(SurfGlobalService::State::Disconnected);
 		return;
 	}
@@ -149,7 +149,7 @@ void SurfGlobalService::Cleanup()
 		return;
 	}
 
-	META_CONPRINTF("[Surf::Global] Cleaning up GlobalService...\n");
+	SURF_LOG_INFO(LogChannel::Global, "Cleaning up GlobalService...\n");
 
 	SurfGlobalService::RestoreConVars();
 
@@ -207,7 +207,7 @@ void SurfGlobalService::OnActivateServer()
 
 			if (!mapNameOk)
 			{
-				META_CONPRINTF("[Surf::Global] Failed to get current map name. Cannot send `map-change` event.\n");
+				SURF_LOG_INFO(LogChannel::Global, "Failed to get current map name. Cannot send `map-change` event.\n");
 				return;
 			}
 
@@ -219,11 +219,11 @@ void SurfGlobalService::OnActivateServer()
 			{
 				if (mapInfo.data.has_value())
 				{
-					META_CONPRINTF("[Surf::Global] %s is approved.\n", mapInfo.data->name.c_str());
+					SURF_LOG_INFO(LogChannel::Global, "%s is approved.\n", mapInfo.data->name.c_str());
 				}
 				else
 				{
-					META_CONPRINTF("[Surf::Global] %s is not approved.\n", currentMapName.Get());
+					SURF_LOG_INFO(LogChannel::Global, "%s is not approved.\n", currentMapName.Get());
 				}
 
 				{
@@ -365,8 +365,8 @@ void SurfGlobalService::OnClientDisconnect()
 
 	if (!getPrefsError.IsEmpty())
 	{
-		META_CONPRINTF("[Surf::Global] Failed to get preferences: %s\n", getPrefsError.Get());
-		META_CONPRINTF("[Surf::Global] Not sending `player-leave` event.\n");
+		SURF_LOG_WARN(LogChannel::Global, "Failed to get preferences: %s\n", getPrefsError.Get());
+		SURF_LOG_INFO(LogChannel::Global, "Not sending `player-leave` event.\n");
 		return;
 	}
 
@@ -393,7 +393,7 @@ void SurfGlobalService::OnWebSocketMessage(const ix::WebSocketMessagePtr &messag
 	{
 		case ix::WebSocketMessageType::Open:
 		{
-			META_CONPRINTF("[Surf::Global] Connection established!\n");
+			SURF_LOG_INFO(LogChannel::Global, "Connection established!\n");
 			SurfGlobalService::state.store(SurfGlobalService::State::Connected);
 			SurfGlobalService::AddMainThreadCallback(SurfGlobalService::InitiateHandshake);
 		}
@@ -401,7 +401,7 @@ void SurfGlobalService::OnWebSocketMessage(const ix::WebSocketMessagePtr &messag
 
 		case ix::WebSocketMessageType::Close:
 		{
-			META_CONPRINTF("[Surf::Global] Connection closed (code %i): %s\n", message->closeInfo.code, message->closeInfo.reason.c_str());
+			SURF_LOG_INFO(LogChannel::Global, "Connection closed (code %i): %s\n", message->closeInfo.code, message->closeInfo.reason.c_str());
 
 			switch (message->closeInfo.code)
 			{
@@ -441,7 +441,7 @@ void SurfGlobalService::OnWebSocketMessage(const ix::WebSocketMessagePtr &messag
 
 		case ix::WebSocketMessageType::Error:
 		{
-			META_CONPRINTF("[Surf::Global] WebSocket error (code %i): %s\n", message->errorInfo.http_status, message->errorInfo.reason.c_str());
+			SURF_LOG_WARN(LogChannel::Global, "WebSocket error (code %i): %s\n", message->errorInfo.http_status, message->errorInfo.reason.c_str());
 
 			switch (message->errorInfo.http_status)
 			{
@@ -454,7 +454,7 @@ void SurfGlobalService::OnWebSocketMessage(const ix::WebSocketMessagePtr &messag
 
 				case 429:
 				{
-					META_CONPRINTF("[Surf::Global] API rate limit reached; increasing down reconnection delay...\n");
+					SURF_LOG_WARN(LogChannel::Global, "API rate limit reached; increasing down reconnection delay...\n");
 					SurfGlobalService::socket->enableAutomaticReconnection();
 					SurfGlobalService::socket->setMinWaitBetweenReconnectionRetries(10'000 /* ms */);
 					SurfGlobalService::socket->setMaxWaitBetweenReconnectionRetries(30'000 /* ms */);
@@ -465,7 +465,7 @@ void SurfGlobalService::OnWebSocketMessage(const ix::WebSocketMessagePtr &messag
 				case 500: /* fall-through */
 				case 502:
 				{
-					META_CONPRINTF("[Surf::Global] API encountered an internal error\n");
+					SURF_LOG_WARN(LogChannel::Global, "API encountered an internal error\n");
 					SurfGlobalService::socket->enableAutomaticReconnection();
 					SurfGlobalService::socket->setMinWaitBetweenReconnectionRetries(10 * 60'000 /* ms */);
 					SurfGlobalService::socket->setMaxWaitBetweenReconnectionRetries(30 * 60'000 /* ms */);
@@ -484,7 +484,7 @@ void SurfGlobalService::OnWebSocketMessage(const ix::WebSocketMessagePtr &messag
 
 		case ix::WebSocketMessageType::Message:
 		{
-			META_CONPRINTF("[Surf::Global] Received WebSocket message:\n-----\n%s\n------\n", message->str.c_str());
+			SURF_LOG_INFO(LogChannel::Global, "Received WebSocket message:\n-----\n%s\n------\n", message->str.c_str());
 
 			Json payload(message->str);
 
@@ -496,7 +496,7 @@ void SurfGlobalService::OnWebSocketMessage(const ix::WebSocketMessagePtr &messag
 
 					if (!helloAck.FromJson(payload))
 					{
-						META_CONPRINTF("[Surf::Global] Failed to decode 'HelloAck'\n");
+						SURF_LOG_WARN(LogChannel::Global, "Failed to decode 'HelloAck'\n");
 						break;
 					}
 
@@ -508,7 +508,7 @@ void SurfGlobalService::OnWebSocketMessage(const ix::WebSocketMessagePtr &messag
 				{
 					if (!payload.IsValid())
 					{
-						META_CONPRINTF("[Surf::Global] WebSocket message is not valid JSON.\n");
+						SURF_LOG_WARN(LogChannel::Global, "WebSocket message is not valid JSON.\n");
 						break;
 					}
 
@@ -516,7 +516,7 @@ void SurfGlobalService::OnWebSocketMessage(const ix::WebSocketMessagePtr &messag
 
 					if (!payload.Get("id", messageID))
 					{
-						META_CONPRINTF("[Surf::Global] Ignoring message without valid ID\n");
+						SURF_LOG_WARN(LogChannel::Global, "Ignoring message without valid ID\n");
 						break;
 					}
 
@@ -529,13 +529,13 @@ void SurfGlobalService::OnWebSocketMessage(const ix::WebSocketMessagePtr &messag
 
 		case ix::WebSocketMessageType::Ping:
 		{
-			META_CONPRINTF("[Surf::Global] Ping!\n");
+			SURF_LOG_INFO(LogChannel::Global, "Ping!\n");
 		}
 		break;
 
 		case ix::WebSocketMessageType::Pong:
 		{
-			META_CONPRINTF("[Surf::Global] Pong!\n");
+			SURF_LOG_INFO(LogChannel::Global, "Pong!\n");
 		}
 		break;
 	}
@@ -548,7 +548,7 @@ void SurfGlobalService::InitiateHandshake()
 
 	if (!mapNameOk)
 	{
-		META_CONPRINTF("[Surf::Global] Failed to get current map name. Cannot initiate handshake.\n");
+		SURF_LOG_WARN(LogChannel::Global, "Failed to get current map name. Cannot initiate handshake.\n");
 		return;
 	}
 
@@ -576,7 +576,7 @@ void SurfGlobalService::CompleteHandshake(Surf::API::handshake::HelloAck &ack)
 	{
 		while (SurfGlobalService::state.load() == State::HandshakeCompleted) {
 			SurfGlobalService::socket->ping("");
-			META_CONPRINTF("[Surf::Global] Sent heartbeat. (interval=%is)\n", std::chrono::duration_cast<std::chrono::seconds>(heartbeatInterval).count());
+			SURF_LOG_INFO(LogChannel::Global, "Sent heartbeat. (interval=%lu)\n", std::chrono::duration_cast<std::chrono::seconds>(heartbeatInterval).count());
 			std::this_thread::sleep_for(heartbeatInterval);
 		}
 	}).detach();
@@ -597,7 +597,7 @@ void SurfGlobalService::CompleteHandshake(Surf::API::handshake::HelloAck &ack)
 		SurfGlobalService::globalStyles.data = std::move(ack.styles);
 	}
 
-	META_CONPRINTF("[Surf::Global] Completed handshake!\n");
+	SURF_LOG_INFO(LogChannel::Global, "Completed handshake!\n");
 }
 
 void SurfGlobalService::ExecuteMessageCallback(u32 messageID, const Json &payload)
@@ -616,7 +616,7 @@ void SurfGlobalService::ExecuteMessageCallback(u32 messageID, const Json &payloa
 
 	if (callback)
 	{
-		META_CONPRINTF("[Surf::Global] Executing callback #%i\n", messageID);
+		SURF_LOG_INFO(LogChannel::Global, "Executing callback #%i\n", messageID);
 		callback(messageID, payload);
 	}
 }

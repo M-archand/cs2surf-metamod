@@ -890,13 +890,13 @@ void Surf::misc::ProcessConCommand(ConCommandRef cmd, const CCommandContext &ctx
 		{
 			utils::SayChat(player->GetController(), "%s {lime}%s{default}: %s", coloredPrefix.c_str(), name, text.c_str());
 			utils::PrintConsoleAll("%s %s: %s", prefix.c_str(), name, text.c_str());
-			META_CONPRINTF("%s %s: %s\n", prefix.c_str(), name, text.c_str());
+			SURF_LOG_INFO(LogChannel::General, "%s %s: %s\n", prefix.c_str(), name, text.c_str());
 		}
 		else
 		{
 			utils::SayChat(player->GetController(), "{grey}* %s {lime}%s{default}: %s", coloredPrefix.c_str(), name, text.c_str());
 			utils::PrintConsoleAll("* %s %s: %s", prefix.c_str(), name, text.c_str());
-			META_CONPRINTF("* %s %s: %s\n", prefix.c_str(), name, text.c_str());
+			SURF_LOG_INFO(LogChannel::General, "* %s %s: %s\n", prefix.c_str(), name, text.c_str());
 		}
 	}
 
@@ -982,7 +982,7 @@ static_function void DrawClipMeshes(CPhysicsGameSystem *gs)
 		CPhysAggregateData *aggregateData = instance ? instance->aggregateData : nullptr;
 		if (!aggregateData)
 		{
-			META_CONPRINTF("PhysicsSpawnGroup %i: No aggregate data found for instance %p\n", i, instance);
+			SURF_LOG_DEBUG(LogChannel::Misc, "PhysicsSpawnGroup %i: No aggregate data found for instance %p\n", i, instance);
 			continue;
 		}
 		FOR_EACH_VEC(aggregateData->m_Parts, i)
@@ -1061,7 +1061,7 @@ static_function void DrawTriggers()
 			auto *aggregateData = pPhysInstance ? pPhysInstance->aggregateData : nullptr;
 			if (!aggregateData)
 			{
-				META_CONPRINTF("Trigger %i: No aggregate data found for instance %p\n", pTrigger->entindex(), pPhysInstance);
+				SURF_LOG_DEBUG(LogChannel::Misc, "Trigger %i: No aggregate data found for instance %p\n", pTrigger->entindex(), pPhysInstance);
 				continue;
 			}
 			FOR_EACH_VEC(aggregateData->m_Parts, i)

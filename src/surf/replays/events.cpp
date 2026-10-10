@@ -8,8 +8,6 @@
 #include "data.h"
 #include "bot.h"
 
-extern CConVar<bool> surf_replay_playback_debug;
-
 namespace Surf::replaysystem::events
 {
 
@@ -53,11 +51,8 @@ namespace Surf::replaysystem::events
 
 	void HandleTimerEvent(SurfPlayer &player, const RpEvent *event, data::ReplayPlayback *replay)
 	{
-		if (surf_replay_playback_debug.Get())
-		{
-			utils::PrintChatAll("Timer event: tick %d, type %d, index %d, time %.3f", event->serverTick, event->data.timer.type,
-								event->data.timer.index, event->data.timer.time);
-		}
+		SURF_LOG_DEBUG(LogChannel::Replays, "Timer event: tick %d, type %d, index %d, time %.3f", event->serverTick, event->data.timer.type,
+					   event->data.timer.index, event->data.timer.time);
 
 		switch (event->data.timer.type)
 		{
@@ -216,10 +211,7 @@ namespace Surf::replaysystem::events
 	void HandleModeChangeEvent(SurfPlayer &player, const RpEvent *event)
 	{
 		const char *modeNamePtr = reinterpret_cast<const char *>(&event->data.modeChange); // first field is name[64]
-		if (surf_replay_playback_debug.Get())
-		{
-			utils::PrintChatAll("Mode change event: tick %d, mode %s", event->serverTick, modeNamePtr);
-		}
+		SURF_LOG_DEBUG(LogChannel::Replays, "Mode change event: tick %d, mode %s", event->serverTick, modeNamePtr);
 
 		g_pSurfModeManager->SwitchToMode(&player, modeNamePtr, true, true, false);
 	}
@@ -227,13 +219,8 @@ namespace Surf::replaysystem::events
 	void HandleStyleChangeEvent(SurfPlayer &player, const RpEvent *event)
 	{
 		const char *styleNamePtr = reinterpret_cast<const char *>(&event->data.styleChange); // first field is name[64]
-		if (surf_replay_playback_debug.Get())
-		{
-			utils::PrintChatAll("Style change event: tick %d, style %s, clear style %d", event->serverTick, styleNamePtr,
-								event->data.styleChange.clearStyles);
-			META_CONPRINTF("Style change event: tick %d, style %s, clear style %d\n", event->serverTick, styleNamePtr,
-						   event->data.styleChange.clearStyles);
-		}
+		SURF_LOG_DEBUG(LogChannel::Replays, "Style change event: tick %d, style %s, clear style %d\n", event->serverTick, styleNamePtr,
+					   event->data.styleChange.clearStyles);
 
 		if (event->data.styleChange.clearStyles)
 		{
@@ -247,10 +234,7 @@ namespace Surf::replaysystem::events
 
 	void HandleTeleportEvent(SurfPlayer &player, const RpEvent *event)
 	{
-		if (surf_replay_playback_debug.Get())
-		{
-			utils::PrintChatAll("Teleport event: tick %d", event->serverTick);
-		}
+		SURF_LOG_DEBUG(LogChannel::Replays, "Teleport event: tick %d", event->serverTick);
 
 		player.GetPlayerPawn()->Teleport(event->data.teleport.hasOrigin ? (Vector *)&event->data.teleport.origin : nullptr,
 										 event->data.teleport.hasAngles ? (QAngle *)&event->data.teleport.angles : nullptr,

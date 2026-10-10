@@ -11,8 +11,6 @@
 #include "sdk/usercmd.h"
 #include "surf/replays/compression.h"
 
-extern CConVar<bool> surf_replay_recording_debug;
-
 ManualRecorder::ManualRecorder(SurfPlayer *player, f32 duration, SurfPlayer *savedBy) : Recorder(player, duration, RP_MANUAL, true)
 {
 	if (savedBy)
@@ -467,11 +465,7 @@ bool Recorder::WriteToFile()
 		return false;
 	}
 
-	if (surf_replay_recording_debug.Get())
-	{
-		META_CONPRINTF("surf_replay_recording_debug: Saved replay to %s (%zu bytes)\n", finalFilename, buffer.size());
-	}
-
+	SURF_LOG_DEBUG(LogChannel::Recording, "Saved replay to %s (%zu bytes)\n", finalFilename, buffer.size());
 	CleanupTempFiles();
 	return true;
 }
@@ -482,7 +476,7 @@ i32 Recorder::WriteHeader(std::vector<char> &outBuffer)
 	std::string serialized;
 	if (!this->replayHeader.SerializeToString(&serialized))
 	{
-		META_CONPRINTF("[Surf] Failed to serialize replay header protobuf\n");
+		SURF_LOG_WARN(LogChannel::Recording, "Failed to serialize replay header protobuf\n");
 		return 0;
 	}
 	u32 size = static_cast<u32>(serialized.size());
